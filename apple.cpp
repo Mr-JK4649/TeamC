@@ -247,8 +247,8 @@ int LoadImages() {
 
 	//背景読み込み
 	if ((haikeiA = LoadGraph("images/janlgame.jpg")) == -1)return -1;
-	//if ((player.image = LoadGraph("images/player01.png")) == -1)return -1;
-	//if ((player2.image = LoadGraph("images/player01.png")) == -1)return -1;
+	if ((player.image = LoadGraph("images/player01.png")) == -1)return -1;
+	if ((player2.image = LoadGraph("images/player01.png")) == -1)return -1;
 	return 0;
 }
 
@@ -280,20 +280,20 @@ int LoadSounds(void) {
 *************************************************************************/
 void CombatCal(void) {
 	//移動処理
-	//if (CheckHitKey(KEY_INPUT_RIGHT) != 0) {
-	//	player.x += player.speed;
-	//}
-	//if (CheckHitKey(KEY_INPUT_LEFT) != 0) {
-	//	player.x -= player.speed;
-	//}
+	if (CheckHitKey(KEY_INPUT_RIGHT) != 0) {
+		player.x += player.speed;
+	}
+	if (CheckHitKey(KEY_INPUT_LEFT) != 0) {
+		player.x -= player.speed;
+	}
 
 	//画面端　処理	↓(画面幅からキャラクターの幅を引いた値)
-	//if (player.x >= WIDTH - player.w) {
-	//	player.x = WIDTH - player.w;
-	//}
-	//if (player.x <= 0) {
-	//	player.x = 0;
-	//}
+	if (player.x >= WIDTH - player.w) {
+		player.x = WIDTH - player.w;
+	}
+	if (player.x <= 0) {
+		player.x = 0;
+	}
 
 	//テスト用HPバー
 	//HPが0の処理
@@ -320,8 +320,8 @@ void CombatCal(void) {
 void CombatDraw(void) {
 	DrawGraph(0, 0, haikeiA, FALSE);//背景描画
 
-	//DrawGraph(player.x, player.y, player.image, FALSE);//プレイヤー1P描画
-	//DrawGraph(player2.x, player2.y, player2.image, FALSE);//プレイヤー2P描画
+	DrawGraph(player.x, player.y, player.image, FALSE);//プレイヤー1P描画
+	DrawGraph(player2.x, player2.y, player2.image, FALSE);//プレイヤー2P描画
 
 	//1P HPバー描画
 	DrawBox(10, 10, player.hp_gauge, 50, GetColor(0, 255, 0), TRUE);//ゲージ
