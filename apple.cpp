@@ -54,6 +54,7 @@ enum Genre {
 int g_TitleImage;				//タイトル画像
 int g_BattleImage;				//戦闘画面背景
 int g_SelectImage;				//キャラ選択画像
+int g_EndImage;
 
 int g_HorrorImage[4];			//ホラーキャラの画像
 
@@ -256,7 +257,8 @@ void GameInit(void) {
 ********************************************************************/
 void DrawEnd(void) {
 	SetFontSize(50);
-	DrawString(705,405,"ゲームを終了します",0xffffff,1);
+	//DrawString(705,405,"ゲームを終了します",0xffffff,1);
+	DrawGraph(0, 0, g_EndImage, FALSE);
 	g_GameState = END;
 }
 
@@ -470,7 +472,7 @@ int LoadImages() {
 	fopen_s(&soiya,"soiya.txt", "w");
 
 	//タイトル
-	if ((g_TitleImage = LoadGraph("images/title.png")) == -1) { 
+	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1) { 
 		fwrite("タイトルの画像読み込みでエラー", sizeof(char),50, soiya);
 		return -1;
 	}
@@ -497,6 +499,10 @@ int LoadImages() {
 		return -1;
 	}
 
+	if ((g_EndImage = LoadGraph("images/end.png")) == -1) {
+		fwrite("終わりの画像読み込みでエラー", sizeof(char), 50, soiya);
+		return -1;
+	}
 
 
 	////ステージ
