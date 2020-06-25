@@ -41,6 +41,8 @@ int g_MouseY;    // マウスのY座標
 
 int g_GameState;
 
+//int g_TitleImage;					//タイトル画像
+
 
 
 /*サウンド*/
@@ -143,6 +145,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 ********************************************************************/
 void DrawGameTitle(void) {
 
+	//タイトル画像
+	//DrawGraph(0, 0, g_TitleImage, FALSE);
+
+	//ゲームモードの移行
+	
+
 }
 
 /********************************************************************
@@ -157,6 +165,8 @@ void GameInit(void) {
 * ゲームエンド描画処理
 ********************************************************************/
 void DrawEnd(void) {
+
+	
 
 }
 
@@ -180,6 +190,7 @@ void DrawGameResult(void) {
 void DrawGameOver(void) {
 
 
+
 }
 
 
@@ -189,7 +200,7 @@ void DrawGameOver(void) {
 int LoadImages() {
 
 	//// タイトル
-	//if ((g_TitleImage = LoadGraph("images/title.png")) == -1)return -1;
+	if ((g_TitleImage = LoadGraph("images/title.jpg")) == -1)return -1;
 
 	////ステージ
 	//if ((g_StageImage = LoadGraph("images/stage.png")) == -1)return -1;
