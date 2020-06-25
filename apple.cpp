@@ -51,20 +51,21 @@ enum Genre {
 /*******************************************************************
 *画像のあれ
 ********************************************************************/
-int g_TitleImage;
-int g_BattleImage;
+int g_TitleImage;				//タイトル画像
+int g_BattleImage;				//戦闘画面背景
+int g_SelectImage;				//キャラ選択画像
 
-int g_HorrorImage[4];
+int g_HorrorImage[4];			//ホラーキャラの画像
 
 
 /********************************************************************
 * 変数の宣言
 ********************************************************************/
-int g_OldKey;						// 前回の入力キー
-int g_NowKey;						// 今回の入力キー
-int g_KeyFlg;						// 入力キー情報
+//int g_OldKey;						// 前回の入力キー
+//int g_NowKey;						// 今回の入力キー
+//int g_KeyFlg;						// 入力キー情報
 int g_key[256];						// キーの情報を格納するやつ
-bool left, right, up, down,jump;	// キーの押下判定
+bool left[2], right[2], up[2], down[2],jump[2],XButton[2],YButton[2];				// キーの押下判定(添え字で判定：0が1Ｐ、1が2Ｐ)
 
 int g_OldMouse;				//前回のマウス
 int g_NowMouse;				//今回のマウス
@@ -76,10 +77,6 @@ bool mleft, mright;			// マウスの入力判定
 int g_GameState;			//ゲームのシーン管理
 
 
-//キャラに関するやつ
-float jumpForce = 8.0f;			//ジャンプ力
-
-
 /*サウンド*/
 
 
@@ -87,15 +84,18 @@ float jumpForce = 8.0f;			//ジャンプ力
 * 構造体の宣言
 ********************************************************************/
 struct chara{
-	int hp;					//体力
-	int ap;					//アビリティのゲージ用
-	float px=400, py=400;	//キャラの座標
-	bool aFlg;				//アビリティ発動フラグ
+	int hp=100;						//体力
+	int ap=0;						//アビリティのゲージ用
+	float px=400, py=400;			//キャラの座標
+	bool aFlg=false;				//アビリティ発動フラグ
+	float jumpForce=8.0f;			//ジャンプ力
+	int vector=0;					//進行ベクトル
+	int oldVec = 0;					//前のベクトル
+	float speed = 0;				//キャラのスピード
 };
 
-struct chara chara[11];
-
-
+struct chara charaA[11];
+struct chara charaB[11];
 
 /***********************************************
   * 関数のプロトタイプ宣言
@@ -111,7 +111,7 @@ void GameSelect(void);
 
 // 戦闘シーン
 void GameBattle(void);
-void PlayerA(int genre,float* px ,float* py);
+void PlayerMove(int genre,struct chara *chara,int pl);
 
 // ゲームタイトル描画処理
 void DrawGameTitle(void);
@@ -162,13 +162,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	g_GameState = GAME_TITLE;
 
 	// ゲームループ
-	while (ProcessMessage() == 0 && g_GameState != END && !(g_KeyFlg & PAD_INPUT_START)) {
-
-
-		// 入力キー取得
-		g_OldKey = g_NowKey;									//前フレームのキー取得
-		g_NowKey = GetJoypadInputState(DX_INPUT_KEY_PAD1);		//現フレームのキー取得
-		g_KeyFlg = g_NowKey & ~g_OldKey;						//キーフラグ
+	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
 
 		//マウスの取得
 		g_OldMouse = g_NowMouse;								//前フレームのキー取得
@@ -196,6 +190,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_OVER:		DrawGameOver(); break;		 // ゲームオーバー描画処理
 
+		case GAME_END:		DrawEnd(); break;		 // ゲームオーバー描画処理
+
 		}
 
 		ScreenFlip();    // 裏画面の内容を表画面に反映
@@ -221,16 +217,16 @@ void DrawGameTitle(void) {
 	if (g_MouseFlg & MOUSE_INPUT_LEFT) {
 		if ((g_MouseX > 400)
 			&& (g_MouseX < 570)
-			&& (g_MouseY > 500)
-			&& (g_MouseY < 550)) {
+			&& (g_MouseY > 600)
+			&& (g_MouseY < 650)) {
 
-			g_GameState = GAME_BATTLE; // ゲームスタートの選択
+			g_GameState = GAME_INIT; // ゲームスタートの選択
 			//StopSoundMem(g_TitleBGM);
 		}
-		else if ((g_MouseX > 870)
-			&& (g_MouseX < 1040)
-			&& (g_MouseY > 500)
-			&& (g_MouseY < 550)) {
+		else if ((g_MouseX > 970)
+			&& (g_MouseX < 1140)
+			&& (g_MouseY > 600)
+			&& (g_MouseY < 650)) {
 
 			g_GameState = GAME_END;  // ゲームエンドの選択
 			//StopSoundMem(g_TitleBGM);
@@ -238,8 +234,8 @@ void DrawGameTitle(void) {
 	}
 
 	
-	DrawBox(400,500,570,550,0x0000ff,false);
-	DrawBox(870,500,1040,550,0x0000ff,false);
+	DrawBox(400,600,570,650,0x0000ff,false);
+	DrawBox(970,600,1140,650,0x0000ff,false);
 
 }
 
@@ -247,7 +243,11 @@ void DrawGameTitle(void) {
 * ゲーム初期化処理
 ********************************************************************/
 void GameInit(void) {
-	jumpForce = 8.0f;
+	charaA->jumpForce = 8.0f;
+	charaB->jumpForce = 8.0f;
+	charaB->px = 840.0f;
+	charaA->speed = 5.0f;
+	g_GameState = GAME_SELECT;
 }
 
 
@@ -255,60 +255,154 @@ void GameInit(void) {
 * ゲームエンド描画処理
 ********************************************************************/
 void DrawEnd(void) {
-
+	SetFontSize(50);
+	DrawString(705,405,"ゲームを終了します",0xffffff,1);
+	g_GameState = END;
 }
 
 /********************************************************************
 * キャラ選択シーン
 ********************************************************************/
 void GameSelect(void) {
+	DrawExtendGraph(0, 0, 1440, 810, g_SelectImage, true);
 
+	if (jump[0]) {
+		g_GameState = GAME_BATTLE;
+	}
 }
 
 /********************************************************************
 *							戦闘シーン								*
 *-------------------------------------------------------------------*
 * GameBattle void型　[引数無し]										*
-* PlayerDisp void型　[ジャンル番号、ｘ座標、ｙ座標]					*
+* PlayerDisp void型　[ジャンル番号、構造体データ、プレイヤー]		*
 ********************************************************************/
+
+
+//関数の宣言
+void HorrorMotion(struct chara* chara, int pl);
+int HitCheck(float x,float y,float x2,float y2,int pl);
+void subHP(int pl);
+
 void GameBattle(void) {
 
+	const int P1 = 0, P2 = 1;
+
+	//背景
 	DrawExtendGraph(0, 0, 1440, 810, g_BattleImage, true);
 
-	PlayerA(Genre::HORROR, &chara[Genre::HORROR].px, &chara[Genre::HORROR].py);
+	//UI
+	DrawBox(5,5,5 + charaA[Genre::HORROR].hp * 5,25,0xffff00,1);
+	DrawBox(1435,5,1435 - charaB[Genre::HORROR].hp * 5,25,0xffff00,1);
+
+	PlayerMove(Genre::HORROR, charaA ,P1);
+	PlayerMove(Genre::HORROR, charaB ,P2);
 
 }
 
-void PlayerA(int Gnum, float* px, float* py) {
+void PlayerMove(int Gnum,struct chara *chara,int pl) {
 	
 	float gravity = 3.0f;
+	
+	DrawExtendGraph(chara->px,chara->py,chara->px + 200,chara->py + 200,g_HorrorImage[pl],true);
 
-	//DrawBoxAA(*px, *py, *px + 30, *py + 80, 0xffffff, true, 1.0f);
-	DrawExtendGraph(*px,*py,*px + 200,*py + 200,g_HorrorImage[0],true);
+	//移動処理
+	/*if (left[pl]) { chara->px -= 1.5f; }
+	if (right[pl]) { chara->px += 1.5f; }*/
 
-	if (left)	*px -= 1.5f;
-	if (right)	*px += 1.5f;
-	if (jump) {
+	DrawFormatString(100,200,0xff0000,"vec  = %d",charaA->vector);
+	DrawFormatString(100,230,0xff0000,"vecO = %d",charaA->oldVec);
+	DrawFormatString(100,260,0xff0000,"spd  = %f",charaA->speed);
+
+	if (chara->vector != 0) {
+		chara->speed -= 0.03f;
+		if (chara->speed <= 0.0f) { chara->speed = 5.0f; chara->oldVec = chara->vector; chara->vector = 0; }
+	}
+	chara->px += chara->speed * chara->vector;
+
+
+	if (up[pl])		chara->hp++;
+	if (chara->hp > 100) chara->hp = 100;
+	if (down[pl])	chara->hp--;
+	if (chara->hp < 0) { chara->hp = 0; g_GameState = GAME_RESULT; }
+
+	//ジャンプ処理
+	if (jump[pl]) {
 		
 		SetFontSize(30);
-		DrawString(*px-60, *py-35, "＼あははははは／", 0xff0000, 1);
-		*py -= (jumpForce - gravity);
-		jumpForce -= 0.1f;
+		DrawString(chara->px -50, chara->py-35, "＼あははははは／", 0xff0000, 1);
+		chara->py -= (chara->jumpForce - gravity);
+		chara->jumpForce -= 0.1f;
 		
-		if (*py > 450.0f) {
-			*py = 450.0f;
-			jumpForce = 8.0f;
-			jump = false; 
+		if (chara->py > 400.0f) {
+			chara->py = 400.0f;
+			chara->jumpForce = 8.0f;
+			jump[pl] = false;
 		}
 
+	}
 
+	//攻撃
+	if (XButton[pl]) {
+		HorrorMotion(chara,pl);
+		subHP(1 - pl);
+		XButton[pl] = false;
+	}
+
+	
+}
+
+////関数の宣言
+//void HorrorMotion(struct chara* chara, int pl);
+//int HitCheck();
+
+
+//変数の宣言
+int g_MotionCount;
+
+void HorrorMotion(struct chara* chara, int pl) {
+
+
+	if (g_MotionCount <= 20) {
+		if (pl == 0)DrawBox(chara->px + 120, chara->py + 80, chara->px + 120 + 50, chara->py + 120 + 20, 0xffffff, false);
+		if (pl == 1)DrawBox(chara->px + 80, chara->py + 80, chara->px + 80 - 50, chara->py + 120 + 20, 0xffffff, false);
+	}
+	else { g_MotionCount = 0; XButton[pl] = false; }
+
+	if(pl == 0)HitCheck(chara->px + 120, chara->py + 80, chara->px + 120 + 50, chara->py + 120 + 20,pl);
+	if(pl == 1)HitCheck(chara->px + 30, chara->py + 80, chara->px + 30 + 50, chara->py + 120 + 20,pl);
+
+	g_MotionCount++;
+
+}
+
+int HitCheck(float x, float y, float x2, float y2,int pl) {
+
+	
+
+	return 0;
+}
+
+void subHP(int pl) {
+	switch (pl) {
+		case 0:
+			charaA->hp-=30;
+			break;
+
+		case 1:
+			charaB->hp-=30;
+			break;
 	}
 }
+
 
 /********************************************************************
 * ゲームクリア描画処理
 ********************************************************************/
 void DrawGameResult(void) {
+
+	SetFontSize(45);
+	DrawString(720,405,"1Ｐの勝ち!!",0x00ff00,1);
 
 }
 
@@ -324,11 +418,43 @@ void DrawGameOver(void) {
 * キー入力管理
 ********************************************************************/
 void KeyInput() {
-	if (g_NowKey & PAD_INPUT_4 || g_NowKey & PAD_INPUT_LEFT)	 left = true;	else  left = false;
-	if (g_NowKey & PAD_INPUT_6 || g_NowKey & PAD_INPUT_RIGHT)	 right = true;	else right = false;
-	if (g_NowKey & PAD_INPUT_8 || g_NowKey & PAD_INPUT_UP)		 up = true;		else    up = false;
-	if (g_NowKey & PAD_INPUT_5 || g_NowKey & PAD_INPUT_DOWN)	 down = true;	else  down = false;
-	if (g_KeyFlg & PAD_INPUT_10)								 jump = true;	//else  jump = false;
+
+	//プレイヤー1用
+	static int OldKey1, NowKey1 = GetJoypadInputState(DX_INPUT_PAD1), KeyFlg1;
+	OldKey1 = NowKey1;									//前フレームのキー取得
+	NowKey1 = GetJoypadInputState(DX_INPUT_PAD1);		//現フレームのキー取得
+	KeyFlg1 = NowKey1 & ~OldKey1;						//キーフラグ
+
+	if (NowKey1 & PAD_INPUT_LEFT) 
+	{
+		charaA->speed = 5.0f;
+		left[0] = true; charaA->vector = -1; 
+	}
+	else if (NowKey1 & PAD_INPUT_RIGHT)
+	{
+		charaA->speed = 5.0f;
+		right[0] = true; charaA->vector = 1;
+	}
+	else { left[0] = false; right[0] = false; charaA->oldVec = charaA->vector; /*charaA->vector = 0;*/ }
+	if (NowKey1 & PAD_INPUT_UP)			up[0] = true;		else    up[0] = false;
+	if (NowKey1 & PAD_INPUT_DOWN)		down[0] = true;		else  down[0] = false;
+	if (KeyFlg1 & PAD_INPUT_A)			jump[0] = true;
+	if (KeyFlg1 & PAD_INPUT_3)			XButton[0] = true;
+	if (KeyFlg1 & PAD_INPUT_4)			YButton[0] = true;
+
+	//プレイヤー2用
+	//static int OldKey2, NowKey2 = GetJoypadInputState(DX_INPUT_PAD2), KeyFlg2;
+	//OldKey2 = NowKey2;									//前フレームのキー取得
+	//NowKey2 = GetJoypadInputState(DX_INPUT_PAD2);		//現フレームのキー取得
+	//KeyFlg2 = NowKey2 & ~OldKey2;						//キーフラグ
+
+	//if (NowKey2 & PAD_INPUT_LEFT)		left[1] = true;		else  left[1] = false;
+	//if (NowKey2 & PAD_INPUT_RIGHT)		right[1] = true;	else right[1] = false;
+	//if (NowKey2 & PAD_INPUT_UP)			up[1] = true;		else    up[1] = false;
+	//if (NowKey2 & PAD_INPUT_DOWN)		down[1] = true;		else  down[1] = false;
+	//if (KeyFlg2 & PAD_INPUT_A)			jump[1] = true;
+	//if (KeyFlg2 & PAD_INPUT_3)			XButton[1] = true;
+	//if (KeyFlg2 & PAD_INPUT_4)			YButton[1] = true;
 
 	if (g_NowMouse & MOUSE_INPUT_LEFT)	mleft = true;	else mleft = false;
 	if (g_NowMouse & MOUSE_INPUT_RIGHT) mright = true;	else mright = false;
@@ -344,7 +470,7 @@ int LoadImages() {
 	fopen_s(&soiya,"soiya.txt", "w");
 
 	//タイトル
-	if ((g_TitleImage = LoadGraph("images/タイトル画面.png")) == -1) { 
+	if ((g_TitleImage = LoadGraph("images/title.png")) == -1) { 
 		fwrite("タイトルの画像読み込みでエラー", sizeof(char),50, soiya);
 		return -1;
 	}
@@ -358,6 +484,16 @@ int LoadImages() {
 	//キャラの画像
 	if ((g_HorrorImage[0] = LoadGraph("images/ホラーキャラ.png")) == -1) {
 		fwrite("ホラーキャラ画像読み込みでエラー", sizeof(char), 50, soiya);
+		return -1;
+	}
+
+	if ((g_HorrorImage[1] = LoadGraph("images/ホラーキャラ逆.png")) == -1) {
+		fwrite("ホラーキャラ画像読み込みでエラー", sizeof(char), 50, soiya);
+		return -1;
+	}
+
+	if ((g_SelectImage = LoadGraph("images/SadaoSelect.jpg")) == -1) {
+		fwrite("キャラ選択画像読み込みでエラー", sizeof(char), 50, soiya);
 		return -1;
 	}
 
