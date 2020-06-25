@@ -536,7 +536,7 @@ int LoadSounds(void) {
 	//if ((g_TitleBGM = LoadSoundMem("sounds/ani_ta_biyon02.mp3")) == -1)return -1;
 	////ƒuƒƒbƒNˆÚ“®
 	//if ((g_TitleBGM = LoadSoundMem("sounds/ta_ta_doron01.mp3")) == -1)return -1;
-	//aho
+
 
 
 	return 0;
