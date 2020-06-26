@@ -9,12 +9,8 @@
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
 
-#define TIME 99	//時間 99秒
-#define MHP 1000	//MAX HP
-#define HP0 10		//HPが0	10は座標位置
-#define HPWID 325	
-
-#define WIDTH 800	//画面横サイズ
+#define SELECT_ITEM 5
+#define WIDTH 970	//画面横サイズ
 #define HEIGHT 600	//画面縦サイズ
 /********************************************************************
 * 列挙体の宣言
@@ -36,15 +32,17 @@ enum GAME_MODE {
 /********************************************************************
 * 構造体の宣言
 ********************************************************************/
-struct PLAYER {
+typedef struct {
+	int x1, y1,x2,y2;
+	int w, h;
+}Cursor;
+
+typedef struct {
 	int x, y;
 	int w, h;
-	int speed;		//移動スピード
-	int image;		//画像
-	int hp;			//プレイヤーHP
-	int hp_gauge;	//HPゲージ
-};
-
+	int img;
+	int main_img;
+}Selectitem;
 
 /***********************************************
   * 関数のプロトタイプ宣言
@@ -61,11 +59,11 @@ void DrawEnd(void);
 void DrawGameResult(void);
 // ゲームオーバー描画処理
 void DrawGameOver(void);
-
-//戦闘画面計算
-void CombatCal(void);
-//戦闘画面描画
-void CombatDraw(void);
+//キー読み込み
+int UpdatKey();
+//ステージセレクト画面
+void Stageselect(void);
+void StageselectDraw(void);
 
 // 画像読み込み
 int LoadImages();
@@ -79,16 +77,18 @@ int LoadSounds(void);
 int g_OldKey;    // 前回の入力キー
 int g_NowKey;    // 今回の入力キー
 int g_KeyFlg;    // 入力キー情報
+int Key[256];//キーが押されているフレーム数を格納
 
 int g_MouseX;    // マウスのX座標
 int g_MouseY;    // マウスのY座標
 
 int g_GameState = GAME_INIT;
+
 int haikeiA;//背景格納変数
-struct PLAYER player;
-struct PLAYER player2;
-int timecount = 0;
-int timedraw = TIME;
+int selectnum;
+
+Cursor cursor;
+Selectitem sitem[SELECT_ITEM];
 
 
 /*サウンド*/
@@ -102,7 +102,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	SetMainWindowText("Comin"); // タイトルを設定
 
 	ChangeWindowMode(TRUE);   // ウィンドウモードで起動
-	SetGraphMode(800, 600, 32);
+	SetGraphMode(WIDTH, HEIGHT, 32);
 
 
 	if (DxLib_Init() == -1)   // DXライブラリの初期化処理
@@ -168,23 +168,15 @@ void DrawGameTitle(void) {
 * ゲーム初期化処理
 ********************************************************************/
 void GameInit(void) {
-	//1P
-	player.x = 10;
-	player.y = 300;
-	player.w = 150;
-	player.h = 250;
-	player.speed = 5;
-	player.hp_gauge = 325;
-	player.hp = MHP;
-
-	//2P
-	player2.w = 150;
-	player2.x = WIDTH - player2.w;
-	player2.y = 300;
-	player2.h = 250;
-	player2.speed = 5;
-	player2.hp_gauge = 425;
-	player2.hp = MHP;
+	//項目初期化
+	for (int i = 0; i < 4; i++) {
+		sitem[i].x = 40;
+		sitem[i].y = (80*i)+20; //+20は余白
+		sitem[i].w = 300;
+		sitem[i].h = 60;
+	}
+	sitem[4].x = 40;
+	sitem[4].y = 550;
 
 	g_GameState = GAME_MAIN;
 }
@@ -201,9 +193,9 @@ void DrawEnd(void) {
 * ゲームメイン
 ********************************************************************/
 void GameMain(void) {
-	CombatCal();	//戦闘画面計算
-	CombatDraw();	//戦闘画面描画
-
+	UpdatKey();
+	Stageselect();
+	StageselectDraw();
 }
 
 /********************************************************************
@@ -246,9 +238,18 @@ int LoadImages() {
 	//if (LoadDivGraph("images/number.png", 10, 10, 1, 60, 120, g_NumberImage) == -1)return -1;
 
 	//背景読み込み
-	if ((haikeiA = LoadGraph("images/janlgame.jpg")) == -1)return -1;
-	if ((player.image = LoadGraph("images/player01.png")) == -1)return -1;
-	if ((player2.image = LoadGraph("images/player01.png")) == -1)return -1;
+	if ((haikeiA = LoadGraph("images/stageselect_backtest.png")) == -1)return -1;
+	if ((sitem[0].img = LoadGraph("images/test1.png")) == -1)return -1;
+	if ((sitem[1].img = LoadGraph("images/test2.png")) == -1)return -1;
+	if ((sitem[2].img = LoadGraph("images/test3.png")) == -1)return -1;
+	if ((sitem[3].img = LoadGraph("images/test4.png")) == -1)return -1;
+	if ((sitem[4].img = LoadGraph("images/back.png")) == -1)return -1;
+
+	if ((sitem[0].main_img = LoadGraph("images/image.png")) == -1)return -1;
+	if ((sitem[1].main_img = LoadGraph("images/maintest2.png")) == -1)return -1;
+	if ((sitem[2].main_img = LoadGraph("images/maintest3.png")) == -1)return -1;
+	if ((sitem[3].main_img = LoadGraph("images/maintest4.png")) == -1)return -1;
+
 	return 0;
 }
 
@@ -274,64 +275,78 @@ int LoadSounds(void) {
 
 	return 0;
 }
-
-/************************************************************************
-* 戦闘画面計算
-*************************************************************************/
-void CombatCal(void) {
-	//移動処理
-	if (CheckHitKey(KEY_INPUT_RIGHT) != 0) {
-		player.x += player.speed;
+int UpdatKey() {
+	char tmpKey[256];
+	GetHitKeyStateAll(tmpKey);
+	for (int i = 0; i < 256; i++) {
+		if (tmpKey[i] != 0) {
+			Key[i]++;
+		}
+		else {
+			Key[i] = 0;
+		}
 	}
-	if (CheckHitKey(KEY_INPUT_LEFT) != 0) {
-		player.x -= player.speed;
+	return 0;
+}
+void Stageselect(void) {
+	//キーで選択
+	if (Key[KEY_INPUT_RETURN] == 1) {
+		//g_GameState=
 	}
-
-	//画面端　処理	↓(画面幅からキャラクターの幅を引いた値)
-	if (player.x >= WIDTH - player.w) {
-		player.x = WIDTH - player.w;
+	if (Key[KEY_INPUT_DOWN] == 1) {
+		selectnum = (selectnum + 1) % SELECT_ITEM;
 	}
-	if (player.x <= 0) {
-		player.x = 0;
+	if (Key[KEY_INPUT_UP] == 1) {
+		selectnum = (selectnum + 4) % SELECT_ITEM;
 	}
-
-	//テスト用HPバー
-	//HPが0の処理
-	if (player.hp_gauge <= HP0) {
-		player.hp_gauge = HP0;
+	if(Key[KEY_INPUT_DOWN] == 1|| Key[KEY_INPUT_UP] == 1){
+		for (int i = 0; i < SELECT_ITEM; i++) {
+			if (i == selectnum) {
+				sitem[i].x = 80;
+			}
+			else {
+				sitem[i].x = 40;
+			}
+		}
 	}
-	if (player2.hp_gauge >= WIDTH - 10) {
-		player2.hp_gauge = WIDTH - 10;
-	}
-
-	//時間計測
-	timecount++;//1秒カウント
-	if (timecount >= 60) {
-		timedraw--;//タイム表示
-		timecount = 0;
-		player2.hp_gauge += 5;
-		player.hp_gauge -= 5;
-		//player.hp_gauge = player.hp / MHP * HPWID;*/
+	//マウス選択
+	if (g_KeyFlg & MOUSE_INPUT_LEFT) {
+		for (int i = 0; i < SELECT_ITEM; i++) {
+			sitem[i].x = 40;
+		}
+		if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>20 && g_MouseY < 80) {
+			selectnum = 0;
+			sitem[0].x = 80;
+		}
+		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>100 && g_MouseY <160 ) {
+			selectnum = 1;
+			sitem[1].x = 80;
+		}
+		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>180 && g_MouseY <240 ) {
+			selectnum = 2;
+			sitem[2].x = 80;
+		}
+		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>260 && g_MouseY < 340) {
+			selectnum = 3;
+			sitem[3].x = 80;
+		}
+		//戻るボタン
+		else if (g_MouseX > 40 && g_MouseX < 190 && g_MouseY>550 && g_MouseY < 600) {
+			//g_GameState =
+		}
 	}
 }
-/************************************************************************
-* 戦闘画面描画
-*************************************************************************/
-void CombatDraw(void) {
-	DrawGraph(0, 0, haikeiA, FALSE);//背景描画
-
-	DrawGraph(player.x, player.y, player.image, FALSE);//プレイヤー1P描画
-	DrawGraph(player2.x, player2.y, player2.image, FALSE);//プレイヤー2P描画
-
-	//1P HPバー描画
-	DrawBox(10, 10, player.hp_gauge, 50, GetColor(0, 255, 0), TRUE);//ゲージ
-	DrawBox(8, 8, 327, 52, GetColor(0, 255, 0), FALSE);//HPバー枠
-
-	//2P HPバー描画
-	DrawBox(player2.hp_gauge, 10, 790, 50, GetColor(0, 255, 0), TRUE);//ゲージ
-	DrawBox(423, 8, 792, 52, GetColor(0, 255, 0), FALSE);//HPバー枠
-
-	//時間描画
-	SetFontSize(50);
-	DrawFormatString(350, 10, GetColor(255, 255, 255), "%d", timedraw);
+void StageselectDraw(void) {
+	DrawGraph(0,0,haikeiA,TRUE);
+	for (int i = 0; i < SELECT_ITEM; i++) {
+		DrawGraph(sitem[i].x, sitem[i].y, sitem[i].img, FALSE);
+	}
+	DrawGraph(445,100,sitem[selectnum].main_img, FALSE);
+	//DrawFormatString(500, 300, GetColor(255, 255, 0), "X %d", g_MouseX);
+	//DrawFormatString(500, 400, GetColor(255, 255, 0), "Y %d",g_MouseY);
+	/*SetFontSize(50);
+	DrawFormatString(480, 20, GetColor(255, 255, 0), "ステージセレクト");*/
+	//for (int i = 0; i < SELECT_ITEM; i++) {
+	////	DrawFormatString(600, 100*i, GetColor(255, 255, 0), "Y %d", sitem[i].y);
+	//}
 }
