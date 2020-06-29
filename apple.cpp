@@ -54,6 +54,8 @@ enum Genre {
 int g_TitleImage;				//タイトル画像
 int g_BattleImage;				//戦闘画面背景
 int g_SelectImage;				//キャラ選択画像
+int g_ClearImage;				//クリア画像
+int g_OverImage;				//ゲームオーバー画像
 
 int g_HorrorImage[4];			//ホラーキャラの画像
 
@@ -75,6 +77,9 @@ int g_MouseY;				// マウスのY座標
 bool mleft, mright;			// マウスの入力判定
 
 int g_GameState;			//ゲームのシーン管理
+
+int END_y=0;			//エンドロール(仮)
+int WaitingTime = 0;
 
 
 /*サウンド*/
@@ -190,7 +195,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_OVER:		DrawGameOver(); break;		 // ゲームオーバー描画処理
 
-		case GAME_END:		DrawEnd(); break;		 // ゲームオーバー描画処理
+		case GAME_END:		DrawEnd(); break;		 // ゲームエンド描画処理
 
 		}
 
@@ -220,7 +225,8 @@ void DrawGameTitle(void) {
 			&& (g_MouseY > 600)
 			&& (g_MouseY < 650)) {
 
-			g_GameState = GAME_INIT; // ゲームスタートの選択
+			g_GameState = GAME_RESULT; // ゲームクリア(仮) 
+			//g_GameState = GAME_INIT; // ゲームスタートの選択
 			//StopSoundMem(g_TitleBGM);
 		}
 		else if ((g_MouseX > 970)
@@ -228,7 +234,8 @@ void DrawGameTitle(void) {
 			&& (g_MouseY > 600)
 			&& (g_MouseY < 650)) {
 
-			g_GameState = GAME_END;  // ゲームエンドの選択
+			g_GameState = GAME_OVER;	//ゲームオーバー(仮)
+			//g_GameState = GAME_END;  // ゲームエンドの選択
 			//StopSoundMem(g_TitleBGM);
 		}
 	}
@@ -255,9 +262,29 @@ void GameInit(void) {
 * ゲームエンド描画処理
 ********************************************************************/
 void DrawEnd(void) {
+
+	DrawBox(0, 0, 1440, 810, 0xCCFFFF, TRUE);
+
+	SetFontSize(200);
+	END_y-=5;
+	DrawString(300, 810 + END_y, "タイトル", 0x000000);
 	SetFontSize(50);
-	DrawString(705,405,"ゲームを終了します",0xffffff,1);
-	g_GameState = END;
+	DrawString(300, 1110 + END_y, "製作者(プログラマ-)", 0x000000);
+	DrawString(300, 1160 + END_y, "下地　遼河　　　二瓶　陽輝", 0x000000);
+	DrawString(300, 1210 + END_y, "眞榮田　美樹　　　座波　龍一", 0x000000);
+	DrawString(300, 1260 + END_y, "崎濱　秀人", 0x000000);
+	DrawString(300, 1410 + END_y, "素材提供", 0x000000);
+	DrawString(300, 1460 + END_y, "BGM   魔王魂", 0x000000);
+	DrawString(300, 1510 + END_y, "SE	煉獄庭園", 0x000000);
+	SetFontSize(150);
+	DrawString(200, 1910 + END_y, "Someday Again!", 0x000000);
+	
+	if (END_y < -1300 ) {
+		WaitingTime++;
+		if (WaitingTime > 60) {
+			g_GameState = END;
+		}
+	}
 }
 
 /********************************************************************
@@ -401,16 +428,63 @@ void subHP(int pl) {
 ********************************************************************/
 void DrawGameResult(void) {
 
-	SetFontSize(45);
-	DrawString(720,405,"1Ｐの勝ち!!",0x00ff00,1);
+	//ゲームクリア画像表示
+	DrawExtendGraph(0, 0, 1440, 810, g_ClearImage, true);
+	
+	SetFontSize(150);
+	DrawString(500,105,"クリア!",0xFFFF00);
 
+	SetFontSize(80);
+	DrawString(200, 650, "タイトルへ", 0xFF00FF);
+	DrawString(1000, 655, "終わる", 0xFF00FF);
+
+	if (g_MouseFlg & MOUSE_INPUT_LEFT) {
+		if ((g_MouseX > 200)
+			&& (g_MouseX < 600)
+			&& (g_MouseY > 650)
+			&& (g_MouseY < 720)) {
+
+			g_GameState = GAME_TITLE;	//ゲームタイトルへ
+		}
+		else if ((g_MouseX > 1000)
+			&& (g_MouseX < 1230)
+			&& (g_MouseY > 650)
+			&& (g_MouseY < 720)) {
+
+			g_GameState = GAME_END;  // ゲームエンドへ
+		}
+	}
 }
 
 /********************************************************************
 * ゲームオーバー描画処理
 ********************************************************************/
 void DrawGameOver(void) {
-	
+	DrawExtendGraph(0, 0, 1440, 810, g_OverImage, true);
+
+	SetFontSize(150);
+	DrawString(200, 105, "ゲームオーバー", 0xC0C0C0);
+
+	SetFontSize(80);
+	DrawString(200, 650, "タイトルへ", 0xFF00FF);
+	DrawString(900, 655, "リトライ", 0xFF00FF);
+
+	if (g_MouseFlg & MOUSE_INPUT_LEFT) {
+		if ((g_MouseX > 200)
+			&& (g_MouseX < 600)
+			&& (g_MouseY > 650)
+			&& (g_MouseY < 720)) {
+
+			g_GameState = GAME_TITLE;	//ゲームタイトルへ
+		}
+		else if ((g_MouseX > 900)
+			&& (g_MouseX < 1210)
+			&& (g_MouseY > 650)
+			&& (g_MouseY < 720)) {
+
+			g_GameState = GAME_BATTLE;  // ゲームプレイへ
+		}
+	}
 }
 
 
@@ -487,10 +561,10 @@ int LoadImages() {
 		return -1;
 	}
 
-	if ((g_HorrorImage[1] = LoadGraph("images/ホラーキャラ逆.png")) == -1) {
+	/*if ((g_HorrorImage[1] = LoadGraph("images/ホラーキャラ逆.png")) == -1) {
 		fwrite("ホラーキャラ画像読み込みでエラー", sizeof(char), 50, soiya);
 		return -1;
-	}
+	}*/
 
 	if ((g_SelectImage = LoadGraph("images/SadaoSelect.jpg")) == -1) {
 		fwrite("キャラ選択画像読み込みでエラー", sizeof(char), 50, soiya);
@@ -502,11 +576,11 @@ int LoadImages() {
 	////ステージ
 	//if ((g_StageImage = LoadGraph("images/stage.png")) == -1)return -1;
 
-	////ゲームクリア
-	//if ((g_GameClearImage = LoadGraph("images/gameclear.png")) == -1)return -1;
+	//ゲームクリア
+	if ((g_ClearImage = LoadGraph("images/gameclear.jpg")) == -1)return -1;
 
-	////ゲームオーバー
-	//if ((g_GameOverImage = LoadGraph("images/gameover.png")) == -1)return -1;
+	//ゲームオーバー
+	if ((g_OverImage = LoadGraph("images/gameover.jpg")) == -1)return -1;
 
 	////ブロック画像
 	//if (LoadDivGraph("images/block.png", 10, 10, 1, 48, 48, g_BlockImage) == -1)return -1;
