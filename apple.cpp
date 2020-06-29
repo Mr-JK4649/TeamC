@@ -9,7 +9,7 @@
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
 
-#define SELECT_ITEM 5
+#define SELECT_ITEM 7
 #define WIDTH 970	//画面横サイズ
 #define HEIGHT 600	//画面縦サイズ
 /********************************************************************
@@ -32,17 +32,19 @@ enum GAME_MODE {
 /********************************************************************
 * 構造体の宣言
 ********************************************************************/
-typedef struct {
-	int x1, y1,x2,y2;
-	int w, h;
-}Cursor;
+//typedef struct {
+//	int x1, y1, x2, y2;
+//	int w, h;
+//}Cursor;
 
 typedef struct {
 	int x, y;
 	int w, h;
 	int img;
 	int main_img;
+	int flg;
 }Selectitem;
+
 
 /***********************************************
   * 関数のプロトタイプ宣言
@@ -65,6 +67,8 @@ int UpdatKey();
 void Stageselect(void);
 void StageselectDraw(void);
 
+void Keyselect(void);
+void Mouseselect(void);
 // 画像読み込み
 int LoadImages();
 
@@ -87,7 +91,7 @@ int g_GameState = GAME_INIT;
 int haikeiA;//背景格納変数
 int selectnum;
 
-Cursor cursor;
+//Cursor cursor;
 Selectitem sitem[SELECT_ITEM];
 
 
@@ -169,14 +173,15 @@ void DrawGameTitle(void) {
 ********************************************************************/
 void GameInit(void) {
 	//項目初期化
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 6; i++) {
 		sitem[i].x = 40;
-		sitem[i].y = (80*i)+20; //+20は余白
+		sitem[i].y = (80 * i) + 20; //+20は余白
 		sitem[i].w = 300;
 		sitem[i].h = 60;
+		sitem[i].flg = false;
 	}
-	sitem[4].x = 40;
-	sitem[4].y = 550;
+	sitem[6].x = 40;
+	sitem[6].y = 550;
 
 	g_GameState = GAME_MAIN;
 }
@@ -243,7 +248,10 @@ int LoadImages() {
 	if ((sitem[1].img = LoadGraph("images/test2.png")) == -1)return -1;
 	if ((sitem[2].img = LoadGraph("images/test3.png")) == -1)return -1;
 	if ((sitem[3].img = LoadGraph("images/test4.png")) == -1)return -1;
-	if ((sitem[4].img = LoadGraph("images/back.png")) == -1)return -1;
+	if ((sitem[4].img = LoadGraph("images/test2.png")) == -1)return -1;
+	if ((sitem[5].img = LoadGraph("images/test3.png")) == -1)return -1;
+	if ((sitem[5].img = LoadGraph("images/test4.png")) == -1)return -1;
+	if ((sitem[6].img = LoadGraph("images/back.png")) == -1)return -1;
 
 	if ((sitem[0].main_img = LoadGraph("images/image.png")) == -1)return -1;
 	if ((sitem[1].main_img = LoadGraph("images/maintest2.png")) == -1)return -1;
@@ -275,6 +283,11 @@ int LoadSounds(void) {
 
 	return 0;
 }
+//セレクト操作処理
+void Stageselect(void) {
+	Keyselect();
+	Mouseselect();
+}
 int UpdatKey() {
 	char tmpKey[256];
 	GetHitKeyStateAll(tmpKey);
@@ -288,7 +301,8 @@ int UpdatKey() {
 	}
 	return 0;
 }
-void Stageselect(void) {
+//キー選択
+void Keyselect(void) {
 	//キーで選択
 	if (Key[KEY_INPUT_RETURN] == 1) {
 		//g_GameState=
@@ -297,9 +311,9 @@ void Stageselect(void) {
 		selectnum = (selectnum + 1) % SELECT_ITEM;
 	}
 	if (Key[KEY_INPUT_UP] == 1) {
-		selectnum = (selectnum + 4) % SELECT_ITEM;
+		selectnum = (selectnum + (SELECT_ITEM-1)) % SELECT_ITEM;
 	}
-	if(Key[KEY_INPUT_DOWN] == 1|| Key[KEY_INPUT_UP] == 1){
+	if (Key[KEY_INPUT_DOWN] == 1 || Key[KEY_INPUT_UP] == 1) {
 		for (int i = 0; i < SELECT_ITEM; i++) {
 			if (i == selectnum) {
 				sitem[i].x = 80;
@@ -309,44 +323,55 @@ void Stageselect(void) {
 			}
 		}
 	}
+
+}
+//マウス選択
+void Mouseselect(void) {
 	//マウス選択
 	if (g_KeyFlg & MOUSE_INPUT_LEFT) {
-		for (int i = 0; i < SELECT_ITEM; i++) {
-			sitem[i].x = 40;
-		}
 		if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>20 && g_MouseY < 80) {
+			selectnum = (selectnum + (SELECT_ITEM - 1)) % SELECT_ITEM;
 			selectnum = 0;
-			sitem[0].x = 80;
 		}
-		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>100 && g_MouseY <160 ) {
+		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>100 && g_MouseY < 160) {
+			selectnum = (selectnum + (SELECT_ITEM - 1)) % SELECT_ITEM;
 			selectnum = 1;
-			sitem[1].x = 80;
 		}
-		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>180 && g_MouseY <240 ) {
+		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>180 && g_MouseY < 240) {
+			selectnum = (selectnum + (SELECT_ITEM - 1)) % SELECT_ITEM;
 			selectnum = 2;
-			sitem[2].x = 80;
 		}
 		else if (g_MouseX > 40 && g_MouseX < 340 && g_MouseY>260 && g_MouseY < 340) {
+			selectnum = (selectnum + (SELECT_ITEM - 1)) % SELECT_ITEM;
 			selectnum = 3;
-			sitem[3].x = 80;
 		}
 		//戻るボタン
 		else if (g_MouseX > 40 && g_MouseX < 190 && g_MouseY>550 && g_MouseY < 600) {
 			//g_GameState =
 		}
+
+		for (int i = 0; i < SELECT_ITEM; i++) {
+			if (i == selectnum) {
+				sitem[i].x = 80;
+			}
+			else {
+				sitem[i].x = 40;
+			}
+		}
 	}
 }
 void StageselectDraw(void) {
-	DrawGraph(0,0,haikeiA,TRUE);
+	DrawGraph(0, 0, haikeiA, TRUE);
 	for (int i = 0; i < SELECT_ITEM; i++) {
 		DrawGraph(sitem[i].x, sitem[i].y, sitem[i].img, FALSE);
 	}
-	DrawGraph(445,100,sitem[selectnum].main_img, FALSE);
-	//DrawFormatString(500, 300, GetColor(255, 255, 0), "X %d", g_MouseX);
+	DrawGraph(445, 100, sitem[selectnum].main_img, FALSE);
+	for (int i = 1; i < 5; i++) {
+		DrawFormatString(300, 100*i-50, GetColor(0, 0, 0), "flg %d", sitem[i-1].flg);
+	}
 	//DrawFormatString(500, 400, GetColor(255, 255, 0), "Y %d",g_MouseY);
 	/*SetFontSize(50);
 	DrawFormatString(480, 20, GetColor(255, 255, 0), "ステージセレクト");*/
 	//for (int i = 0; i < SELECT_ITEM; i++) {
-	////	DrawFormatString(600, 100*i, GetColor(255, 255, 0), "Y %d", sitem[i].y);
 	//}
 }
