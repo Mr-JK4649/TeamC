@@ -6,10 +6,12 @@
 #include <math.h>
 #include <wingdi.h>
 
+
 /*ヘッダファイルの読み込み*/
 #include "Input.h"			//キーとマウス入力のやつ
 #include "State.h"			//ゲームのシーンを管理するやつ
 #include "LoadSource.h"		//画像とか音とかの宣言と読み込み
+
 
 #pragma warning(disable : 4244)
 #pragma warning(disable : 26812)
