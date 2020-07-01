@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <wingdi.h>
+#include <windows.h>
 
 
 /*ヘッダファイルの読み込み*/
@@ -16,6 +17,8 @@
 #pragma warning(disable : 4244)
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
+
+RECT     recDisplay, recWindow, recClient;
 
 /********************************************************************
 * 列挙体の宣言
@@ -46,7 +49,7 @@ enum Genre {
 	RACE2			//レース(レースオフィシャル)
 };
 
-char genre[11][20] = {"ホラー","アクション","ＲＰＧ","ノベル","カード","ステルス","シミュ","シュート","パズル/脱出","音楽","レース"};
+char genre[11][20] = { "ホラー","アクション","ＲＰＧ","ノベル","カード","ステルス","シミュ","シュート","パズル/脱出","音楽","レース" };
 
 /********************************************************************
 * 定数の宣言
@@ -68,7 +71,7 @@ char genre[11][20] = {"ホラー","アクション","ＲＰＧ","ノベル","カード","ステルス
 //int g_Ohuda;
 //
 //ステージの画像切り替え用
-int g_GraphNum=0; 
+int g_GraphNum = 0;
 
 
 /********************************************************************
@@ -78,7 +81,7 @@ int g_GraphNum=0;
 //int g_NowKey;						// 今回の入力キー
 //int g_KeyFlg;						// 入力キー情報
 int g_key[256];						// キーの情報を格納するやつ
-bool left[2], right[2], up[2], down[2],jump[2],XButton[2],YButton[2];				// キーの押下判定(添え字で判定：0が1Ｐ、1が2Ｐ)
+bool left[2], right[2], up[2], down[2], jump[2], XButton[2], YButton[2];				// キーの押下判定(添え字で判定：0が1Ｐ、1が2Ｐ)
 bool kettei;
 
 //int g_OldMouse;				//前回のマウス
@@ -110,13 +113,13 @@ int OhuNum;
 /********************************************************************
 * 構造体の宣言
 ********************************************************************/
-struct chara{
-	int hp=100;						//体力
-	int ap=0;						//アビリティのゲージ用
-	float px=400, py=400;			//キャラの座標
-	bool aFlg=false;				//アビリティ発動フラグ
-	float jumpForce=8.0f;			//ジャンプ力
-	int vector=0;					//進行ベクトル
+struct chara {
+	int hp = 100;						//体力
+	int ap = 0;						//アビリティのゲージ用
+	float px = 400, py = 400;			//キャラの座標
+	bool aFlg = false;				//アビリティ発動フラグ
+	float jumpForce = 8.0f;			//ジャンプ力
+	int vector = 0;					//進行ベクトル
 	int oldVec = 0;					//前のベクトル
 	float speed = 0;				//キャラのスピード
 };
@@ -141,7 +144,7 @@ void GameSSelect(void);
 
 // 戦闘シーン
 void DrawGameMain(void);
-void PlayerMove(int genre,struct chara *chara,int pl);
+void PlayerMove(int genre, struct chara* chara, int pl);
 
 // ゲームタイトル描画処理
 void DrawGameTitle(void);
@@ -175,7 +178,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	ChangeWindowMode(TRUE);   // ウィンドウモードで起動
 
-	SetGraphMode(1440, 810,16,60);
+	int x, y;
+	GetWindowSize(&x, &y);
+	SetFontSize(20);
+	DrawFormatString(400, 400, 0xff0000, "ああああああああああ　　%d : %d", x, y);
+
+	HWND        hWnd, hDeskWnd;
+	MSG         msg;
+
+	hDeskWnd = GetDesktopWindow();
+	GetWindowRect(hDeskWnd, &recDisplay);
+
+
+	SetGraphMode(recDisplay.right * 0.8, recDisplay.bottom * 0.8, 16);
 
 
 	if (DxLib_Init() == -1)   // DXライブラリの初期化処理
@@ -187,7 +202,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	/*if (LoadImages() == -1)
 		return -1;*/
 
-	//サウンド読み込み
+		//サウンド読み込み
 	if (LoadSounds() == -1)
 		return -1;
 
@@ -204,6 +219,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
+
+
 
 
 		//KeyInput();			//キーの入力を管理
@@ -230,6 +247,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		case GAME_END:		DrawEnd(); break;		 // ゲームオーバー描画処理
 
 		}
+
+		RECT rect;
+		GetClientRect(GetMainWindowHandle(), &rect);
+
+		int nHeight = GetSystemMetrics(SM_CYSCREEN);
+		DrawFormatString(400, 400, GetColor(125, 125, 125), "%d", nHeight);
 
 		ScreenFlip();    // 裏画面の内容を表画面に反映
 
@@ -339,7 +362,7 @@ void GameInit(void) {
 ********************************************************************/
 void DrawEnd(void) {
 	SetFontSize(50);
-	DrawString(705,405,"ゲームを終了します",0xffffff,1);
+	DrawString(705, 405, "ゲームを終了します", 0xffffff, 1);
 	g_GameState = END;
 }
 
@@ -374,7 +397,7 @@ void DrawGameMain(void) {
 	esc.ImageInput(&esc);
 
 	static int VecNum = 0;
-	
+
 	//背景
 	DrawExtendGraph(0, 0, 1440, 810, esc.EscapeRoom[g_GraphNum], true);
 
@@ -393,7 +416,7 @@ void DrawGameMain(void) {
 		DrawRotaGraph(830, 600, 1.0f, SetAngle(45), esc.Ohuda, 1);
 		DrawRotaGraph(830, 250, 1.0f, SetAngle(135), esc.Ohuda, 1);
 	}
-	
+
 	if (!isEvent) {
 
 		if (inp.MouseX <= 100) {
@@ -414,31 +437,31 @@ void DrawGameMain(void) {
 		g_GraphNum = VecNum == 0 ? 0 : 1;
 	}
 	else {
-		
+
 		Flashing(1);
 
 	}
 
 	if (inp.MouseX >= 890 && inp.MouseX <= 940 && inp.MouseY >= 760 && inp.MouseY <= 810) {
-		DrawBox(890,760,940,810,0x00ff00,true);
+		DrawBox(890, 760, 940, 810, 0x00ff00, true);
 		if (inp.MouseFlg & MOUSE_INPUT_LEFT) { isEvent = !isEvent; g_EveCount = 0; }
 	}
 
 	//ここから下はデバッグ用
 	if (inp.MouseFlg & MOUSE_INPUT_RIGHT) isDebug = !isDebug;
-	
-	if (isDebug) {
-		DrawString(1275,5,"Mode : デバッグ",0xff0000,1);
-		SetFontSize(20);
-		DrawFormatString(3,5,0xff0000,"VecNum = %d",VecNum);
-		DrawFormatString(3,25,0xff0000,"Graph  = %d",g_GraphNum);
-		DrawFormatString(3,45,0xff0000,"isEve  = %d",isEvent);
-		DrawFormatString(3,65,0xff0000,"ジャンル：%s × %sステージ",genre[GenreNum],genre[Genre::PUZZLE]);
-		DrawFormatString(3,85,0x0000ff,"MouseX = %d",inp.MouseX);
-		DrawFormatString(3,105,0xff0000,"MouseY = %d",inp.MouseY);
 
-		DrawLine(0,inp.MouseY,1440,inp.MouseY,0x0000ff,1);
-		DrawLine(inp.MouseX,0,inp.MouseX,810,0xff0000,1);
+	if (isDebug) {
+		DrawString(1275, 5, "Mode : デバッグ", 0xff0000, 1);
+		SetFontSize(20);
+		DrawFormatString(3, 5, 0xff0000, "VecNum = %d", VecNum);
+		DrawFormatString(3, 25, 0xff0000, "Graph  = %d", g_GraphNum);
+		DrawFormatString(3, 45, 0xff0000, "isEve  = %d", isEvent);
+		DrawFormatString(3, 65, 0xff0000, "ジャンル：%s × %sステージ", genre[GenreNum], genre[Genre::PUZZLE]);
+		DrawFormatString(3, 85, 0x0000ff, "MouseX = %d", inp.MouseX);
+		DrawFormatString(3, 105, 0xff0000, "MouseY = %d", inp.MouseY);
+
+		DrawLine(0, inp.MouseY, 1440, inp.MouseY, 0x0000ff, 1);
+		DrawLine(inp.MouseX, 0, inp.MouseX, 810, 0xff0000, 1);
 
 		if (jump[0]) {
 			static int angle;
@@ -455,7 +478,7 @@ void DrawGameMain(void) {
 			for (int i = 0; i < 20; i++) {
 				if (Ohu[i][0] != 0) {
 					DrawRotaGraph(Ohu[i][0], Ohu[i][1], 1.0f, SetAngle(Ohu[i][2]), esc.Ohuda, 1);
-					DrawFormatString(3,125 + 20*i,0x000000,"%d = x:%d y:%d",i,Ohu[i][0],Ohu[i][1]);
+					DrawFormatString(3, 125 + 20 * i, 0x000000, "%d = x:%d y:%d", i, Ohu[i][0], Ohu[i][1]);
 				}
 			}
 
@@ -468,8 +491,8 @@ void DrawGameMain(void) {
 
 }
 
-float SetAngle(int angle){
-	
+float SetAngle(int angle) {
+
 	const float rad = 3.14159 / 180;
 
 	return rad * angle;
@@ -480,22 +503,22 @@ void Flashing(int paturn) {
 	++g_EveCount;
 
 	switch (paturn) {
-		case 1:
-			if (g_EveCount <= 5) g_alpha = 156;
-			else if (g_EveCount <= 40) g_alpha = 0;
-			else if (g_EveCount <= 45) g_alpha = 156;
-			else if (g_EveCount <= 55) g_alpha = 0;
-			else if (g_EveCount <= 65) g_alpha = 180;
-			else if (g_EveCount <= 80) g_alpha = 0;
-			else if (g_EveCount <= 110) { g_alpha = 230; isOhuda = true; }
-			else if (g_EveCount >= 120) g_alpha = 0;
-			break;
+	case 1:
+		if (g_EveCount <= 5) g_alpha = 156;
+		else if (g_EveCount <= 40) g_alpha = 0;
+		else if (g_EveCount <= 45) g_alpha = 156;
+		else if (g_EveCount <= 55) g_alpha = 0;
+		else if (g_EveCount <= 65) g_alpha = 180;
+		else if (g_EveCount <= 80) g_alpha = 0;
+		else if (g_EveCount <= 110) { g_alpha = 230; isOhuda = true; }
+		else if (g_EveCount >= 120) g_alpha = 0;
+		break;
 
-		case 2:
-			break;
+	case 2:
+		break;
 
-		case 3:
-			break;
+	case 3:
+		break;
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, g_alpha);
@@ -510,7 +533,7 @@ void Flashing(int paturn) {
 void DrawGameResult(void) {
 
 	SetFontSize(45);
-	DrawString(720,405,"1Ｐの勝ち!!",0x00ff00,1);
+	DrawString(720, 405, "1Ｐの勝ち!!", 0x00ff00, 1);
 
 }
 
@@ -518,7 +541,7 @@ void DrawGameResult(void) {
 * ゲームオーバー描画処理
 ********************************************************************/
 void DrawGameOver(void) {
-	
+
 }
 
 
@@ -533,10 +556,10 @@ void KeyInput() {
 	NowKey1 = GetJoypadInputState(DX_INPUT_KEY_PAD1);	//現フレームのキー取得
 	KeyFlg1 = NowKey1 & ~OldKey1;						//キーフラグ
 
-	if (NowKey1 & PAD_INPUT_LEFT) 
+	if (NowKey1 & PAD_INPUT_LEFT)
 	{
 		charaA->speed = 5.0f;
-		left[0] = true; charaA->vector = -1; 
+		left[0] = true; charaA->vector = -1;
 	}
 	else if (NowKey1 & PAD_INPUT_RIGHT)
 	{
