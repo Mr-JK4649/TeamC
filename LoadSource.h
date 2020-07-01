@@ -65,6 +65,24 @@ struct Escape{
 	}
 };
 
+/*ゲームクリアシーンで使う画像(追加した)*/
+struct Clear {
+	int ClearImage;
+
+	void ImageInput(struct Clear* p) {
+		p->ClearImage = LoadGraph("images/クリアシーン.png");
+	}
+};
+
+/*ゲームオーバーシーンで使う画像(追加した)*/
+struct Over {
+	int OverImage;
+
+	void ImageInput(struct Over* p) {
+		p->OverImage = LoadGraph("images/オーバーシーン.png");
+	}
+};
+
 
 //int LoadImages() {
 //
