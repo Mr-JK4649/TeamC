@@ -10,10 +10,12 @@
 #include "Input.h"
 #include "State.h"
 #include "LoadSource.h"
+#include "WindowScale.h"
+
 
 extern int g_GameState;
 
-void DrawGameTitle(void) {
+void DrawGameTitle(int width,int height) {
 
 	struct TitleImage title;
 	title.ImageInput(&title);
@@ -24,8 +26,9 @@ void DrawGameTitle(void) {
 
 
 	//タイトルの画像表示
-	DrawExtendGraph(0, 0, 1440, 810, title.TitleImage, true);
+	DrawExtendGraph(0, 0, width, height, title.TitleImage, true);
 	//DrawString();
+
 
 	// シーンを切り替える
 	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
