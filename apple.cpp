@@ -12,13 +12,16 @@
 #include "Input.h"			//ƒL[‚Æƒ}ƒEƒX“ü—Í‚Ì‚â‚Â
 #include "State.h"			//ƒQ[ƒ€‚ÌƒV[ƒ“‚ðŠÇ—‚·‚é‚â‚Â
 #include "LoadSource.h"		//‰æ‘œ‚Æ‚©‰¹‚Æ‚©‚ÌéŒ¾‚Æ“Ç‚Ýž‚Ý
+#include "WindowScale.h"	//‰æ–ÊƒTƒCƒY‚ð•Ï‚¦‚é‚â‚Â	
 
 
 #pragma warning(disable : 4244)
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
 
-RECT     recDisplay, recWindow, recClient;
+//RECT     recDisplay, recWindow, recClient;
+//HWND     hWnd, hDeskWnd;
+//MSG      msg;
 
 /********************************************************************
 * —ñ‹“‘Ì‚ÌéŒ¾
@@ -49,7 +52,7 @@ enum Genre {
 	RACE2			//ƒŒ[ƒX(ƒŒ[ƒXƒIƒtƒBƒVƒƒƒ‹)
 };
 
-char genre[11][20] = { "ƒzƒ‰[","ƒAƒNƒVƒ‡ƒ“","‚q‚o‚f","ƒmƒxƒ‹","ƒJ[ƒh","ƒXƒeƒ‹ƒX","ƒVƒ~ƒ…","ƒVƒ…[ƒg","ƒpƒYƒ‹/’Eo","‰¹Šy","ƒŒ[ƒX" };
+char genre[11][20] = {"ƒzƒ‰[","ƒAƒNƒVƒ‡ƒ“","‚q‚o‚f","ƒmƒxƒ‹","ƒJ[ƒh","ƒXƒeƒ‹ƒX","ƒVƒ~ƒ…","ƒVƒ…[ƒg","ƒpƒYƒ‹/’Eo","‰¹Šy","ƒŒ[ƒX"};
 
 /********************************************************************
 * ’è”‚ÌéŒ¾
@@ -71,7 +74,7 @@ char genre[11][20] = { "ƒzƒ‰[","ƒAƒNƒVƒ‡ƒ“","‚q‚o‚f","ƒmƒxƒ‹","ƒJ[ƒh","ƒXƒeƒ‹ƒ
 //int g_Ohuda;
 //
 //ƒXƒe[ƒW‚Ì‰æ‘œØ‚è‘Ö‚¦—p
-int g_GraphNum = 0;
+int g_GraphNum=0; 
 
 
 /********************************************************************
@@ -81,7 +84,7 @@ int g_GraphNum = 0;
 //int g_NowKey;						// ¡‰ñ‚Ì“ü—ÍƒL[
 //int g_KeyFlg;						// “ü—ÍƒL[î•ñ
 int g_key[256];						// ƒL[‚Ìî•ñ‚ðŠi”[‚·‚é‚â‚Â
-bool left[2], right[2], up[2], down[2], jump[2], XButton[2], YButton[2];				// ƒL[‚Ì‰Ÿ‰º”»’è(“Y‚¦Žš‚Å”»’èF0‚ª1‚oA1‚ª2‚o)
+bool left[2], right[2], up[2], down[2],jump[2],XButton[2],YButton[2];				// ƒL[‚Ì‰Ÿ‰º”»’è(“Y‚¦Žš‚Å”»’èF0‚ª1‚oA1‚ª2‚o)
 bool kettei;
 
 //int g_OldMouse;				//‘O‰ñ‚Ìƒ}ƒEƒX
@@ -113,13 +116,13 @@ int OhuNum;
 /********************************************************************
 * \‘¢‘Ì‚ÌéŒ¾
 ********************************************************************/
-struct chara {
-	int hp = 100;						//‘Ì—Í
-	int ap = 0;						//ƒAƒrƒŠƒeƒB‚ÌƒQ[ƒW—p
-	float px = 400, py = 400;			//ƒLƒƒƒ‰‚ÌÀ•W
-	bool aFlg = false;				//ƒAƒrƒŠƒeƒB”­“®ƒtƒ‰ƒO
-	float jumpForce = 8.0f;			//ƒWƒƒƒ“ƒv—Í
-	int vector = 0;					//isƒxƒNƒgƒ‹
+struct chara{
+	int hp=100;						//‘Ì—Í
+	int ap=0;						//ƒAƒrƒŠƒeƒB‚ÌƒQ[ƒW—p
+	float px=400, py=400;			//ƒLƒƒƒ‰‚ÌÀ•W
+	bool aFlg=false;				//ƒAƒrƒŠƒeƒB”­“®ƒtƒ‰ƒO
+	float jumpForce=8.0f;			//ƒWƒƒƒ“ƒv—Í
+	int vector=0;					//isƒxƒNƒgƒ‹
 	int oldVec = 0;					//‘O‚ÌƒxƒNƒgƒ‹
 	float speed = 0;				//ƒLƒƒƒ‰‚ÌƒXƒs[ƒh
 };
@@ -137,26 +140,26 @@ void KeyInput(void);
 void GameInit(void);
 
 // ƒLƒƒƒ‰‘I‘ðƒV[ƒ“
-void GameCSelect(void);
+void GameCSelect(int width, int height);
 
 //ƒXƒe[ƒW‘I‘ðƒV[ƒ“
-void GameSSelect(void);
+void GameSSelect(int width, int height);
 
 // í“¬ƒV[ƒ“
-void DrawGameMain(void);
-void PlayerMove(int genre, struct chara* chara, int pl);
+void DrawGameMain(int width, int height);
+//void PlayerMove(int genre,struct chara *chara,int pl);
 
 // ƒQ[ƒ€ƒ^ƒCƒgƒ‹•`‰æˆ—
-void DrawGameTitle(void);
+void DrawGameTitle(int width,int height);
 
 // ƒGƒ“ƒh•`‰æˆ—
-void DrawEnd(void);
+void DrawEnd(int width, int height);
 
 // ƒQ[ƒ€ƒNƒŠƒA[‚Ìˆ—
-void DrawGameResult(void);
+void DrawGameResult(int width, int height);
 
 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
-void DrawGameOver(void);
+void DrawGameOver(int width, int height);
 
 // ‰æ‘œ“Ç‚Ýž‚Ý
 int LoadImages();
@@ -166,6 +169,7 @@ int LoadSounds(void);
 
 
 Input inp;
+
 
 /*****************************************************
  * ƒvƒƒOƒ‰ƒ€‚ÌŠJŽn
@@ -178,19 +182,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	ChangeWindowMode(TRUE);   // ƒEƒBƒ“ƒhƒEƒ‚[ƒh‚Å‹N“®
 
-	int x, y;
-	GetWindowSize(&x, &y);
-	SetFontSize(20);
-	DrawFormatString(400, 400, 0xff0000, "‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ @@%d : %d", x, y);
-
-	HWND        hWnd, hDeskWnd;
-	MSG         msg;
-
-	hDeskWnd = GetDesktopWindow();
-	GetWindowRect(hDeskWnd, &recDisplay);
+	struct WindowScaler scale;
+	scale.GetWindwScale(&scale);
 
 
-	SetGraphMode(recDisplay.right * 0.8, recDisplay.bottom * 0.8, 16);
+	SetGraphMode(scale.Width, scale.Height,16);
 
 
 	if (DxLib_Init() == -1)   // DXƒ‰ƒCƒuƒ‰ƒŠ‚Ì‰Šú‰»ˆ—
@@ -202,7 +198,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	/*if (LoadImages() == -1)
 		return -1;*/
 
-		//ƒTƒEƒ“ƒh“Ç‚Ýž‚Ý
+	//ƒTƒEƒ“ƒh“Ç‚Ýž‚Ý
 	if (LoadSounds() == -1)
 		return -1;
 
@@ -220,7 +216,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
 
-
+		
 
 
 		//KeyInput();			//ƒL[‚Ì“ü—Í‚ðŠÇ—
@@ -230,29 +226,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		switch (g_GameState) {
 
-		case GAME_TITLE:	DrawGameTitle(); break;		 //ƒQ[ƒ€ƒ^ƒCƒgƒ‹ˆ—
+		case GAME_TITLE:	DrawGameTitle(scale.Width,scale.Height); break;		 //ƒQ[ƒ€ƒ^ƒCƒgƒ‹ˆ—
 
 		case GAME_INIT:		GameInit();  break;			 //ƒQ[ƒ€‰Šúˆ—
 
-		case GAME_C_SELECT:	GameCSelect();  break;	     //ƒLƒƒƒ‰‘I‘ð‰æ–Êˆ—
+		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //ƒLƒƒƒ‰‘I‘ð‰æ–Êˆ—
 
 	//	case GAME_S_SELECT:	GameSSelect();  break;	     //ƒXƒe[ƒW‘I‘ð‰æ–Êˆ—
 
-		case GAME_MAIN:		DrawGameMain();  break;		 //ƒQ[ƒ€ƒƒCƒ“‰æ–Êˆ—
+		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		 //ƒQ[ƒ€ƒƒCƒ“‰æ–Êˆ—
 
-		case GAME_RESULT:	DrawGameResult(); break;	 //ƒQ[ƒ€ƒƒCƒ“ˆ—
+		case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	 //ƒQ[ƒ€ƒƒCƒ“ˆ—
 
-		case GAME_OVER:		DrawGameOver(); break;		 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
+		case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
 
-		case GAME_END:		DrawEnd(); break;		 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
+		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
 
 		}
-
-		RECT rect;
-		GetClientRect(GetMainWindowHandle(), &rect);
-
-		int nHeight = GetSystemMetrics(SM_CYSCREEN);
-		DrawFormatString(400, 400, GetColor(125, 125, 125), "%d", nHeight);
 
 		ScreenFlip();    // — ‰æ–Ê‚Ì“à—e‚ð•\‰æ–Ê‚É”½‰f
 
@@ -263,82 +253,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	return 0; // ƒ\ƒtƒg‚ÌI—¹
 }
 
-/********************************************************************
-* ƒQ[ƒ€ƒ^ƒCƒgƒ‹•`‰æˆ—(ƒƒjƒ…[‰æ–Ê)
-********************************************************************/
-//void DrawGameTitle(void) {
-//
-//
-//	//ƒ^ƒCƒgƒ‹‚Ì‰æ‘œ•\Ž¦
-//	DrawExtendGraph(0, 0,1440,810, g_TitleImage, true);
-//	//DrawString();
-//
-//	// ƒV[ƒ“‚ðØ‚è‘Ö‚¦‚é
-//	if (g_MouseFlg & MOUSE_INPUT_LEFT) {
-//		if ((g_MouseX > 400)
-//			&& (g_MouseX < 570)
-//			&& (g_MouseY > 600)
-//			&& (g_MouseY < 650)) {
-//
-//			g_GameState = GAME_INIT; // ƒQ[ƒ€ƒXƒ^[ƒg‚Ì‘I‘ð
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//		else if ((g_MouseX > 970)
-//			&& (g_MouseX < 1140)
-//			&& (g_MouseY > 600)
-//			&& (g_MouseY < 650)) {
-//
-//			g_GameState = GAME_END;  // ƒQ[ƒ€ƒGƒ“ƒh‚Ì‘I‘ð
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//	}
-//
-//	
-//	DrawBox(400,600,570,650,0x0000ff,false);
-//	DrawBox(970,600,1140,650,0x0000ff,false);
-//
-//}
 
-//void DrawGameTitle(void) {
-//	
-//	inp.InputKey(&inp);
-//	inp.InputMouse(&inp);
-//
-//	//ƒ^ƒCƒgƒ‹‚Ì‰æ‘œ•\Ž¦
-//	DrawExtendGraph(0, 0, 1440, 810, g_TitleImage, true);
-//	//DrawString();
-//
-//	// ƒV[ƒ“‚ðØ‚è‘Ö‚¦‚é
-//	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-//		if ((inp.MouseX > 400)
-//			&& (inp.MouseX < 570)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_INIT; // ƒQ[ƒ€ƒXƒ^[ƒg‚Ì‘I‘ð
-//			DrawBox(0,0,200,200,0x000000,1);
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//		else if ((inp.MouseX > 970)
-//			&& (inp.MouseX < 1140)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_END;  // ƒQ[ƒ€ƒGƒ“ƒh‚Ì‘I‘ð
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//	}
-//
-//	DrawFormatString(5,5,0x000000,"mlef = %d",inp.mleft);
-//	DrawFormatString(5,25,0x000000,"mrig = %d",inp.mright);
-//	DrawFormatString(5,45,0x000000,"mouseO = %d",inp.OldMouse);
-//	DrawFormatString(5,65,0x000000,"mouseN = %d",inp.NowMouse);
-//	DrawFormatString(5,85,0x000000,"mouseF = %d",inp.MouseFlg);
-//
-//	DrawBox(400, 600, 570, 650, 0x0000ff, false);
-//	DrawBox(970, 600, 1140, 650, 0x0000ff, false);
-//
-//}
 
 /********************************************************************
 * ƒQ[ƒ€‰Šú‰»ˆ—
@@ -360,16 +275,16 @@ void GameInit(void) {
 /********************************************************************
 * ƒQ[ƒ€ƒGƒ“ƒh•`‰æˆ—
 ********************************************************************/
-void DrawEnd(void) {
+void DrawEnd(int width, int height) {
 	SetFontSize(50);
-	DrawString(705, 405, "ƒQ[ƒ€‚ðI—¹‚µ‚Ü‚·", 0xffffff, 1);
+	DrawString(705,405,"ƒQ[ƒ€‚ðI—¹‚µ‚Ü‚·",0xffffff,1);
 	g_GameState = END;
 }
 
 /********************************************************************
 * ƒLƒƒƒ‰‘I‘ðƒV[ƒ“
 ********************************************************************/
-void GameCSelect(void) {
+void GameCSelect(int width, int height) {
 
 	struct SelectImage chara;
 	chara.ImageInput(&chara);
@@ -391,13 +306,13 @@ void GameCSelect(void) {
 float SetAngle(int angle);			//“x”–@‚ÅŠp“x‚ð“¾‚é
 void Flashing(int paturn);			//“d‹C‚Ì“_–Å‚ð‚Â‚©‚³‚Ç‚é	
 
-void DrawGameMain(void) {
+void DrawGameMain(int width, int height) {
 
 	struct Escape esc;
 	esc.ImageInput(&esc);
 
 	static int VecNum = 0;
-
+	
 	//”wŒi
 	DrawExtendGraph(0, 0, 1440, 810, esc.EscapeRoom[g_GraphNum], true);
 
@@ -416,7 +331,7 @@ void DrawGameMain(void) {
 		DrawRotaGraph(830, 600, 1.0f, SetAngle(45), esc.Ohuda, 1);
 		DrawRotaGraph(830, 250, 1.0f, SetAngle(135), esc.Ohuda, 1);
 	}
-
+	
 	if (!isEvent) {
 
 		if (inp.MouseX <= 100) {
@@ -437,31 +352,31 @@ void DrawGameMain(void) {
 		g_GraphNum = VecNum == 0 ? 0 : 1;
 	}
 	else {
-
+		
 		Flashing(1);
 
 	}
 
 	if (inp.MouseX >= 890 && inp.MouseX <= 940 && inp.MouseY >= 760 && inp.MouseY <= 810) {
-		DrawBox(890, 760, 940, 810, 0x00ff00, true);
+		DrawBox(890,760,940,810,0x00ff00,true);
 		if (inp.MouseFlg & MOUSE_INPUT_LEFT) { isEvent = !isEvent; g_EveCount = 0; }
 	}
 
 	//‚±‚±‚©‚ç‰º‚ÍƒfƒoƒbƒO—p
 	if (inp.MouseFlg & MOUSE_INPUT_RIGHT) isDebug = !isDebug;
-
+	
 	if (isDebug) {
-		DrawString(1275, 5, "Mode : ƒfƒoƒbƒO", 0xff0000, 1);
+		DrawString(1275,5,"Mode : ƒfƒoƒbƒO",0xff0000,1);
 		SetFontSize(20);
-		DrawFormatString(3, 5, 0xff0000, "VecNum = %d", VecNum);
-		DrawFormatString(3, 25, 0xff0000, "Graph  = %d", g_GraphNum);
-		DrawFormatString(3, 45, 0xff0000, "isEve  = %d", isEvent);
-		DrawFormatString(3, 65, 0xff0000, "ƒWƒƒƒ“ƒ‹F%s ~ %sƒXƒe[ƒW", genre[GenreNum], genre[Genre::PUZZLE]);
-		DrawFormatString(3, 85, 0x0000ff, "MouseX = %d", inp.MouseX);
-		DrawFormatString(3, 105, 0xff0000, "MouseY = %d", inp.MouseY);
+		DrawFormatString(3,5,0xff0000,"VecNum = %d",VecNum);
+		DrawFormatString(3,25,0xff0000,"Graph  = %d",g_GraphNum);
+		DrawFormatString(3,45,0xff0000,"isEve  = %d",isEvent);
+		DrawFormatString(3,65,0xff0000,"ƒWƒƒƒ“ƒ‹F%s ~ %sƒXƒe[ƒW",genre[GenreNum],genre[Genre::PUZZLE]);
+		DrawFormatString(3,85,0x0000ff,"MouseX = %d",inp.MouseX);
+		DrawFormatString(3,105,0xff0000,"MouseY = %d",inp.MouseY);
 
-		DrawLine(0, inp.MouseY, 1440, inp.MouseY, 0x0000ff, 1);
-		DrawLine(inp.MouseX, 0, inp.MouseX, 810, 0xff0000, 1);
+		DrawLine(0,inp.MouseY,1440,inp.MouseY,0x0000ff,1);
+		DrawLine(inp.MouseX,0,inp.MouseX,810,0xff0000,1);
 
 		if (jump[0]) {
 			static int angle;
@@ -478,7 +393,7 @@ void DrawGameMain(void) {
 			for (int i = 0; i < 20; i++) {
 				if (Ohu[i][0] != 0) {
 					DrawRotaGraph(Ohu[i][0], Ohu[i][1], 1.0f, SetAngle(Ohu[i][2]), esc.Ohuda, 1);
-					DrawFormatString(3, 125 + 20 * i, 0x000000, "%d = x:%d y:%d", i, Ohu[i][0], Ohu[i][1]);
+					DrawFormatString(3,125 + 20*i,0x000000,"%d = x:%d y:%d",i,Ohu[i][0],Ohu[i][1]);
 				}
 			}
 
@@ -491,8 +406,8 @@ void DrawGameMain(void) {
 
 }
 
-float SetAngle(int angle) {
-
+float SetAngle(int angle){
+	
 	const float rad = 3.14159 / 180;
 
 	return rad * angle;
@@ -503,22 +418,22 @@ void Flashing(int paturn) {
 	++g_EveCount;
 
 	switch (paturn) {
-	case 1:
-		if (g_EveCount <= 5) g_alpha = 156;
-		else if (g_EveCount <= 40) g_alpha = 0;
-		else if (g_EveCount <= 45) g_alpha = 156;
-		else if (g_EveCount <= 55) g_alpha = 0;
-		else if (g_EveCount <= 65) g_alpha = 180;
-		else if (g_EveCount <= 80) g_alpha = 0;
-		else if (g_EveCount <= 110) { g_alpha = 230; isOhuda = true; }
-		else if (g_EveCount >= 120) g_alpha = 0;
-		break;
+		case 1:
+			if (g_EveCount <= 5) g_alpha = 156;
+			else if (g_EveCount <= 40) g_alpha = 0;
+			else if (g_EveCount <= 45) g_alpha = 156;
+			else if (g_EveCount <= 55) g_alpha = 0;
+			else if (g_EveCount <= 65) g_alpha = 180;
+			else if (g_EveCount <= 80) g_alpha = 0;
+			else if (g_EveCount <= 110) { g_alpha = 230; isOhuda = true; }
+			else if (g_EveCount >= 120) g_alpha = 0;
+			break;
 
-	case 2:
-		break;
+		case 2:
+			break;
 
-	case 3:
-		break;
+		case 3:
+			break;
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, g_alpha);
@@ -530,18 +445,18 @@ void Flashing(int paturn) {
 /********************************************************************
 * ƒQ[ƒ€ƒNƒŠƒA•`‰æˆ—
 ********************************************************************/
-void DrawGameResult(void) {
+void DrawGameResult(int width, int height) {
 
 	SetFontSize(45);
-	DrawString(720, 405, "1‚o‚ÌŸ‚¿!!", 0x00ff00, 1);
+	DrawString(720,405,"1‚o‚ÌŸ‚¿!!",0x00ff00,1);
 
 }
 
 /********************************************************************
 * ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
 ********************************************************************/
-void DrawGameOver(void) {
-
+void DrawGameOver(int width, int height) {
+	
 }
 
 
@@ -556,10 +471,10 @@ void KeyInput() {
 	NowKey1 = GetJoypadInputState(DX_INPUT_KEY_PAD1);	//Œ»ƒtƒŒ[ƒ€‚ÌƒL[Žæ“¾
 	KeyFlg1 = NowKey1 & ~OldKey1;						//ƒL[ƒtƒ‰ƒO
 
-	if (NowKey1 & PAD_INPUT_LEFT)
+	if (NowKey1 & PAD_INPUT_LEFT) 
 	{
 		charaA->speed = 5.0f;
-		left[0] = true; charaA->vector = -1;
+		left[0] = true; charaA->vector = -1; 
 	}
 	else if (NowKey1 & PAD_INPUT_RIGHT)
 	{
