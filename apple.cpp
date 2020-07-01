@@ -5,17 +5,23 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <wingdi.h>
+#include <windows.h>
 
 
 /*ヘッダファイルの読み込み*/
 #include "Input.h"			//キーとマウス入力のやつ
 #include "State.h"			//ゲームのシーンを管理するやつ
 #include "LoadSource.h"		//画像とか音とかの宣言と読み込み
+#include "WindowScale.h"	//画面サイズを変えるやつ	
 
 
 #pragma warning(disable : 4244)
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
+
+//RECT     recDisplay, recWindow, recClient;
+//HWND     hWnd, hDeskWnd;
+//MSG      msg;
 
 /********************************************************************
 * 列挙体の宣言
@@ -134,26 +140,26 @@ void KeyInput(void);
 void GameInit(void);
 
 // キャラ選択シーン
-void GameCSelect(void);
+void GameCSelect(int width, int height);
 
 //ステージ選択シーン
-void GameSSelect(void);
+void GameSSelect(int width, int height);
 
 // 戦闘シーン
-void DrawGameMain(void);
-void PlayerMove(int genre,struct chara *chara,int pl);
+void DrawGameMain(int width, int height);
+//void PlayerMove(int genre,struct chara *chara,int pl);
 
 // ゲームタイトル描画処理
-void DrawGameTitle(void);
+void DrawGameTitle(int width,int height);
 
 // エンド描画処理
-void DrawEnd(void);
+void DrawEnd(int width, int height);
 
 // ゲームクリアーの処理
-void DrawGameResult(void);
+void DrawGameResult(int width, int height);
 
 // ゲームオーバー描画処理
-void DrawGameOver(void);
+void DrawGameOver(int width, int height);
 
 // 画像読み込み
 int LoadImages();
@@ -163,6 +169,7 @@ int LoadSounds(void);
 
 
 Input inp;
+
 
 /*****************************************************
  * プログラムの開始
@@ -175,7 +182,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	ChangeWindowMode(TRUE);   // ウィンドウモードで起動
 
-	SetGraphMode(1440, 810,16,60);
+	struct WindowScaler scale;
+	scale.GetWindwScale(&scale);
+
+
+	SetGraphMode(scale.Width, scale.Height,16);
 
 
 	if (DxLib_Init() == -1)   // DXライブラリの初期化処理
@@ -205,6 +216,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
 
+		
+
 
 		//KeyInput();			//キーの入力を管理
 
@@ -213,21 +226,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		switch (g_GameState) {
 
-		case GAME_TITLE:	DrawGameTitle(); break;		 //ゲームタイトル処理
+		case GAME_TITLE:	DrawGameTitle(scale.Width,scale.Height); break;		 //ゲームタイトル処理
 
 		case GAME_INIT:		GameInit();  break;			 //ゲーム初期処理
 
-		case GAME_C_SELECT:	GameCSelect();  break;	     //キャラ選択画面処理
+		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //キャラ選択画面処理
 
 	//	case GAME_S_SELECT:	GameSSelect();  break;	     //ステージ選択画面処理
 
-		case GAME_MAIN:		DrawGameMain();  break;		 //ゲームメイン画面処理
+		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		 //ゲームメイン画面処理
 
-		case GAME_RESULT:	DrawGameResult(); break;	 //ゲームメイン処理
+		case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	 //ゲームメイン処理
 
-		case GAME_OVER:		DrawGameOver(); break;		 // ゲームオーバー描画処理
+		case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
 
-		case GAME_END:		DrawEnd(); break;		 // ゲームオーバー描画処理
+		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
 
 		}
 
@@ -240,82 +253,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	return 0; // ソフトの終了
 }
 
-/********************************************************************
-* ゲームタイトル描画処理(メニュー画面)
-********************************************************************/
-//void DrawGameTitle(void) {
-//
-//
-//	//タイトルの画像表示
-//	DrawExtendGraph(0, 0,1440,810, g_TitleImage, true);
-//	//DrawString();
-//
-//	// シーンを切り替える
-//	if (g_MouseFlg & MOUSE_INPUT_LEFT) {
-//		if ((g_MouseX > 400)
-//			&& (g_MouseX < 570)
-//			&& (g_MouseY > 600)
-//			&& (g_MouseY < 650)) {
-//
-//			g_GameState = GAME_INIT; // ゲームスタートの選択
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//		else if ((g_MouseX > 970)
-//			&& (g_MouseX < 1140)
-//			&& (g_MouseY > 600)
-//			&& (g_MouseY < 650)) {
-//
-//			g_GameState = GAME_END;  // ゲームエンドの選択
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//	}
-//
-//	
-//	DrawBox(400,600,570,650,0x0000ff,false);
-//	DrawBox(970,600,1140,650,0x0000ff,false);
-//
-//}
 
-//void DrawGameTitle(void) {
-//	
-//	inp.InputKey(&inp);
-//	inp.InputMouse(&inp);
-//
-//	//タイトルの画像表示
-//	DrawExtendGraph(0, 0, 1440, 810, g_TitleImage, true);
-//	//DrawString();
-//
-//	// シーンを切り替える
-//	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-//		if ((inp.MouseX > 400)
-//			&& (inp.MouseX < 570)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_INIT; // ゲームスタートの選択
-//			DrawBox(0,0,200,200,0x000000,1);
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//		else if ((inp.MouseX > 970)
-//			&& (inp.MouseX < 1140)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_END;  // ゲームエンドの選択
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//	}
-//
-//	DrawFormatString(5,5,0x000000,"mlef = %d",inp.mleft);
-//	DrawFormatString(5,25,0x000000,"mrig = %d",inp.mright);
-//	DrawFormatString(5,45,0x000000,"mouseO = %d",inp.OldMouse);
-//	DrawFormatString(5,65,0x000000,"mouseN = %d",inp.NowMouse);
-//	DrawFormatString(5,85,0x000000,"mouseF = %d",inp.MouseFlg);
-//
-//	DrawBox(400, 600, 570, 650, 0x0000ff, false);
-//	DrawBox(970, 600, 1140, 650, 0x0000ff, false);
-//
-//}
 
 /********************************************************************
 * ゲーム初期化処理
@@ -337,7 +275,7 @@ void GameInit(void) {
 /********************************************************************
 * ゲームエンド描画処理
 ********************************************************************/
-void DrawEnd(void) {
+void DrawEnd(int width, int height) {
 	SetFontSize(50);
 	DrawString(705,405,"ゲームを終了します",0xffffff,1);
 	g_GameState = END;
@@ -346,7 +284,7 @@ void DrawEnd(void) {
 /********************************************************************
 * キャラ選択シーン
 ********************************************************************/
-void GameCSelect(void) {
+void GameCSelect(int width, int height) {
 
 	struct SelectImage chara;
 	chara.ImageInput(&chara);
@@ -368,7 +306,7 @@ void GameCSelect(void) {
 float SetAngle(int angle);			//度数法で角度を得る
 void Flashing(int paturn);			//電気の点滅をつかさどる	
 
-void DrawGameMain(void) {
+void DrawGameMain(int width, int height) {
 
 	struct Escape esc;
 	esc.ImageInput(&esc);
@@ -507,7 +445,7 @@ void Flashing(int paturn) {
 /********************************************************************
 * ゲームクリア描画処理
 ********************************************************************/
-void DrawGameResult(void) {
+void DrawGameResult(int width, int height) {
 
 	SetFontSize(45);
 	DrawString(720,405,"1Ｐの勝ち!!",0x00ff00,1);
@@ -517,7 +455,7 @@ void DrawGameResult(void) {
 /********************************************************************
 * ゲームオーバー描画処理
 ********************************************************************/
-void DrawGameOver(void) {
+void DrawGameOver(int width, int height) {
 	
 }
 
