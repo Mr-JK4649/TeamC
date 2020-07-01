@@ -17,8 +17,14 @@ struct WindowScaler {
 		p->hDeskWnd = GetDesktopWindow();
 		GetWindowRect(p->hDeskWnd, &p->recDisplay);
 		
-		p->Width = p->recDisplay.right * 0.8;
-		p->Height = p->recDisplay.bottom * 0.8;
+		p->Width = p->recDisplay.right;
+		p->Height = p->recDisplay.bottom;
+
+		do {
+			p->Width *= 0.8;
+			p->Height *= 0.8;
+		} while (Width >= 1500);
+
 	}
 
 };
