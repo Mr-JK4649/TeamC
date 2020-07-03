@@ -32,19 +32,19 @@ void DrawGameTitle(int width,int height) {
 
 	// シーンを切り替える
 	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-		if ((inp.MouseX > 400)
-			&& (inp.MouseX < 570)
-			&& (inp.MouseY > 600)
-			&& (inp.MouseY < 650)) {
+		if ((inp.MouseX > 200)
+			&& (inp.MouseX < 370)
+			&& (inp.MouseY > 450)
+			&& (inp.MouseY < 500)) {
 
 			g_GameState = GAME_INIT; // ゲームスタートの選択
 			DrawBox(0, 0, 200, 200, 0x000000, 1);
 			//StopSoundMem(g_TitleBGM);
 		}
-		else if ((inp.MouseX > 970)
-			&& (inp.MouseX < 1140)
-			&& (inp.MouseY > 600)
-			&& (inp.MouseY < 650)) {
+		else if ((inp.MouseX > 770)
+			&& (inp.MouseX < 940)
+			&& (inp.MouseY > 450)
+			&& (inp.MouseY < 500)) {
 
 			g_GameState = GAME_END;  // ゲームエンドの選択
 			//StopSoundMem(g_TitleBGM);
@@ -57,8 +57,8 @@ void DrawGameTitle(int width,int height) {
 	DrawFormatString(5, 65, 0x000000, "mouseN = %d", inp.NowMouse);
 	DrawFormatString(5, 85, 0x000000, "mouseF = %d", inp.MouseFlg);
 
-	DrawBox(400, 600, 570, 650, 0x0000ff, false);
-	DrawBox(970, 600, 1140, 650, 0x0000ff, false);
+	DrawBox(200, 500, 370, 500, 0x0000ff, false);
+	DrawBox(770, 500, 940, 500, 0x0000ff, false);
 
 }
 

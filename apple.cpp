@@ -340,7 +340,7 @@ void DrawGameMain(int width, int height) {
 	static int VecNum = 0;
 	
 	//îwåi
-	DrawExtendGraph(0, 0, 1440, 810, esc.EscapeRoom[g_GraphNum], true);
+	DrawExtendGraph(0, 0, width, height, esc.EscapeRoom[g_GraphNum], true);
 
 	if (isOhuda) {
 		DrawRotaGraph(540, 300, 1.0f, SetAngle(200), esc.Ohuda, 1);
