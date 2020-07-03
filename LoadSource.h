@@ -19,10 +19,14 @@ struct TitleImage {
 
 /*キャラ選択シーンで使う画像*/
 struct SelectImage{
-	int SelectImage;		//ホラーキャラ用
+	int SadaoSelectImage[4];		//ホラーキャラ用
+	int Num = 0;
 
 	void ImageInput(struct SelectImage* p) {
-		p->SelectImage = LoadGraph("images/SadaoSelect.jpg");
+		p->SadaoSelectImage[0] = LoadGraph("images/SadaoSelect.jpg");
+		p->SadaoSelectImage[1] = LoadGraph("images/SadaoMigi.jpg");
+		p->SadaoSelectImage[2] = LoadGraph("images/SadaoHidari.jpg");
+		p->SadaoSelectImage[3] = LoadGraph("images/SadaoGo.jpg");
 	}
 };
 
