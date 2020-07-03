@@ -166,7 +166,7 @@ int LoadImages();
 
 //サウンド
 int LoadSounds(void);
-
+void Stageselect(void);
 
 Input inp;
 
@@ -231,7 +231,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //キャラ選択画面処理
 
-		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
+		case GAME_S_SELECT:	/*GameSSelect(scale.Width, scale.Height);  break;*/		//ステージ選択画面処理
+			Stageselect(); break;
 
 		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
