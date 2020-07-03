@@ -84,7 +84,7 @@ void DebugMode(int width, int height, int x, int y) {
 				case 0: g_GameState = GAME_TITLE; break;
 				case 1: g_GameState = GAME_END; break;
 				case 2: g_GameState = GAME_C_SELECT; break;
-				case 3: g_GameState = GAME_END; break;
+				case 3: g_GameState = GAME_S_SELECT; break;
 				case 4: g_GameState = GAME_RESULT; break;
 				case 5: g_GameState = GAME_OVER; break;
 			}

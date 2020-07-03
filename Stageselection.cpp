@@ -117,6 +117,7 @@ void Keyselect(void) {
 		switch (selectnum)
 		{
 		case 0:
+			g_GameState = GAME_MAIN;
 			break;
 		case 1:
 			break;
@@ -125,7 +126,7 @@ void Keyselect(void) {
 		case 3:
 			break;
 		case 4:
-			g_GameState = GAME_MAIN;
+			g_GameState = GAME_C_SELECT;
 			break;
 		}
 	}
