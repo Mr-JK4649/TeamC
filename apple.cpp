@@ -160,7 +160,6 @@ void DrawGameResult(int width, int height);
 
 // ゲームオーバー描画処理
 void DrawGameOver(int width, int height);
-void Stageselect(void);
 
 // 画像読み込み
 int LoadImages();
@@ -185,7 +184,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	struct WindowScaler scale;
 	scale.GetWindwScale(&scale);
-
 
 	SetGraphMode(scale.Width, scale.Height,16);
 
@@ -227,21 +225,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		switch (g_GameState) {
 
-		case GAME_TITLE:		Stageselect(); break;//DrawGameTitle(scale.Width,scale.Height); break;		 //ゲームタイトル処理
+		case GAME_TITLE:	DrawGameTitle(scale.Width,scale.Height); break;		 //ゲームタイトル処理
 
-			case GAME_INIT:		GameInit();  break;			 //ゲーム初期処理
+		case GAME_INIT:		GameInit();  break;			 //ゲーム初期処理
 
-			case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //キャラ選択画面処理
+		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //キャラ選択画面処理
 
-	//	case GAME_S_SELECT:	GameSSelect();  break;	     //ステージ選択画面処理
+		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
 
-			case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		 //ゲームメイン画面処理
+		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
-			case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	 //ゲームメイン処理
+		case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	 //ゲームメイン処理
 
-			case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
+		case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
 
-			case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
+		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
 
 		}
 
@@ -287,14 +285,41 @@ void DrawEnd(int width, int height) {
 ********************************************************************/
 void GameCSelect(int width, int height) {
 
+	struct WindowScaler scale;
+	scale.GetWindwScale(&scale);
+
+	inp.InputKey(&inp);
+	inp.InputMouse(&inp);
+
 	struct SelectImage chara;
 	chara.ImageInput(&chara);
+		
+	if (inp.MouseX >= width - 65 && inp.MouseX <= width && inp.MouseY >= 315 && inp.MouseY <= 372)chara.Num = 1;
+	else if (inp.MouseX >= 0 && inp.MouseX <= 65 && inp.MouseY >= 315 && inp.MouseY <= 372)chara.Num = 2;
+	else if (inp.MouseX >= 470 && inp.MouseX <= 685 && inp.MouseY >= 580 && inp.MouseY <= 670) chara.Num = 3;
+	else { chara.Num = 0; DrawString(width/2,height/2,"なんかおかしい",0xffffff); }
 
-	DrawExtendGraph(0, 0, 1440, 810, chara.SelectImage, true);
-
-	if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
-		g_GameState = GAME_MAIN;
+	DrawExtendGraph(0, 0, width, height, chara.SadaoSelectImage[chara.Num], true);
+	
+	if (inp.MouseX >= 470 && inp.MouseX <= 685 && inp.MouseY >= 580 && inp.MouseY <= 670) {
+		if (inp.NowMouse & MOUSE_INPUT_LEFT)g_GameState = GAME_S_SELECT;
 	}
+
+	/*DrawLine(0,inp.MouseY,width,inp.MouseY,0x0000ff,1);
+	DrawLine(inp.MouseX,0,inp.MouseX,height,0xff0000,1);
+	DrawFormatString(3, 5, 0x0000ff, "MouseX = %d", inp.MouseX);
+	DrawFormatString(3, 25, 0xff0000, "MouseY = %d", inp.MouseY);
+	DrawFormatString(3, 45, 0x0000ff, "MouseX = %04d %", inp.MouseX/scale.hiX);
+	DrawFormatString(3, 65, 0xff0000, "MouseY = %04d %", inp.MouseY/scale.hiY);*/
+	
+}
+
+
+/*******************************************************************
+* ステージセンタk
+********************************************************************/
+void GameSSelect(int width, int height) {
+	g_GameState = GAME_MAIN;
 }
 
 /********************************************************************
@@ -604,3 +629,4 @@ int LoadSounds(void) {
 
 	return 0;
 }
+
