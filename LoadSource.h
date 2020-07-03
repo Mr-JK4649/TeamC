@@ -47,3 +47,21 @@ struct Escape{
 		p->Arrow = LoadGraph("images/矢印.png");
 	}
 };
+
+/*ゲームクリアシーンで使う画像*/
+struct ClearImage {
+	int Clear;					//クリアシーンの画像
+
+	void ImageInput(struct ClearImage* p) {
+		p->Clear = LoadGraph("images/クリアシーン.png");
+	}
+};
+
+/*ゲームオーバーシーンで使う画像*/
+struct OverImage {
+	int Over;					//クリアシーンの画像
+
+	void ImageInput(struct OverImage* p) {
+		p->Over = LoadGraph("images/オーバーシーン.png");
+	}
+};

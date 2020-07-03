@@ -185,7 +185,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	struct WindowScaler scale;
 	scale.GetWindwScale(&scale);
 
-
 	SetGraphMode(scale.Width, scale.Height,16);
 
 
@@ -216,9 +215,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
 
-		
-
-
 		//KeyInput();			//ƒL[‚Ì“ü—Í‚ğŠÇ—
 
 
@@ -243,6 +239,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ƒQ[ƒ€ƒI[ƒo[•`‰æˆ—
 
 		}
+
+		/*DrawFormatString(5, 105, 0x000000, "Width = %d", scale.Width);
+		DrawFormatString(5, 125, 0x000000, "heigh = %d", scale.Height);*/
 
 		ScreenFlip();    // — ‰æ–Ê‚Ì“à—e‚ğ•\‰æ–Ê‚É”½‰f
 
@@ -289,7 +288,7 @@ void GameCSelect(int width, int height) {
 	struct SelectImage chara;
 	chara.ImageInput(&chara);
 
-	DrawExtendGraph(0, 0, 1440, 810, chara.SelectImage, true);
+	DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
 
 	if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
 		g_GameState = GAME_MAIN;
@@ -314,7 +313,7 @@ void DrawGameMain(int width, int height) {
 	static int VecNum = 0;
 	
 	//”wŒi
-	DrawExtendGraph(0, 0, 1440, 810, esc.EscapeRoom[g_GraphNum], true);
+	DrawExtendGraph(0, 0, width, height, esc.EscapeRoom[g_GraphNum], true);
 
 	if (isOhuda) {
 		DrawRotaGraph(540, 300, 1.0f, SetAngle(200), esc.Ohuda, 1);
@@ -447,8 +446,33 @@ void Flashing(int paturn) {
 ********************************************************************/
 void DrawGameResult(int width, int height) {
 
-	SetFontSize(45);
-	DrawString(720,405,"1‚o‚ÌŸ‚¿!!",0x00ff00,1);
+	struct ClearImage clear;
+	clear.ImageInput(&clear);
+
+	DrawExtendGraph(0, 0, width, height, clear.Clear, true);
+
+	DrawFormatString(3, 85, 0x0000ff, "MouseX = %d", inp.MouseX);
+	DrawFormatString(3, 105, 0xff0000, "MouseY = %d", inp.MouseY);
+
+	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
+		if ((inp.MouseX > 132)
+			&& (inp.MouseX < 459)
+			&& (inp.MouseY > 564)
+			&& (inp.MouseY < 616)) {
+
+			g_GameState = GAME_TITLE; // ƒQ[ƒ€ƒ^ƒCƒgƒ‹‚Ö
+		}
+		else if ((inp.MouseX > 888)
+			&& (inp.MouseX < 1076)
+			&& (inp.MouseY > 564)
+			&& (inp.MouseY < 623)) {
+
+			g_GameState = GAME_END;  // ƒQ[ƒ€ƒGƒ“ƒh‚Ì‘I‘ğ
+		}
+	}
+
+	/*SetFontSize(45);
+	DrawString(720,405,"1‚o‚ÌŸ‚¿!!",0x00ff00,1);*/
 
 }
 
@@ -457,6 +481,27 @@ void DrawGameResult(int width, int height) {
 ********************************************************************/
 void DrawGameOver(int width, int height) {
 	
+	struct OverImage over;
+	over.ImageInput(&over);
+
+	DrawExtendGraph(0, 0, width, height, over.Over, true);
+
+	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
+		if ((inp.MouseX > 164)
+			&& (inp.MouseX < 416)
+			&& (inp.MouseY > 532)
+			&& (inp.MouseY < 583)) {
+
+			g_GameState = GAME_TITLE; // ƒQ[ƒ€ƒ^ƒCƒgƒ‹‚Ö
+		}
+		else if ((inp.MouseX > 884)
+			&& (inp.MouseX < 1064)
+			&& (inp.MouseY > 532)
+			&& (inp.MouseY < 583)) {
+
+			g_GameState = GAME_MAIN;  // ƒQ[ƒ€ƒV[ƒ“‚Ö
+		}
+	}
 }
 
 
