@@ -13,105 +13,36 @@
 #include "State.h"			//ゲームのシーンを管理するやつ
 #include "LoadSource.h"		//画像とか音とかの宣言と読み込み
 #include "WindowScale.h"	//画面サイズを変えるやつ	
+#include "function.h"		//関数のプロトタイプ宣言(apple.cppのみ)
 
 
 #pragma warning(disable : 4244)
 #pragma warning(disable : 26812)
 #pragma warning(disable : 26451)
 
-//RECT     recDisplay, recWindow, recClient;
-//HWND     hWnd, hDeskWnd;
-//MSG      msg;
-
-/********************************************************************
-* 列挙体の宣言
-********************************************************************/
-//enum GAME_MODE {
-//	GAME_TITLE,		//タイトル
-//	GAME_INIT,		//初期化
-//	GAME_END,		//エンド
-//	GAME_BATTLE,	//戦闘
-//	GAME_SELECT,	//キャラ選択
-//	GAME_RESULT,	//リザルト
-//	GAME_OVER,		//ゲームオーバー(？)
-//	END = 99		//エンド用変数
-//};
-
-enum Genre {
-	HORROR,			//ホラー
-	ACTION,			//アクション
-	RPG,			//RPG
-	NOVEL,			//ノベル
-	CARD,			//カード
-	STEALTH,		//ステルス
-	SIMULATION,		//シミュレーション
-	SHOOTING,		//シューティング
-	PUZZLE,			//パズル
-	MUSIC,			//音楽
-	RACE1,			//レース(レーサー)
-	RACE2			//レース(レースオフィシャル)
-};
-
 char genre[11][20] = {"ホラー","アクション","ＲＰＧ","ノベル","カード","ステルス","シミュ","シュート","パズル/脱出","音楽","レース"};
-
-/********************************************************************
-* 定数の宣言
-********************************************************************/
 
 
 
 /*******************************************************************
 *画像のあれ
 ********************************************************************/
-////int g_TitleImage;				//タイトル画像
-//int g_SelectImage;				//キャラ選択画像
-//
-////キャラの画像
-//int g_HorrorImage[4];			//ホラーキャラ
-//
-////ステージの画像
-//int g_Dh[2];
-//int g_Ohuda;
-//
-//ステージの画像切り替え用
-int g_GraphNum=0; 
+
 
 
 /********************************************************************
 * 変数の宣言
 ********************************************************************/
-//int g_OldKey;						// 前回の入力キー
-//int g_NowKey;						// 今回の入力キー
-//int g_KeyFlg;						// 入力キー情報
-int g_key[256];						// キーの情報を格納するやつ
 bool left[2], right[2], up[2], down[2],jump[2],XButton[2],YButton[2];				// キーの押下判定(添え字で判定：0が1Ｐ、1が2Ｐ)
 bool kettei;
 
-//int g_OldMouse;				//前回のマウス
-//int g_NowMouse;				//今回のマウス
-//int g_MouseFlg;				//マウスフラグ
-//int g_MouseX;				// マウスのX座標
-//int g_MouseY;				// マウスのY座標
+
 bool mleft, mright;			// マウスの入力判定
 
 int g_GameState;			//ゲームのシーン管理
 int GenreNum;
 
-//イベント用
-bool isEvent;
-int g_alpha;
-int g_EveCount;
-bool isOhuda;
 
-/*サウンド*/
-
-
-//デバッグ用
-bool isDebug;
-bool isStamp;
-bool isSave;
-int Ohu[20][3];
-int OhuNum;
 
 /********************************************************************
 * 構造体の宣言
@@ -130,45 +61,9 @@ struct chara{
 struct chara charaA[11];
 struct chara charaB[11];
 
-/***********************************************
-  * 関数のプロトタイプ宣言
-***********************************************/
-//キー入力のやつ
-void KeyInput(void);
-
-// ゲーム初期化処理
-void GameInit(void);
-
-// キャラ選択シーン
-void GameCSelect(int width, int height);
-
-//ステージ選択シーン
-void GameSSelect(int width, int height);
-
-// 戦闘シーン
-void DrawGameMain(int width, int height);
-//void PlayerMove(int genre,struct chara *chara,int pl);
-
-// ゲームタイトル描画処理
-void DrawGameTitle(int width,int height);
-
-// エンド描画処理
-void DrawEnd(int width, int height);
-
-// ゲームクリアーの処理
-void DrawGameResult(int width, int height);
-
-// ゲームオーバー描画処理
-void DrawGameOver(int width, int height);
-
-// 画像読み込み
-int LoadImages();
-
-//サウンド
-int LoadSounds(void);
 
 
-Input inp;
+struct Input inp;			//キー入力を司る大事なやつ
 
 
 /*****************************************************
@@ -178,24 +73,22 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 
 
-	SetMainWindowText("ゲームジャンル王決定戦"); // タイトルを設定
+	SetMainWindowText("ジャンルで遊ぼう!!");		// タイトルを設定
 
-	ChangeWindowMode(TRUE);   // ウィンドウモードで起動
+	ChangeWindowMode(TRUE);							// ウィンドウモードで起動
 
-	struct WindowScaler scale;
-	scale.GetWindwScale(&scale);
+	/**********************画像の大きさを変えるやつ*************************/
+	/**/struct WindowScaler scale;
+	/**/scale.GetWindwScale(&scale);
+	/**/SetGraphMode(scale.Width, scale.Height,16);
+	/***********************************************************************/
 
-	SetGraphMode(scale.Width, scale.Height,16);
 
-
-	if (DxLib_Init() == -1)   // DXライブラリの初期化処理
+	if (DxLib_Init() == -1)							// DXライブラリの初期化処理
 		return -1;
 
-	SetDrawScreen(DX_SCREEN_BACK); // 描画先画面を裏にする
+	SetDrawScreen(DX_SCREEN_BACK);					// 描画先画面を裏にする
 
-	// 画像読み込み
-	/*if (LoadImages() == -1)
-		return -1;*/
 
 	//サウンド読み込み
 	if (LoadSounds() == -1)
@@ -206,44 +99,39 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
 
-		//マウスの取得
-		//g_OldMouse = g_NowMouse;								//前フレームのキー取得
-		//g_NowMouse = GetMouseInput();							//現フレームの取得
-		//g_MouseFlg = g_NowMouse & ~g_OldMouse;					//マウスのフラグ
-		//GetMousePoint(&g_MouseX, &g_MouseY);					//マウスの位置を取得
 
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
 
-		
 
-
-		//KeyInput();			//キーの入力を管理
-
-
-		ClearDrawScreen();  // 画面の初期化
+		ClearDrawScreen();														// 画面の初期化
 
 		switch (g_GameState) {
 
-		case GAME_TITLE:	DrawGameTitle(scale.Width,scale.Height); break;		 //ゲームタイトル処理
+		case GAME_TITLE:	DrawGameTitle(scale.Width,scale.Height); break;		//ゲームタイトル処理
 
-		case GAME_INIT:		GameInit();  break;			 //ゲーム初期処理
+		case GAME_INIT:		GameInit();  break;									//ゲーム初期処理
 
-		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	     //キャラ選択画面処理
+		case GAME_C_SELECT:	GameCSelect(scale.Width, scale.Height);  break;	    //キャラ選択画面処理
 
-		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
+		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;								//ステージ選択画面処理
 
-		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
+		case GAME_MAIN:		DrawGameMain(scale.Width, scale.Height);  break;	//ゲームメイン画面処理
 
-		case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	 //ゲームメイン処理
+		case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	//ゲームメイン処理
 
-		case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
+		case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
 
-		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;		 // ゲームオーバー描画処理
+		case GAME_END:		DrawEnd(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
 
 		}
 
+		if (inp.Cclick) DebugMode(scale.Width, scale.Height, inp.MouseX, inp.MouseY);
+		
+
 		ScreenFlip();    // 裏画面の内容を表画面に反映
+
+		
 
 	}
 
@@ -263,11 +151,6 @@ void GameInit(void) {
 	charaB->px = 840.0f;
 	charaA->speed = 5.0f;
 	g_GameState = GAME_C_SELECT;
-	g_alpha = 255;
-	g_EveCount = 0;
-	isOhuda = false;
-	isStamp = false;
-	isSave = false;
 }
 
 
@@ -293,18 +176,19 @@ void GameCSelect(int width, int height) {
 
 	struct SelectImage chara;
 	chara.ImageInput(&chara);
-		
+
 	if (inp.MouseX >= width - 65 && inp.MouseX <= width && inp.MouseY >= 315 && inp.MouseY <= 372)chara.Num = 1;
 	else if (inp.MouseX >= 0 && inp.MouseX <= 65 && inp.MouseY >= 315 && inp.MouseY <= 372)chara.Num = 2;
 	else if (inp.MouseX >= 470 && inp.MouseX <= 685 && inp.MouseY >= 580 && inp.MouseY <= 670) chara.Num = 3;
-	else { chara.Num = 0; DrawString(width/2,height/2,"なんかおかしい",0xffffff); }
+	else { chara.Num = 0; DrawString(width / 2, height / 2, "なんかおかしい", 0xffffff); }
 
 	DrawExtendGraph(0, 0, width, height, chara.SadaoSelectImage[chara.Num], true);
-	
+
 	if (inp.MouseX >= 470 && inp.MouseX <= 685 && inp.MouseY >= 580 && inp.MouseY <= 670) {
 		if (inp.NowMouse & MOUSE_INPUT_LEFT)g_GameState = GAME_S_SELECT;
 	}
 
+<<<<<<< HEAD
 	/*DrawLine(0,inp.MouseY,width,inp.MouseY,0x0000ff,1);
 	DrawLine(inp.MouseX,0,inp.MouseX,height,0xff0000,1);
 	DrawFormatString(3, 5, 0x0000ff, "MouseX = %d", inp.MouseX);
@@ -374,98 +258,20 @@ void DrawGameMain(int width, int height) {
 
 			}
 		}
+=======
+>>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
-		g_GraphNum = VecNum == 0 ? 0 : 1;
-	}
-	else {
-		
-		Flashing(1);
+	/*struct SelectImage chara;
+	chara.ImageInput(&chara);
 
-	}
+	DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
 
-	if (inp.MouseX >= 890 && inp.MouseX <= 940 && inp.MouseY >= 760 && inp.MouseY <= 810) {
-		DrawBox(890,760,940,810,0x00ff00,true);
-		if (inp.MouseFlg & MOUSE_INPUT_LEFT) { isEvent = !isEvent; g_EveCount = 0; }
-	}
-
-	//ここから下はデバッグ用
-	if (inp.MouseFlg & MOUSE_INPUT_RIGHT) isDebug = !isDebug;
-	
-	if (isDebug) {
-		DrawString(1275,5,"Mode : デバッグ",0xff0000,1);
-		SetFontSize(20);
-		DrawFormatString(3,5,0xff0000,"VecNum = %d",VecNum);
-		DrawFormatString(3,25,0xff0000,"Graph  = %d",g_GraphNum);
-		DrawFormatString(3,45,0xff0000,"isEve  = %d",isEvent);
-		DrawFormatString(3,65,0xff0000,"ジャンル：%s × %sステージ",genre[GenreNum],genre[Genre::PUZZLE]);
-		DrawFormatString(3,85,0x0000ff,"MouseX = %d",inp.MouseX);
-		DrawFormatString(3,105,0xff0000,"MouseY = %d",inp.MouseY);
-
-		DrawLine(0,inp.MouseY,1440,inp.MouseY,0x0000ff,1);
-		DrawLine(inp.MouseX,0,inp.MouseX,810,0xff0000,1);
-
-		if (jump[0]) {
-			static int angle;
-
-			if (up[0]) angle++;
-			if (down[0]) angle--;
-
-			if (kettei) { Ohu[OhuNum][0] = inp.MouseX; Ohu[OhuNum][1] = inp.MouseY; Ohu[OhuNum++][2] = angle; }
-
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-			DrawRotaGraph(inp.MouseX, inp.MouseY, 1.0f, SetAngle(angle), esc.Ohuda, 1);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-			for (int i = 0; i < 20; i++) {
-				if (Ohu[i][0] != 0) {
-					DrawRotaGraph(Ohu[i][0], Ohu[i][1], 1.0f, SetAngle(Ohu[i][2]), esc.Ohuda, 1);
-					DrawFormatString(3,125 + 20*i,0x000000,"%d = x:%d y:%d",i,Ohu[i][0],Ohu[i][1]);
-				}
-			}
-
-
-		}
-
-	}
-
-
-
+	if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
+		g_GameState = GAME_MAIN;
+	}*/
 }
 
-float SetAngle(int angle){
-	
-	const float rad = 3.14159 / 180;
 
-	return rad * angle;
-
-}
-
-void Flashing(int paturn) {
-	++g_EveCount;
-
-	switch (paturn) {
-		case 1:
-			if (g_EveCount <= 5) g_alpha = 156;
-			else if (g_EveCount <= 40) g_alpha = 0;
-			else if (g_EveCount <= 45) g_alpha = 156;
-			else if (g_EveCount <= 55) g_alpha = 0;
-			else if (g_EveCount <= 65) g_alpha = 180;
-			else if (g_EveCount <= 80) g_alpha = 0;
-			else if (g_EveCount <= 110) { g_alpha = 230; isOhuda = true; }
-			else if (g_EveCount >= 120) g_alpha = 0;
-			break;
-
-		case 2:
-			break;
-
-		case 3:
-			break;
-	}
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, g_alpha);
-	DrawBox(0, 0, 1440, 810, 0x000000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-}
 
 
 /********************************************************************
@@ -474,7 +280,7 @@ void Flashing(int paturn) {
 void DrawGameResult(int width, int height) {
 
 	SetFontSize(45);
-	DrawString(720,405,"1Ｐの勝ち!!",0x00ff00,1);
+	DrawString(width/2-100,height/2,"脱出成功！！！！",0x00ff00,1);
 
 }
 
@@ -514,7 +320,6 @@ void KeyInput() {
 	if (KeyFlg1 & PAD_INPUT_3)			XButton[0] = true;
 	if (KeyFlg1 & PAD_INPUT_4)			YButton[0] = true;
 	if (KeyFlg1 & PAD_INPUT_B)			kettei = true;		else kettei = false;
-	if (KeyFlg1 & KEY_INPUT_H)			isSave = true;		else isSave = false;
 
 	//プレイヤー2用
 	//static int OldKey2, NowKey2 = GetJoypadInputState(DX_INPUT_PAD2), KeyFlg2;

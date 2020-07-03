@@ -14,13 +14,14 @@
 
 
 extern int g_GameState;
+extern struct Input inp;
 
 void DrawGameTitle(int width,int height) {
 
 	struct TitleImage title;
 	title.ImageInput(&title);
 	
-	Input inp;
+	
 	inp.InputKey(&inp);
 	inp.InputMouse(&inp);
 
@@ -31,24 +32,38 @@ void DrawGameTitle(int width,int height) {
 
 
 	// シーンを切り替える
+<<<<<<< HEAD
 	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
 		if ((inp.MouseX > 200)
 			&& (inp.MouseX < 370)
 			&& (inp.MouseY > 450)
 			&& (inp.MouseY < 500)) {
+=======
+		if ((inp.MouseX > 100)
+			&& (inp.MouseX < 600)
+			&& (inp.MouseY > 485)
+			&& (inp.MouseY < 540)) {
+>>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
-			g_GameState = GAME_INIT; // ゲームスタートの選択
-			DrawBox(0, 0, 200, 200, 0x000000, 1);
+			if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_INIT; // ゲームスタートの選択
 			//StopSoundMem(g_TitleBGM);
 		}
+<<<<<<< HEAD
 		else if ((inp.MouseX > 770)
 			&& (inp.MouseX < 940)
 			&& (inp.MouseY > 450)
 			&& (inp.MouseY < 500)) {
+=======
+		else if ((inp.MouseX > 825)
+			&& (inp.MouseX < 1095)
+			&& (inp.MouseY > 485)
+			&& (inp.MouseY < 540)) {
+>>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
-			g_GameState = GAME_END;  // ゲームエンドの選択
+			if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_END;  // ゲームエンドの選択
 			//StopSoundMem(g_TitleBGM);
 		}
+<<<<<<< HEAD
 	}
 
 	DrawFormatString(5, 5, 0x000000, "mlef = %d", inp.mleft);
@@ -59,39 +74,9 @@ void DrawGameTitle(int width,int height) {
 
 	DrawBox(200, 500, 370, 500, 0x0000ff, false);
 	DrawBox(770, 500, 940, 500, 0x0000ff, false);
+=======
+>>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
 }
 
-//void DrawGameTitle(void) {
-//	Input inp = inp.InputKey(&inp);
-//
-//	//タイトルの画像表示
-//	DrawExtendGraph(0, 0, 1440, 810, g_TitleImage, true);
-//	//DrawString();
-//
-//	// シーンを切り替える
-//	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-//		if ((inp.MouseX > 400)
-//			&& (inp.MouseX < 570)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_INIT; // ゲームスタートの選択
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//		else if ((inp.MouseX > 970)
-//			&& (inp.MouseX < 1140)
-//			&& (inp.MouseY > 600)
-//			&& (inp.MouseY < 650)) {
-//
-//			g_GameState = GAME_END;  // ゲームエンドの選択
-//			//StopSoundMem(g_TitleBGM);
-//		}
-//	}
-//
-//
-//	DrawBox(400, 600, 570, 650, 0x0000ff, false);
-//	DrawBox(970, 600, 1140, 650, 0x0000ff, false);
-//
-//}
 
