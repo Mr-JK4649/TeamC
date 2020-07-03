@@ -64,7 +64,7 @@ void StageselectInit(void) {
 }
 
 //ステージセレクト関数
-void Stageselect(void) {
+void GameSSelect(int width,int height) {
 	if (Flg) {
 		StageselectInit();
 		Flg = false;
@@ -125,7 +125,7 @@ void Keyselect(void) {
 		case 3:
 			break;
 		case 4:
-			g_GameState = GAME_C_SELECT;
+			g_GameState = GAME_MAIN;
 			break;
 		}
 	}
