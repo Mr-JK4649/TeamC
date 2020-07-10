@@ -11,3 +11,10 @@
 #include "Input.h"
 #include "header.h"
 
+Bace bace;
+
+void DrawGameMain(int width, int height) {
+	
+	str.SuperString(200,200,"‚±‚ê‚Í‹’“_‚Å‚·",0xffffff,0,48);
+
+}

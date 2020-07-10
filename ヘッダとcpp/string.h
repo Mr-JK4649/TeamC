@@ -5,6 +5,8 @@
 
 /*実用的な関数*/
 
+#pragma warning(disable : 4244)
+
 
 /******************************************************************
  　　　　　　　　　文字の表示を変えるやつ
@@ -14,23 +16,30 @@
  int型		ch		文字の表示形態 (0:左揃え  1:中央揃え  2:右揃え)
  int型		size	文字のサイズ   (標準は16)
 ******************************************************************/
-void SuperString(int x, int y,const char* str, unsigned int color, int ch,int size) {
 
-	SetFontSize(size);
+struct String {
 
-	const int len = GetDrawStringWidth(str, -1);
-	
+	void SuperString(int x, int y, const char* str, unsigned int color, int ch, int size) {
 
-	switch (ch) {
-	case 0: DrawString(x, y, str, color, 1); break;				//左揃えで表示
+		SetFontSize(size);
 
-	case 1: DrawString(x - len / 2, y, str, color, 1); break;	//中央揃えで表示
+		const int len = GetDrawStringWidth(str, -1);
 
-	case 2: DrawString(x - len, y, str, color, 1); break;		//右揃えで表示
 
-	default:DrawString(x,y,"0～2のいずれかで選択してください。",color,1);				//エラー
+		switch (ch) {
+		case 0: DrawString(x, y, str, color, 1); break;				//左揃えで表示
+
+		case 1: DrawString(x - len / 2, y, str, color, 1); break;	//中央揃えで表示
+
+		case 2: DrawString(x - len, y, str, color, 1); break;		//右揃えで表示
+
+		default:DrawString(x, y, "0～2のいずれかで選択してください。", color, 1);	//エラー
+		}
+
+		SetFontSize(16);
+
 	}
 
-	SetFontSize(16);
+};
 
-}
+extern String str;
