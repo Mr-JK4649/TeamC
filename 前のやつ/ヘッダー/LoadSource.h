@@ -35,6 +35,15 @@ struct TitleImage {
 	}
 };
 
+struct AAA {
+	int image = LoadGraph("images/title.png");
+	bool flg = 
+
+	void ImageInput(struct AAA *p) {
+		p->image = LoadGraph("images/title.png");
+	}
+};
+
 /*キャラ選択シーンで使う画像*/
 struct SelectImage{
 	int SadaoSelectImage[4];		//ホラーキャラ用
