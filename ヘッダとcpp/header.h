@@ -4,6 +4,7 @@
 #include <wingdi.h>
 #include <windows.h>
 
+#pragma warning(disable : 4244)
 
 enum GAME_MODE {
 	GAME_TITLE,		//ƒ^ƒCƒgƒ‹
