@@ -72,9 +72,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		//case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
 
-		case GAME_BASE:		DrawGameMain(scale.Width, scale.Height);  break;	//ゲームメイン画面処理
+		case GAME_BASE:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
-		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;	//ゲームメイン処理
+		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
 
 		//case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
 
