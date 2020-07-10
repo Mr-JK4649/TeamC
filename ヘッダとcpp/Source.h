@@ -3,11 +3,13 @@
 #include <stdio.h>
 
 struct Title {
-	int image = LoadGraph("images/title.png");
+	int image=0;
+	int logo=0;
 	bool flg = true;
 
 	void ImageInput(struct Title* p) {
-		p->image = LoadGraph("images/title.png");
+		p->image = LoadGraph("images/タピオカミルクティー.jpg");
+		p->logo = LoadGraph("images/Tlogo2.png");
 	}
 };
 

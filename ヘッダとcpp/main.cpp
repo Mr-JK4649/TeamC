@@ -11,6 +11,7 @@
 /*ヘッダファイルの読み込み*/
 #include "header.h"
 #include "function.h"
+#include "Input.h"
 
 
 #pragma warning(disable : 4244)
@@ -21,11 +22,9 @@
 /********************************************************************
 * 変数の宣言
 ********************************************************************/
-
 int g_GameState;			//ゲームのシーン管理
 
-
-
+Input inp;
 
 /*****************************************************
  * プログラムの開始
@@ -33,16 +32,15 @@ int g_GameState;			//ゲームのシーン管理
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 
-	
 
-	SetMainWindowText("ジャンルで遊ぼう!!");		// タイトルを設定
+	SetMainWindowText("ＪＫ伝");		// タイトルを設定
 
 	ChangeWindowMode(TRUE);							// ウィンドウモードで起動
 
 	/**********************画像の大きさを変えるやつ*************************/
-	/**/WindowScaler scale;
-	/**/scale.GetWindwScale(&scale);
-	/**/SetGraphMode(scale.Width, scale.Height, 16);
+	/**/WindowScaler scale;											 	 /**/
+	/**/scale.GetWindwScale(&scale);								 	 /**/
+	/**/SetGraphMode(scale.Width, scale.Height, 16);					 /**/
 	/***********************************************************************/
 
 
@@ -61,7 +59,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		ClearDrawScreen();														// 画面の初期化
 
-		
+		inp.InputKey(&inp);
+		inp.InputMouse(&inp);
 
 		switch (g_GameState) {
 

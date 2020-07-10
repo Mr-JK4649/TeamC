@@ -37,3 +37,5 @@ struct WindowScaler {
 	}
 
 };
+
+extern int g_GameState;
