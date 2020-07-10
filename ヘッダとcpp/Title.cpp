@@ -28,8 +28,8 @@ void DrawGameTitle(int Width, int Height) {
 		inp.MouseY >= Height / 10 * 7 &&
 		inp.MouseY <= Height / 10 * 8) {
 		
-		//if (inp.Lclick) g_GameState = GAME_BASE;
-		if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
+		if (inp.Lclick) g_GameState = GAME_BASE;
+		//if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
 	}
 
 	/*DrawLine(0,Height/2,Width,Height/2,0xffffff,1);
