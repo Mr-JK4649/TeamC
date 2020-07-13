@@ -25,7 +25,14 @@ struct Stage {
 };
 
 struct Bace {
-	
+	int background;
+	bool flg = true;
+	int move=0;
+
+	void ImageInput(struct Bace* p) {
+		p->background = LoadGraph("images/’¬‚Ì•—Œi1.png");
+	}
+
 };
 
 struct Chara {
