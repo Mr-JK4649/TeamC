@@ -19,16 +19,32 @@ void DrawGameTitle(int Width, int Height) {
 	if (title.flg) { title.ImageInput(&title); title.flg = false; }
 
 	DrawExtendGraph(0, 0, Width, Height, title.image, 1);
-	DrawGraph(50,150,title.logo,1);
+	//DrawGraph(50,150,title.logo,1);
 	
-	DrawBox(Width / 10 * 1, Height / 10 * 7, Width / 10 * 3, Height / 10 * 8,0x0000ff,1);
+	//DrawBox(Width / 10 * 1, Height / 10 * 7, Width / 10 * 3, Height / 10 * 8,0x0000ff,1);//でバックよう
+
+	DrawFormatString(0, 0, 0x0000ff,"x=%d y=%d",inp.MouseX,inp.MouseY);
 	
-	if (inp.MouseX >= Width / 10 * 1 &&
-		inp.MouseX <= Width / 10 * 3 &&
-		inp.MouseY >= Height / 10 * 7 &&
-		inp.MouseY <= Height / 10 * 8) {
+	if (inp.MouseX >= 750 &&
+		inp.MouseX <= 1000 &&
+		inp.MouseY >= 400 &&
+		inp.MouseY <= 450 ) {
 		
-		if (inp.Lclick) g_GameState = GAME_BASE;
+		if (inp.Lclick)
+		{
+			g_GameState = GAME_BASE;//titleの始めるを押した場合、ゲームメインへ進む
+		}   
+		//if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
+	}
+
+	if (inp.MouseX >= 760 &&
+		inp.MouseX <= 900 &&
+		inp.MouseY >= 500 &&
+		inp.MouseY <= 540) {
+
+		if (inp.Lclick) {
+			DxLib_End(); // titleの終わるを押した場合、ゲームDXライブラリ使用の終了処理終了へ進む
+		}
 		//if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
 	}
 

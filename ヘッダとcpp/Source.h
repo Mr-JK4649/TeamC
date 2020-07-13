@@ -8,7 +8,7 @@ struct Title {
 	bool flg = true;
 
 	void ImageInput(struct Title* p) {
-		p->image = LoadGraph("images/タピオカミルクティー.jpg");
+		p->image = LoadGraph("images/タイトル案１.jpg");
 		p->logo = LoadGraph("images/Tlogo2.png");
 	}
 };
