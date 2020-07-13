@@ -32,51 +32,48 @@ void DrawGameTitle(int width,int height) {
 
 
 	// シーンを切り替える
-<<<<<<< HEAD
+
 	if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
 		if ((inp.MouseX > 200)
 			&& (inp.MouseX < 370)
 			&& (inp.MouseY > 450)
 			&& (inp.MouseY < 500)) {
-=======
-		if ((inp.MouseX > 100)
-			&& (inp.MouseX < 600)
-			&& (inp.MouseY > 485)
-			&& (inp.MouseY < 540)) {
->>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
-			if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_INIT; // ゲームスタートの選択
-			//StopSoundMem(g_TitleBGM);
-		}
-<<<<<<< HEAD
-		else if ((inp.MouseX > 770)
-			&& (inp.MouseX < 940)
-			&& (inp.MouseY > 450)
-			&& (inp.MouseY < 500)) {
-=======
-		else if ((inp.MouseX > 825)
-			&& (inp.MouseX < 1095)
-			&& (inp.MouseY > 485)
-			&& (inp.MouseY < 540)) {
->>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
+			if ((inp.MouseX > 100)
+				&& (inp.MouseX < 600)
+				&& (inp.MouseY > 485)
+				&& (inp.MouseY < 540)) {
 
-			if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_END;  // ゲームエンドの選択
-			//StopSoundMem(g_TitleBGM);
+				if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_INIT; // ゲームスタートの選択
+				//StopSoundMem(g_TitleBGM);
+			}
+
+			else if ((inp.MouseX > 770)
+				&& (inp.MouseX < 940)
+				&& (inp.MouseY > 450)
+				&& (inp.MouseY < 500)) {
+
+			else if ((inp.MouseX > 825)
+				&& (inp.MouseX < 1095)
+				&& (inp.MouseY > 485)
+				&& (inp.MouseY < 540)) {
+
+
+				if (inp.MouseFlg & MOUSE_INPUT_LEFT)g_GameState = GAME_END;  // ゲームエンドの選択
+				//StopSoundMem(g_TitleBGM);
+			}
+			}
+		
+
+			DrawFormatString(5, 5, 0x000000, "mlef = %d", inp.mleft);
+			DrawFormatString(5, 25, 0x000000, "mrig = %d", inp.mright);
+			DrawFormatString(5, 45, 0x000000, "mouseO = %d", inp.OldMouse);
+			DrawFormatString(5, 65, 0x000000, "mouseN = %d", inp.NowMouse);
+			DrawFormatString(5, 85, 0x000000, "mouseF = %d", inp.MouseFlg);
+
+			DrawBox(200, 500, 370, 500, 0x0000ff, false);
+			DrawBox(770, 500, 940, 500, 0x0000ff, false);
+
 		}
-<<<<<<< HEAD
+
 	}
-
-	DrawFormatString(5, 5, 0x000000, "mlef = %d", inp.mleft);
-	DrawFormatString(5, 25, 0x000000, "mrig = %d", inp.mright);
-	DrawFormatString(5, 45, 0x000000, "mouseO = %d", inp.OldMouse);
-	DrawFormatString(5, 65, 0x000000, "mouseN = %d", inp.NowMouse);
-	DrawFormatString(5, 85, 0x000000, "mouseF = %d", inp.MouseFlg);
-
-	DrawBox(200, 500, 370, 500, 0x0000ff, false);
-	DrawBox(770, 500, 940, 500, 0x0000ff, false);
-=======
->>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
-
-}
-
-

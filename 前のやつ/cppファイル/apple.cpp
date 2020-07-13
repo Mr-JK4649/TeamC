@@ -153,7 +153,6 @@ void GameCSelect(int width, int height) {
 		if (inp.NowMouse & MOUSE_INPUT_LEFT)g_GameState = GAME_S_SELECT;
 	}
 
-<<<<<<< HEAD
 	/*DrawLine(0,inp.MouseY,width,inp.MouseY,0x0000ff,1);
 	DrawLine(inp.MouseX,0,inp.MouseX,height,0xff0000,1);
 	DrawFormatString(3, 5, 0x0000ff, "MouseX = %d", inp.MouseX);
@@ -223,18 +222,17 @@ void DrawGameMain(int width, int height) {
 
 			}
 		}
-=======
->>>>>>> 6d25cdb5e275af9186aa7606d51ee4b36fa30306
 
-	/*struct SelectImage chara;
-	chara.ImageInput(&chara);
 
-	DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
+		/*struct SelectImage chara;
+		chara.ImageInput(&chara);
 
-	if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
-		g_GameState = GAME_MAIN;
-	}*/
-}
+		DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
+
+		if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
+			g_GameState = GAME_MAIN;
+		}*/
+	}
 
 
 
