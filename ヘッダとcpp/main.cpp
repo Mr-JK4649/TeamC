@@ -53,7 +53,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	SetDrawScreen(DX_SCREEN_BACK);					// 描画先画面を裏にする
 
 
-	g_GameState = GAME_BASE;
+	g_GameState = GAME_TITLE;
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
@@ -82,7 +82,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		//case GAME_END:		DrawEnd(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
 
 		}
-
 
 		ScreenFlip();    // 裏画面の内容を表画面に反映
 	}
