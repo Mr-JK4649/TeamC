@@ -15,13 +15,14 @@ Title title;
 
 void DrawGameTitle(int Width, int Height) {
 
+	const float w = (float)Width * 4.0 / 100.0;
+	const float h = (float)Height / 100.0;
+
 	//一回だけ初期化
 	if (title.flg) { title.ImageInput(&title); title.flg = false; }
 
 	DrawExtendGraph(0, 0, Width, Height, title.image, 1);
-	//DrawGraph(50,150,title.logo,1);
 	
-	//DrawBox(Width / 10 * 1, Height / 10 * 7, Width / 10 * 3, Height / 10 * 8,0x0000ff,1);//でバックよう
 
 	DrawFormatString(0, 0, 0x0000ff,"x=%d y=%d",inp.MouseX,inp.MouseY);
 	
@@ -34,7 +35,7 @@ void DrawGameTitle(int Width, int Height) {
 		{
 			g_GameState = GAME_BASE;//titleの始めるを押した場合、ゲームメインへ進む
 		}   
-		//if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
+		
 	}
 
 	if (inp.MouseX >= 760 &&
@@ -45,11 +46,7 @@ void DrawGameTitle(int Width, int Height) {
 		if (inp.Lclick) {
 			DxLib_End(); // titleの終わるを押した場合、ゲームDXライブラリ使用の終了処理終了へ進む
 		}
-		//if (inp.Lclick)SuperString(200,200,"シーンを切り替えました。",0x000000,0,16);
+		
 	}
-
-	/*DrawLine(0,Height/2,Width,Height/2,0xffffff,1);
-	DrawLine(Width/2,0,Width/2,Height,0xffffff,1);*/
-	//SuperString(Width / 3, Height / 4, "ＪＫ伝",0x000000,1,100);
 	
 }

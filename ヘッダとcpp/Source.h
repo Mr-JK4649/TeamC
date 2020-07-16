@@ -2,6 +2,8 @@
 #include "DxLib.h"
 #include <stdio.h>
 
+
+/*タイトルシーンの画像*/
 struct Title {
 	int image=0;
 	int logo=0;
@@ -13,8 +15,9 @@ struct Title {
 	}
 };
 
+/*ステージシーンの画像*/
 struct Stage {
-	int background;
+	int background = 0;
 	int Button;
 
 	void ImageInput(struct Stage* p) {
@@ -24,19 +27,16 @@ struct Stage {
 
 };
 
-struct Bace {
-	int background;
+/*拠点シーンの画像*/
+struct Base {
+	int background = 0;
+	int shadow = 0;
 	bool flg = true;
 	int move=0;
 
-	void ImageInput(struct Bace* p) {
+	void ImageInput(struct Base* p) {
 		p->background = LoadGraph("images/町の風景1.png");
+		p->shadow = LoadGraph("images/街の影.png");
 	}
 
-};
-
-struct Chara {
-	int hp=100;
-	int atk=0;
-	int def=0;
 };
