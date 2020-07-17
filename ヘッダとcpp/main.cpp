@@ -28,6 +28,7 @@ void DrawHatake(int Width, int Height);
 void Game_Hatake(int Width, int Height);
 Input inp;
 String str;
+WindowScaler scale;
 
 /*****************************************************
  * プログラムの開始
@@ -41,7 +42,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	ChangeWindowMode(TRUE);							// ウィンドウモードで起動
 
 	/**********************画像の大きさを変えるやつ*************************/
-	/**/WindowScaler scale;											 	 /**/
+	/**/										 	 /**/
 	/**/scale.GetWindwScale(&scale);								 	 /**/
 	/**/SetGraphMode(scale.Width, scale.Height, 16);					 /**/
 	/***********************************************************************/
@@ -85,11 +86,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		}
 
-
 		ScreenFlip();    // 裏画面の内容を表画面に反映
-
-
-
 	}
 
 	DxLib_End(); // DXライブラリ使用の終了処理

@@ -2,19 +2,22 @@
 #include "DxLib.h"
 #include <stdio.h>
 
+
+/*タイトルシーンの画像*/
 struct Title {
 	int image=0;
 	int logo=0;
 	bool flg = true;
 
 	void ImageInput(struct Title* p) {
-		p->image = LoadGraph("images/タピオカミルクティー.jpg");
+		p->image = LoadGraph("images/タイトル案１.jpg");
 		p->logo = LoadGraph("images/Tlogo2.png");
 	}
 };
 
+/*ステージシーンの画像*/
 struct Stage {
-	int background;
+	int background = 0;
 	int Button;
 
 	void ImageInput(struct Stage* p) {
@@ -24,23 +27,16 @@ struct Stage {
 
 };
 
-struct Bace {
-	
-};
-
-//畑関数用構造体
-struct HATAKE {
-	int image=0;
-	int fremimage = 0;
+/*拠点シーンの画像*/
+struct Base {
+	int background = 0;
+	int shadow = 0;
 	bool flg = true;
-	void ImageInput(struct HATAKE* p) {
-		p->image = LoadGraph("images/Hatakeimage.png");
-		p->fremimage = LoadGraph("images/frem.png");
-	}
-};
+	int move=0;
 
-struct Chara {
-	int hp=100;
-	int atk=0;
-	int def=0;
+	void ImageInput(struct Base* p) {
+		p->background = LoadGraph("images/町の風景1.png");
+		p->shadow = LoadGraph("images/街の影.png");
+	}
+
 };

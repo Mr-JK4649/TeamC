@@ -152,6 +152,7 @@ void GameCSelect(int width, int height) {
 	if (inp.MouseX >= 470 && inp.MouseX <= 685 && inp.MouseY >= 580 && inp.MouseY <= 670) {
 		if (inp.NowMouse & MOUSE_INPUT_LEFT)g_GameState = GAME_S_SELECT;
 	}
+
 	/*DrawLine(0,inp.MouseY,width,inp.MouseY,0x0000ff,1);
 	DrawLine(inp.MouseX,0,inp.MouseX,height,0xff0000,1);
 	DrawFormatString(3, 5, 0x0000ff, "MouseX = %d", inp.MouseX);
@@ -179,58 +180,59 @@ void GameSSelect(int width, int height) {
 float SetAngle(int angle);			//ìxêîñ@Ç≈äpìxÇìæÇÈ
 void Flashing(int paturn);			//ìdãCÇÃì_ñ≈ÇÇ¬Ç©Ç≥Ç«ÇÈ	
 
-//void DrawGameMain(int width, int height) {
-//
-//	struct Escape esc;
-//	esc.ImageInput(&esc);
-//
-//	static int VecNum = 0;
-//	
-//	//îwåi
-//	DrawExtendGraph(0, 0, width, height, esc.EscapeRoom[g_GraphNum], true);
-//
-//	if (isOhuda) {
-//		DrawRotaGraph(540, 300, 1.0f, SetAngle(200), esc.Ohuda, 1);
-//		DrawRotaGraph(540, 400, 1.0f, SetAngle(225), esc.Ohuda, 1);
-//		DrawRotaGraph(530, 550, 1.0f, SetAngle(30), esc.Ohuda, 1);
-//
-//		DrawRotaGraph(680, 300, 1.0f, SetAngle(180), esc.Ohuda, 1);
-//		DrawRotaGraph(600, 200, 1.0f, SetAngle(180), esc.Ohuda, 1);
-//		DrawRotaGraph(630, 200, 1.0f, SetAngle(150), esc.Ohuda, 1);
-//		DrawRotaGraph(690, 200, 1.0f, SetAngle(250), esc.Ohuda, 1);
-//		DrawRotaGraph(750, 200, 1.0f, SetAngle(70), esc.Ohuda, 1);
-//
-//		DrawRotaGraph(830, 500, 1.0f, SetAngle(135), esc.Ohuda, 1);
-//		DrawRotaGraph(830, 600, 1.0f, SetAngle(45), esc.Ohuda, 1);
-//		DrawRotaGraph(830, 250, 1.0f, SetAngle(135), esc.Ohuda, 1);
-//	}
-//	
-//	if (!isEvent) {
-//
-//		if (inp.MouseX <= 100) {
-//			DrawRotaGraph(80, 400, 0.05f, SetAngle(180), esc.Arrow, 1);
-//			if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-//				if (--VecNum < 0) VecNum = 3;
-//
-//			}
-//		}
-//		if (inp.MouseX >= 1340) {
-//			DrawRotaGraph(1360, 400, 0.05f, SetAngle(0), esc.Arrow, 1);
-//			if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
-//				if (++VecNum > 3) VecNum = 0;
-//
-//			}
-//		}
-//	}
-	/*struct SelectImage chara;
-	chara.ImageInput(&chara);
+void DrawGameMain(int width, int height) {
 
-	DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
+	struct Escape esc;
+	esc.ImageInput(&esc);
 
-	if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
-		g_GameState = GAME_MAIN;
-	}*/
-//}
+	static int VecNum = 0;
+	
+	//îwåi
+	DrawExtendGraph(0, 0, width, height, esc.EscapeRoom[g_GraphNum], true);
+
+	if (isOhuda) {
+		DrawRotaGraph(540, 300, 1.0f, SetAngle(200), esc.Ohuda, 1);
+		DrawRotaGraph(540, 400, 1.0f, SetAngle(225), esc.Ohuda, 1);
+		DrawRotaGraph(530, 550, 1.0f, SetAngle(30), esc.Ohuda, 1);
+
+		DrawRotaGraph(680, 300, 1.0f, SetAngle(180), esc.Ohuda, 1);
+		DrawRotaGraph(600, 200, 1.0f, SetAngle(180), esc.Ohuda, 1);
+		DrawRotaGraph(630, 200, 1.0f, SetAngle(150), esc.Ohuda, 1);
+		DrawRotaGraph(690, 200, 1.0f, SetAngle(250), esc.Ohuda, 1);
+		DrawRotaGraph(750, 200, 1.0f, SetAngle(70), esc.Ohuda, 1);
+
+		DrawRotaGraph(830, 500, 1.0f, SetAngle(135), esc.Ohuda, 1);
+		DrawRotaGraph(830, 600, 1.0f, SetAngle(45), esc.Ohuda, 1);
+		DrawRotaGraph(830, 250, 1.0f, SetAngle(135), esc.Ohuda, 1);
+	}
+	
+	if (!isEvent) {
+
+		if (inp.MouseX <= 100) {
+			DrawRotaGraph(80, 400, 0.05f, SetAngle(180), esc.Arrow, 1);
+			if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
+				if (--VecNum < 0) VecNum = 3;
+
+			}
+		}
+		if (inp.MouseX >= 1340) {
+			DrawRotaGraph(1360, 400, 0.05f, SetAngle(0), esc.Arrow, 1);
+			if (inp.MouseFlg & MOUSE_INPUT_LEFT) {
+				if (++VecNum > 3) VecNum = 0;
+
+			}
+		}
+
+
+		/*struct SelectImage chara;
+		chara.ImageInput(&chara);
+
+		DrawExtendGraph(0, 0, width, height, chara.SelectImage, true);
+
+		if (jump[0] || inp.MouseFlg & MOUSE_INPUT_LEFT) {
+			g_GameState = GAME_MAIN;
+		}*/
+	}
 
 
 

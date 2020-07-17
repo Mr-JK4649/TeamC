@@ -1,6 +1,4 @@
 #pragma once
-#include <iostream>
-#include <stdio.h>
 
 //キー入力のやつ
 void KeyInput(void);
@@ -11,8 +9,9 @@ void GameInit(void);
 //ステージ選択シーン
 void GameSSelect(int width, int height);
 
-// 戦闘シーン
+// 拠点シーン
 void DrawGameMain(int width, int height);
+
 
 // ゲームタイトル描画処理
 void DrawGameTitle(int width, int height);
@@ -25,3 +24,4 @@ void DrawGameResult(int width, int height);
 
 // ゲームオーバー描画処理
 void DrawGameOver(int width, int height);
+
