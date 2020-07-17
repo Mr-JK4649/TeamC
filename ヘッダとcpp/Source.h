@@ -28,6 +28,17 @@ struct Bace {
 	
 };
 
+//”¨ŠÖ”—p\‘¢‘Ì
+struct HATAKE {
+	int image=0;
+	int fremimage = 0;
+	bool flg = true;
+	void ImageInput(struct HATAKE* p) {
+		p->image = LoadGraph("images/Hatakeimage.png");
+		p->fremimage = LoadGraph("images/frem.png");
+	}
+};
+
 struct Chara {
 	int hp=100;
 	int atk=0;

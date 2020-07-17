@@ -28,7 +28,7 @@ void DrawGameTitle(int Width, int Height) {
 		inp.MouseY >= Height / 10 * 7 &&
 		inp.MouseY <= Height / 10 * 8) {
 		
-		if (inp.Lclick) g_GameState = GAME_BASE;
+		if (inp.Lclick) g_GameState = GAME_HATAKE;
 		//if (inp.Lclick)SuperString(200,200,"ƒV[ƒ“‚ðØ‚è‘Ö‚¦‚Ü‚µ‚½B",0x000000,0,16);
 	}
 
