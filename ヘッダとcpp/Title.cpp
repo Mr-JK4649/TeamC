@@ -23,8 +23,13 @@ void DrawGameTitle(int Width, int Height) {
 
 	DrawExtendGraph(0, 0, Width, Height, title.image, 1);
 	
+	SetFontSize(20);
 
-	DrawFormatString(0, 0, 0x0000ff,"x=%d y=%d",inp.MouseX,inp.MouseY);
+	DrawString(5, 5, "ビルド日付：2020年7月17日", 0xff0000, 1);
+
+	SetFontSize(16);
+
+	/*DrawFormatString(0, 0, 0x0000ff,"x=%d y=%d",inp.MouseX,inp.MouseY);*/
 	
 	if (inp.MouseX >= 750 &&
 		inp.MouseX <= 1000 &&

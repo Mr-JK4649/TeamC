@@ -12,6 +12,7 @@ enum GAME_MODE {
 	GAME_INIT,		//初期化
 	GAME_END,		//エンド
 	GAME_BASE,		//拠点
+	GAME_HATAKE,
 	GAME_S_SELECT,	//ステージ選択
 	GAME_RESULT,	//リザルト
 	GAME_OVER,		//ゲームオーバー(？)
