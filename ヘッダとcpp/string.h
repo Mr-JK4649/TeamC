@@ -12,6 +12,7 @@
 /*文字を扱う構造体*/
 struct String {
 	bool setTex = false;
+	int TexNum = 99;
 
 	/******************************************************************
  　　　　　　　　　	  文字の表示を変えるやつ
@@ -37,8 +38,6 @@ struct String {
 
 		default:DrawString(x, y, "0～2のいずれかで選択してください。", color, 1);	//エラー
 		}
-
-		SetFontSize(16);
 
 	}
 
@@ -106,7 +105,7 @@ private:
 	int length=0;
 	bool FinFlg = false;
 	int count = 0, s = 0, life = 0;
-	char buf[500];
+	char buf[500] = "";
 };
 
 extern String str;

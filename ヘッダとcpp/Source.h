@@ -40,3 +40,5 @@ struct Base {
 	}
 
 };
+
+extern Base base;

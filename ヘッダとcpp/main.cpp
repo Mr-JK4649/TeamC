@@ -13,6 +13,7 @@
 #include "function.h"
 #include "Input.h"
 #include "string.h"
+#include "character.h"
 
 
 #pragma warning(disable : 4244)
