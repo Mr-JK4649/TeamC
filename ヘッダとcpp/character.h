@@ -209,6 +209,12 @@ struct Chara {
 		return Chara_Items[select];
 	}
 
+	/*拠点のステータスを返す*/
+	int Return_Base_Status(Chara* p, int num) {
+		
+		return p->Base_Status[num];
+	}
+
 	/*アイテム削除*/
 	void Delete_Item(Chara* p,int select) {
 		p->Chara_Items[select] = 0;
@@ -217,6 +223,21 @@ struct Chara {
 	/*アイテム格納*/
 	void Input_Item(Chara* p, int select, int item) {
 		p->Chara_Items[select] = item;
+	}
+
+	/*所持金が足りてるか返すやつ*/
+	int Check_Enough_Money(Chara* p,int price) {
+
+		if (p->Base_Status[0] >= price) return one;
+
+		return zero;
+	}
+
+	/*料金のお支払い*/
+	void Pay_Money(Chara* p,int price) {
+		
+		p->Base_Status[0] -= price;
+
 	}
 
 
@@ -231,7 +252,9 @@ private:
 	int add=0;											//キャラの画像のアニメーション変数
 	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
 	int Chara_Status[7] = { 1,0,20,200,0,100,0 };		//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
-	int Chara_Items[10] = { 0,1,2,3,4,1,5,2,6,7 };		//キャラの所持品
+	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品
+
+	const int zero = 0, one = 1;
 };
 
 extern Chara ch;

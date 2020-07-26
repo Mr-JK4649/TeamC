@@ -3,6 +3,9 @@
 int Building_Trriger(float w25, float h100, float x1, float y1, float x2, float y2);
 
 #include "character.h"
+#include "Menu.h"
+
+
 
 /*オブジェクトを調べた時のセリフ*/
 void Building_Serihu(int width, int height) {
@@ -14,6 +17,11 @@ void Building_Serihu(int width, int height) {
 	else if (Building_Trriger(w, h, 56.6f, 50.0f, 61.6f, 58.5f))str.TexNum = 3;		//掲示板
 	else if (Building_Trriger(w, h, 77.0f, 50.0f, 79.0f, 58.0f))str.TexNum = 4;		//お店のメニュー
 	else str.TexNum = 99;
+
+
+	if (Building_Trriger(w, h, 56.0f, 50.0f, 58.0f, 58.5f))menu.Enter_Num = 0;
+	else menu.Enter_Num = 99;
+	
 }
 
 /*************************************************

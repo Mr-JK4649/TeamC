@@ -79,6 +79,10 @@ int Return_Item(int item_select) {
 	return ch.Menu_Items_Disp(&ch, item_select);
 }
 
+int Return_Base_Status(int num) {
+	return ch.Return_Base_Status(&ch, num);
+}
+
 /*アイテム装備い使用*/
 void Use_Equipment_Item(int item_select) {
 

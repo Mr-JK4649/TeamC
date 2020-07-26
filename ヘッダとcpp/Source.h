@@ -42,3 +42,16 @@ struct Base {
 };
 
 extern Base base;
+
+struct Shop {
+	int background = 0;
+	bool flg = true;
+	
+
+	void ImageInput(Shop* p) {
+		p->background = LoadGraph("images/タピオカミルクティー.jpg");
+	}
+
+};
+
+extern Shop shop;
