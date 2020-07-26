@@ -40,3 +40,23 @@ struct Base {
 	}
 
 };
+
+extern Base base;
+
+struct Shop {
+	int background[6] = {0,0,0,0,0,0};
+	bool flg = true;
+	
+
+	void ImageInput(Shop* p) {
+		p->background[0] = LoadGraph("images/ShopSele1.jpg");
+		p->background[1] = LoadGraph("images/ShopSele2.jpg");
+		p->background[2] = LoadGraph("images/ShopSele3.jpg");
+		p->background[3] = LoadGraph("images/ShopSele4.jpg");
+		p->background[4] = LoadGraph("images/ShopSele5.jpg");
+		p->background[5] = LoadGraph("images/shop.jpg");
+	}
+
+};
+
+extern Shop shop;
