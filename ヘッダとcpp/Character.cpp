@@ -62,6 +62,8 @@ void Menu_Item(int item_select) {
 			case Chara::Wood_Shield:	strcpy_s(item_name,Wood_Shield.Shield_name);	break;
 			case Chara::Iron_Shield:	strcpy_s(item_name,Iron_Shield.Shield_name);	break;
 			case Chara::Tapi_Shield:	strcpy_s(item_name,Tapi_Shield.Shield_name);	break;
+			case Chara::Portion:		strcpy_s(item_name,"ポーション");				break;
+			case Chara::Tapi_MT:		strcpy_s(item_name,"タピオカＭＴ");				break;
 			default:					strcpy_s(item_name, "　　　　　　　　ーーー　　　　　　　　");		break;
 		}
 
@@ -113,6 +115,16 @@ void Use_Equipment_Item(int item_select) {
 		}
 
 		ch.Input_Item(&ch, item_select, shi_work.serial_num);
+	}
+	else if (item <= Chara::Tapi_MT) {
+		
+		switch (item) 
+		{
+		case Chara::Portion: ch.Healing_Life(&ch, Chara::Portion); break;
+		case Chara::Tapi_MT: ch.Healing_Life(&ch, Chara::Tapi_MT); break;
+		}
+
+		ch.Delete_Item(&ch, item_select);
 	}
 
 	

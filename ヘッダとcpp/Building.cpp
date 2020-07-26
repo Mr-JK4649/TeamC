@@ -18,8 +18,9 @@ void Building_Serihu(int width, int height) {
 	else if (Building_Trriger(w, h, 77.0f, 50.0f, 79.0f, 58.0f))str.TexNum = 4;		//‚¨“X‚Ìƒƒjƒ…[
 	else str.TexNum = 99;
 
-
-	if (Building_Trriger(w, h, 56.0f, 50.0f, 58.0f, 58.5f))menu.Enter_Num = 0;
+	if (Building_Trriger(w, h, 52.4f, 50.0f, 55.9f, 58.5f))menu.Enter_Num = 0;		//d–Ğ‰îŠ
+	else if (Building_Trriger(w, h, 72.2f, 50.0f, 76.2f, 58.5f))menu.Enter_Num = 1;	//‚¨“X
+	else if (Building_Trriger(w, h, 91.5f, 50.0f, 94.3f, 58.5f))menu.Enter_Num = 2;	//©‘î
 	else menu.Enter_Num = 99;
 	
 }
@@ -36,7 +37,7 @@ int Building_Trriger(float w25, float h100, float x1, float y1, float x2, float 
 	const float sx = w25 * x1, ex = w25 * x2;
 	const float sy = h100 * y1, ey = h100 * y2;
 
-	DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
+	//DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
 
 	if (ch.HitCheck(&ch, sx, sy, ex, ey)) {
 		//DrawBox(5, 5, 100, 100, 0xff0000, 1);

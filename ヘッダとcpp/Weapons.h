@@ -72,3 +72,4 @@ extern Shield Iron_Shield;		//鉄の盾
 extern Shield Tapi_Shield;		//タピオカの盾　強い(確信)
 extern Shield shi;				//盾構造体のあれ
 extern Shield shi_work;			
+

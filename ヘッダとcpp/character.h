@@ -33,7 +33,9 @@ struct Chara {
 		Iron_Rod,		//鉄のロッド
 		Wood_Shield,	//木の盾
 		Iron_Shield,	//鉄の盾
-		Tapi_Shield		//タピオカの盾
+		Tapi_Shield,	//タピオカの盾
+		Portion,		//回復アイテム
+		Tapi_MT			//タピオカミルクティー
 	};
 
 	/*キャラ構造体の初期化*/
@@ -240,6 +242,13 @@ struct Chara {
 
 	}
 
+	void Healing_Life(Chara* p,int mum) {
+		switch (num)
+		{
+		case Chara::Portion: p->Chara_Status[2] += (p->Max_Hp / 3); break;
+		case Chara::Tapi_MT: p->Chara_Status[2] = p->Max_Hp; break;
+		}
+	}
 
 private:
 	int x = 100, y = 400;								//キャラの画面上の座標
@@ -252,6 +261,7 @@ private:
 	int add=0;											//キャラの画像のアニメーション変数
 	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
 	int Chara_Status[7] = { 1,0,20,200,0,100,0 };		//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
+	int Max_Hp = 20;
 	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品
 
 	const int zero = 0, one = 1;

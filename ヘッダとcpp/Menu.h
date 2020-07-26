@@ -15,9 +15,9 @@ struct Menu {
 	bool isGage_Menu = false;			//ゲージ確認
 	bool isMove_Scene = false;			//シーン移動
 
-	bool isBuilding_Enter = false;
-	int Enter_Num = 0;
-	int Enter_Select = 0;
+	bool isBuilding_Enter = false;		//建物に入るフラグ
+	int Enter_Num = 0;					//建物の種類
+	int Enter_Select = 0;				//確認ウィンドウの選択で使うやつ
 	char Building_Name[3][20] = { "「仕事紹介所」","「雑貨屋」","「自宅」" };
 
 
