@@ -32,7 +32,7 @@ void DrawGameTitle(int Width, int Height) {
 		
 		if (inp.Lclick)
 		{
-			g_GameState = GAME_HATAKE;//titleの始めるを押した場合、ゲームメインへ進む
+			g_GameState = GAME_BASE;//titleの始めるを押した場合、ゲームメインへ進む
 		}   
 		
 	}

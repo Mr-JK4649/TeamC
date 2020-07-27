@@ -24,8 +24,8 @@
 * 変数の宣言
 ********************************************************************/
 int g_GameState;			//ゲームのシーン管理
-//void DrawHatake(int Width, int Height);
-//void Game_Hatake(int Width, int Height);
+void DrawHatake(int Width, int Height);
+void Game_Hatake(int Width, int Height);
 Input inp;
 String str;
 WindowScaler scale;
@@ -54,7 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	SetDrawScreen(DX_SCREEN_BACK);					// 描画先画面を裏にする
 
 
-	g_GameState = GAME_HATAKE;
+	g_GameState = GAME_TITLE;
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
@@ -82,7 +82,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		//case GAME_WORK: Work_Draw(scale.Width, scale.Height); break;				//仕事紹介所
 
-		//case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+		case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
 
 		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
 
