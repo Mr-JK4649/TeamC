@@ -60,3 +60,30 @@ struct Shop {
 };
 
 extern Shop shop;
+
+struct Home {
+	int background = 0;
+	bool flg = true;
+
+
+	int home_select = 0;
+	int Box_Select = 0;
+	int Box_Select2 = 0;
+	int Box_Select3 = 0;
+	int Box_Select4 = 0;
+	int Min_Box_Disp = 0;
+	int Max_Box_Disp = 10;
+	int Bed_Count = 0;
+	int Bed_Alpha = 0;
+	int Bed_Alpha_Add = 1;
+	char Selct_String[4][17] = {"アイテムボックス","ベッドで休む","畑に行く","家を出る"};
+	char Box_Select_String[2][9] = { "収納する","取り出す" };
+	unsigned int color = 0xffffff;
+	unsigned int white_color = 0xffffff;
+	unsigned int blue_color = 0x6666ff;
+
+	void ImageInput(Home* p) {
+		p->background = LoadGraph("images/home2.jpg");
+	}
+
+};

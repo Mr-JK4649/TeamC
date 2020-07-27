@@ -19,6 +19,11 @@ struct Chara {
 	/*キャラの初期化フラグ*/
 	bool flg = true;
 
+	bool Open_ItemBox = false;		//ボックスフラグ
+	bool Pic_Item = false;			//ボックスからアイテムを取るフラグ
+	bool Put_Item = false;			//ボックスにアイテムを入れるフラグ
+	bool GoTo_Bed = false;			//ベッドアニメーションフラグ
+
 	/*メニュー用の位置と文字サイズ*/
 	float w=0, w5=0;			//メニュー表示用の変数
 	float h=0, h4=0;			//上に同じ
@@ -67,6 +72,13 @@ struct Chara {
 		/*ここから下はデバッグ用*/
 		//DrawFormatString(5, 5, 0x000000, "l:%4d r:%4d u:%4d d:%4d", inp.left, inp.right, inp.up, inp.down);
 		//DrawFormatString(5, 45, 0x000000, "n:%d a:%d", p->num, p->add);
+
+		if (inp.x) {
+			p->Base_Status[1] += 1;
+		}
+
+		DrawFormatString(5, 25, 0xffffff, "次に必要な経験値 = %d", (int)p->Next_Level_Exp);
+		DrawFormatString(5, 45, 0xffffff, "現在の経験値		= %d", p->Chara_Status[1]);
 	}
 
 	/*キャラの移動*/
@@ -174,6 +186,30 @@ struct Chara {
 		p->Base_Status[2] += 1;
 	}
 
+	/*経験値増加*/
+	void Add_Exp(Chara* p, int exp) {
+		p->Chara_Status[1] += exp;
+
+		p->Chara_Level_Up(p);
+	}
+
+	/*レベルアップ*/
+	void Chara_Level_Up(Chara* p) {
+		
+		for (int i = 0; i < 5; i++) {
+			if (p->Chara_Status[1] >= (int)p->Next_Level_Exp) {
+				p->Chara_Status[0] += 1;			//レベルを1上げる
+				p->Max_Hp += 8;						//最大体力8追加
+				p->Chara_Status[2] = p->Max_Hp;		//体力全回復
+				p->Chara_Status[3] += 3;			//攻撃力3追加
+				p->Chara_Status[5] += 1;			//防御力1追加
+				p->Next_Level_Exp += (p->Next_Level_Exp) / 4;
+
+			}
+		}
+		
+	}
+
 	/*メニューのステータス表示*/
 	void Menu_Status_Disp(Chara* p) {
 		const int Equipmented_Atk = (float)p->Chara_Status[3] * wep.atk;	//武器装備後のステータス
@@ -192,7 +228,7 @@ struct Chara {
 		str.SuperString((w - w5) + w5 / 2, 10 + size * 2 * (0 + 7), "ステータス", 0xffffff, 1, size * 2);
 		DrawFormatString((w - w5) + 5, 10 + size * 2 * (1 + 8), 0xffffff, "レベル　 %9d",p->Chara_Status[0] );
 		DrawFormatString((w - w5) + 5, 10 + size * 2 * (2 + 8), 0xffffff, "経験値　 %9d",p->Chara_Status[1] );
-		DrawFormatString((w - w5) + 5, 10 + size * 2 * (3 + 8), 0xffffff, "体　力　 %9d",p->Chara_Status[2] );
+		DrawFormatString((w - w5) + 5, 10 + size * 2 * (3 + 8), 0xffffff, "体　力 %5d/%5d",p->Chara_Status[2],p->Max_Hp);
 		DrawFormatString((w - w5) + 5, 10 + size * 2 * (4 + 8), 0xffffff, "攻撃力%5d(%5d)",p->Chara_Status[3],Chara_Status[4]);
 		DrawFormatString((w - w5) + 5, 10 + size * 2 * (5 + 8), 0xffffff, "防御力%5d(%5d)",p->Chara_Status[5],p->Chara_Status[6]);
 
@@ -203,6 +239,8 @@ struct Chara {
 		
 
 		SetFontSize(16);
+
+
 	}
 
 	/*所持アイテム表示*/
@@ -242,12 +280,58 @@ struct Chara {
 
 	}
 
-	void Healing_Life(Chara* p,int mum) {
+	/*アイテムを使う*/
+	void Healing_Life(Chara* p,int num) {
 		switch (num)
 		{
-		case Chara::Portion: p->Chara_Status[2] += (p->Max_Hp / 3); break;
-		case Chara::Tapi_MT: p->Chara_Status[2] = p->Max_Hp; break;
+			case Chara::Portion: p->Chara_Status[2] += (p->Max_Hp / 3); break;
+			case Chara::Tapi_MT: p->Chara_Status[2] = p->Max_Hp; break;
 		}
+
+		if (p->Chara_Status[2] > p->Max_Hp) p->Chara_Status[2] = p->Max_Hp;
+	}
+
+	/*アイテムバッグの空き箇所を調べる 空きが無ければ10が返ってくる*/
+	int Search_ItemBag(Chara* p) {
+		int i = 0;
+		for (i; i < 10; i++) {
+			if (p->Chara_Items[i] == 0) break;
+		}
+
+		return i;
+
+	}
+
+	/*ボックスの空き箇所を調べる 空きが無ければ30が返ってくる*/
+	int Search_Box(Chara* p) {
+		int i = 0;
+		for (i; i < 30; i++) {
+			if (p->Box_Item[i] == 0)break;
+		}
+
+		return i;
+	}
+
+	/*ボックスにアイテム格納*/
+	void Put_Item_Box(Chara* p, int select) {
+
+		p->Box_Item[Search_Box(p)] = p->Chara_Items[select];
+
+		p->Chara_Items[select] = 0;
+
+	}
+
+	/*ボックスからアイテムを取り出す*/
+	void Pic_Item_Box(Chara* p, int select) {
+
+		Input_Item(p, Search_ItemBag(p), p->Box_Item[select]);
+
+		p->Box_Item[select] = 0;
+	}
+
+	/*ボックスのアイテムが何か調べる*/
+	int Return_Box_Item(Chara* p, int select) {
+		return Box_Item[select];
 	}
 
 private:
@@ -260,9 +344,11 @@ private:
 	int num = 0;										//キャラの画像を切り替える変数
 	int add=0;											//キャラの画像のアニメーション変数
 	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
-	int Chara_Status[7] = { 1,0,20,200,0,100,0 };		//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
-	int Max_Hp = 20;
+	int Chara_Status[7] = { 1,0,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
+	int Max_Hp = 50;									//キャラのマックス体力
+	float Next_Level_Exp = 50;							//次のレベルアップに必要な経験値
 	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品
+	int Box_Item[30] = {0};								//アイテムボックス
 
 	const int zero = 0, one = 1;
 };

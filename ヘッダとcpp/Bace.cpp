@@ -47,6 +47,8 @@ void Base_Disp(int width, int height) {
 	if (menu.isItem_Delete) { Delete_Item(menu.item_select); menu.isItem_Delete = false; }		//アイテムの削除
 	if (!str.setTex && inp.start) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
 
+	DrawFormatString(5, 5, 0xffffff, "%d", inp.a);
+
 }
 
 /*拠点のシステム*/

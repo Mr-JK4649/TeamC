@@ -19,7 +19,7 @@ void DrawGameTitle(int Width, int Height) {
 	
 	SetFontSize(20);
 
-	DrawString(5, 5, "ビルド日付：2020年7月17日", 0xff0000, 1);
+	DrawString(5, 5, "ビルド日付：2020年7月27日", 0xff0000, 1);
 
 	SetFontSize(16);
 

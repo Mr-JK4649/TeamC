@@ -105,9 +105,9 @@ struct Menu {
 
 			if (inp.space) {
 				if (Enter_Select == 1) {
-					if (Enter_Num == 0)g_GameState = GAME_SHOP;	//d–Ğ‰îŠ
+					if (Enter_Num == 0)g_GameState = GAME_WORK;	//d–Ğ‰îŠ
 					if (Enter_Num == 1)g_GameState = GAME_SHOP;	//‚¨“X
-					if (Enter_Num == 2)g_GameState = GAME_SHOP;	//
+					if (Enter_Num == 2)g_GameState = GAME_HOME;	//©‘î
 
 				}
 			}

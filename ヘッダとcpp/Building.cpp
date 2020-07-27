@@ -12,6 +12,10 @@ void Building_Serihu(int width, int height) {
 	const float w = (float)width * 4.0 / 100.0;
 	const float h = (float)height / 100.0;
 
+	if (inp.y) {
+		ch.Add_Exp(&ch, 50);
+	}
+
 	if (Building_Trriger(w, h, 19.0f, 50.0f, 26.8f, 58.5f))str.TexNum = 0;			//ŒŸ–âŠ
 	else if (Building_Trriger(w, h, 34.2f, 50.0f, 36.6f, 58.5f))str.TexNum = 1;		//ƒJƒWƒmŠÅ”Â
 	else if (Building_Trriger(w, h, 56.6f, 50.0f, 61.6f, 58.5f))str.TexNum = 3;		//Œf¦”Â
