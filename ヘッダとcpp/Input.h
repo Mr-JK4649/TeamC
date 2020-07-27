@@ -10,13 +10,19 @@
 struct Input {
 	
 	/*十字キーの判定*/
-	bool up = 0;				//上
-	bool down = 0;				//下
-	bool left = 0;				//左
-	bool right = 0;				//右
+	bool up = 0;				//上(長押し)
+	bool down = 0;				//下(長押し)
+	bool left = 0;				//左(長押し)
+	bool right = 0;				//右(長押し)
+
+	bool f_up = 0;				//上(一回)
+	bool f_down = 0;			//下(一回)
+	bool f_left = 0;			//右(一回)
+	bool f_right = 0;			//左(一回)
+
 
 	/*その他のキー*/
-	bool space = 0,start = 0,x = 0, z = 0;
+	bool space = 0,start = 0,cancel = 0,x = 0, z = 0,y = 0;
 
 	int a=0;
 
@@ -33,12 +39,19 @@ struct Input {
 		inp->NowKey = GetJoypadInputState(DX_INPUT_KEY_PAD1);		//現フレームのキー取得
 		inp->KeyFlg = inp->NowKey & ~inp->OldKey;					//キーフラグ
 
-		if (NowKey & PAD_INPUT_LEFT)	inp->left = true;		else inp->left = false;
-		if (NowKey & PAD_INPUT_RIGHT)	inp->right = true;		else inp->right = false;
-		if (NowKey & PAD_INPUT_UP)		inp->up = true;			else inp->up = false;
-		if (NowKey & PAD_INPUT_DOWN)	inp->down = true;		else inp->down = false;
-		if (KeyFlg & PAD_INPUT_B)		inp->space = true;		else inp->space = false;
-		if (KeyFlg & PAD_INPUT_R)		inp->start = true;		else inp->start = false;
+		if (NowKey & PAD_INPUT_LEFT)	inp->left = true;		else inp->left = false;			//左長押し
+		if (NowKey & PAD_INPUT_RIGHT)	inp->right = true;		else inp->right = false;		//右長押し
+		if (NowKey & PAD_INPUT_UP)		inp->up = true;			else inp->up = false;			//上長押し
+		if (NowKey & PAD_INPUT_DOWN)	inp->down = true;		else inp->down = false;			//下長押し
+		if (KeyFlg & PAD_INPUT_B)		inp->space = true;		else inp->space = false;		//Ｂボタン一回
+		if (KeyFlg & PAD_INPUT_A)		inp->cancel = true;		else inp->cancel = false;		//Ａボタン一回
+		if (NowKey & PAD_INPUT_C)		inp->y = true;			else inp->y = false;			//Ｙボタン一回
+		if (NowKey & PAD_INPUT_X)		inp->x = true;			else inp->x = false;			//Ｘボタン一回
+		if (KeyFlg & PAD_INPUT_R)		inp->start = true;		else inp->start = false;		//ＳＴＡＲＴボタン一回
+		if (KeyFlg & PAD_INPUT_LEFT)	inp->f_left = true;		else inp->f_left = false;		//左一回
+		if (KeyFlg & PAD_INPUT_RIGHT)	inp->f_right = true;	else inp->f_right = false;		//右一回
+		if (KeyFlg & PAD_INPUT_UP)		inp->f_up = true;		else inp->f_up = false;			//上一回
+		if (KeyFlg & PAD_INPUT_DOWN)	inp->f_down = true;		else inp->f_down = false;		//下一回
 
 		a = inp->NowKey;
 

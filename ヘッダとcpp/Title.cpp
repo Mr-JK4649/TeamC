@@ -1,15 +1,9 @@
 #include "DxLib.h"
-#include <stdio.h>
-#include <iostream>
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <wingdi.h>
-#include <windows.h>
 
 #include "Source.h"
-#include "string.h"
 #include "Input.h"
 #include "header.h"
+
 
 Title title;
 
@@ -25,7 +19,7 @@ void DrawGameTitle(int Width, int Height) {
 	
 	SetFontSize(20);
 
-	DrawString(5, 5, "ビルド日付：2020年7月17日", 0xff0000, 1);
+	DrawString(5, 5, "ビルド日付：2020年7月27日", 0xff0000, 1);
 
 	SetFontSize(16);
 
