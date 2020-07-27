@@ -54,7 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	SetDrawScreen(DX_SCREEN_BACK);					// •`‰ææ‰æ–Ê‚ğ— ‚É‚·‚é
 
 
-	g_GameState = GAME_TITLE;
+	g_GameState = GAME_HATAKE;
 
 	// ƒQ[ƒ€ƒ‹[ƒv
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
