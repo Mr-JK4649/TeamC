@@ -3,7 +3,7 @@
 Shopping shopping;
 
 void Shop_Draw(int width,int height) {
-	if (sh.flg) { sh.ImageInput(&sh); }
+	if (sh.flg) { sh.ImageInput(&sh); sh.flg = false; }
 
 	shopping.Draw(&shopping);
 

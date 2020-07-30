@@ -16,6 +16,7 @@ enum GAME_MODE {
 	GAME_SHOP,		//店のやつ
 	GAME_HOME,		//自宅
 	GAME_WORK,		//仕事紹介所
+	GAME_CASINO,	//カジノ
 	GAME_S_SELECT,	//ステージ選択
 	GAME_RESULT,	//リザルト
 	GAME_OVER,		//ゲームオーバー(？)

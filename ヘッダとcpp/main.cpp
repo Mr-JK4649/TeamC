@@ -24,8 +24,8 @@
 * 変数の宣言
 ********************************************************************/
 int g_GameState;			//ゲームのシーン管理
-//void DrawHatake(int Width, int Height);
-//void Game_Hatake(int Width, int Height);
+void DrawHatake(int Width, int Height);
+void Game_Hatake(int Width, int Height);
 Input inp;
 String str;
 WindowScaler scale;
@@ -80,9 +80,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_HOME: Home_Draw(scale.Width, scale.Height); break;				//自宅
 
-		//case GAME_WORK: Work_Draw(scale.Width, scale.Height); break;				//仕事紹介所
+		case GAME_WORK: Work_Draw(scale.Width, scale.Height); break;				//仕事紹介所
 
-		//case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+		case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+
+		case GAME_CASINO: Casino_Draw(scale.Width, scale.Height);					//カジノ
 
 		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
 
@@ -90,6 +92,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		//case GAME_END:		DrawEnd(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
 
+		}
+
+		/*時間の更新とかもろもろ*/
+		if (g_GameState == GAME_BASE || g_GameState == GAME_SHOP || g_GameState == GAME_HOME || g_GameState == GAME_WORK) {
+			GameSystem();
 		}
 
 		ScreenFlip();    // 裏画面の内容を表画面に反映

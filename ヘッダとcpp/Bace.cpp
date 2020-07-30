@@ -20,10 +20,11 @@ void DrawGameMain(int width, int height) {
 	if (base.flg) { base.ImageInput(&base); base.flg = false; }
 
 	/*拠点の描画関数*/
-	Base_Disp(width, height);										//拠点内の描画
+	Base_Disp(width, height);						//拠点内の描画
 
 	/*拠点の更新関数*/
-	Base_Update(width, height);										//拠点内の移動、その他更新
+	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg)
+		Base_Update(width, height);					//拠点内の移動、その他更新
 	
 
 }
@@ -33,8 +34,10 @@ void Base_Disp(int width, int height) {
 	/*背景表示*/
 	DrawExtendGraph(base.move, 0, width * 4 + base.move, height, base.background, 1);
 
+
 	/*キャラの表示*/
 	Chara_Disp();
+
 
 	/*街の影表示*/
 	DrawExtendGraph(base.move, 0, width * 4 + base.move, height, base.shadow, 1);
@@ -45,10 +48,9 @@ void Base_Disp(int width, int height) {
 	if (menu.isItem_Menu) { Menu_Item(menu.item_select); }										//アイテムメニューを開く
 	if (menu.isItem_Equip) { Use_Equipment_Item(menu.item_select); menu.isItem_Equip = false; }	//アイテムの装備、使用
 	if (menu.isItem_Delete) { Delete_Item(menu.item_select); menu.isItem_Delete = false; }		//アイテムの削除
-	if (!str.setTex && inp.start) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
+	if (!str.setTex && inp.start && !menu.Result_DWork_Flg && !menu.Result_FWork_Flg) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
 
 	DrawFormatString(5, 5, 0xffffff, "%d", inp.a);
-
 }
 
 /*拠点のシステム*/

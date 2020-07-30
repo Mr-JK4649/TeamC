@@ -45,8 +45,8 @@ void Home_Draw(int width, int height) {
 			case Chara::Wood_Rod:		strcpy_s(item_name, Wood_Rod.Weapon_name);		break;
 			case Chara::Iron_Rod:		strcpy_s(item_name, Iron_Rod.Weapon_name);		break;
 			case Chara::Wood_Shield:	strcpy_s(item_name, Wood_Shield.Shield_name);	break;
+			case Chara::Stone_Shield:	strcpy_s(item_name, Stone_Shield.Shield_name);	break;
 			case Chara::Iron_Shield:	strcpy_s(item_name, Iron_Shield.Shield_name);	break;
-			case Chara::Tapi_Shield:	strcpy_s(item_name, Tapi_Shield.Shield_name);	break;
 			case Chara::Portion:		strcpy_s(item_name, "ポーション");				break;
 			case Chara::Tapi_MT:		strcpy_s(item_name, "タピオカＭＴ");				break;
 			default:					strcpy_s(item_name, "　　　　　　　ーーー　　　　　　　");		break;
@@ -67,14 +67,14 @@ void Home_Draw(int width, int height) {
 
 			switch (ch.Return_Box_Item(&ch, i))
 			{
-			case Chara::Wood_Sword:		strcpy_s(item_name, Wood_Sword.Weapon_name);		break;
-			case Chara::Iron_Sword:		strcpy_s(item_name, Iron_Sword.Weapon_name);		break;
-			case Chara::Excalibur:		strcpy_s(item_name, Exca_Sword.Weapon_name);		break;
+			case Chara::Wood_Sword:		strcpy_s(item_name, Wood_Sword.Weapon_name);	break;
+			case Chara::Iron_Sword:		strcpy_s(item_name, Iron_Sword.Weapon_name);	break;
+			case Chara::Excalibur:		strcpy_s(item_name, Exca_Sword.Weapon_name);	break;
 			case Chara::Wood_Rod:		strcpy_s(item_name, Wood_Rod.Weapon_name);		break;
 			case Chara::Iron_Rod:		strcpy_s(item_name, Iron_Rod.Weapon_name);		break;
 			case Chara::Wood_Shield:	strcpy_s(item_name, Wood_Shield.Shield_name);	break;
+			case Chara::Stone_Shield:	strcpy_s(item_name, Stone_Shield.Shield_name);	break;
 			case Chara::Iron_Shield:	strcpy_s(item_name, Iron_Shield.Shield_name);	break;
-			case Chara::Tapi_Shield:	strcpy_s(item_name, Tapi_Shield.Shield_name);	break;
 			case Chara::Portion:		strcpy_s(item_name, "ポーション");				break;
 			case Chara::Tapi_MT:		strcpy_s(item_name, "タピオカＭＴ");				break;
 			default:					strcpy_s(item_name, "　　　　　　　ーーー　　　　　　　");		break;
