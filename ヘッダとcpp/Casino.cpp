@@ -1,6 +1,6 @@
-
-
 #include "Casino.h"
+
+
 
 void Casino_Draw(int width, int height) {
 	if (casino.flg) { casino.ImageInput(&casino); casino.flg = false; }
