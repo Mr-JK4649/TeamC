@@ -29,23 +29,28 @@ struct Chara {
 	float h=0, h4=0;			//上に同じ
 	int size=0;
 
+	int num = 0;					//キャラの画像を切り替える変数
+
+	/*時間の加算量*/
+	int Add_Time_num = 1;
+
 	/*メニュー用の列挙*/
 	enum Items {
 		Wood_Sword=1,	//木の剣
 		Iron_Sword,		//鉄の剣
 		Excalibur,		//エクスカリバー
-		Wood_Rod,		//木のロッド
-		Iron_Rod,		//鉄のロッド
+		Wood_Rod,		//木の杖
+		Iron_Rod,		//鉄の杖
 		Wood_Shield,	//木の盾
+		Stone_Shield,	//石の盾
 		Iron_Shield,	//鉄の盾
-		Tapi_Shield,	//タピオカの盾
 		Portion,		//回復アイテム
 		Tapi_MT			//タピオカミルクティー
 	};
 
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
-		LoadDivGraph("images/総集編2.png",9,9,1,200,200,p->jk,0);
+		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
 
 		p->c_size = scale.Width / 6;
 		p->c_Hsize_s = c_size / 3;
@@ -120,6 +125,7 @@ struct Chara {
 		if (inp.left)p->num = 3;
 		if (inp.right)p->num = 0;
 		if (inp.down)p->num = 6;
+		if (inp.up)p->num = 9;
 		if (inp.left || inp.right || inp.up || inp.down) Anime(p);
 		else { p->count = 0; p->add = 0;}
 
@@ -181,16 +187,16 @@ struct Chara {
 		return zero;
 	}
 
-	//キャラの経過時間
-	void Add_Time(Chara* p) {
-		p->Base_Status[2] += 1;
-	}
-
 	/*経験値増加*/
 	void Add_Exp(Chara* p, int exp) {
 		p->Chara_Status[1] += exp;
 
 		p->Chara_Level_Up(p);
+	}
+
+	/*拠点ステータスに加算*/
+	void Add_Base_Status(Chara* p,int num, int para) {
+		p->Base_Status[num] += para;
 	}
 
 	/*レベルアップ*/
@@ -340,10 +346,10 @@ private:
 	int c_size = 0;										//キャラの大きさを画面サイズに合わせる変数
 	int c_Hsize_s = 0, c_Hsize_e = 0;					//キャラの当たり判定の開始位置と終了位置を決める辺陬
 	int count = 0;										//アニメーション遷移用のカウント
-	int jk[9] = { 0,0,0,0,0,0,0,0,0};					//キャラの画像
-	int num = 0;										//キャラの画像を切り替える変数
+	int jk[12] = {0};									//キャラの画像
+	
 	int add=0;											//キャラの画像のアニメーション変数
-	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
+	int Base_Status[3] = { 0,0,0 };						//キャラの所持金、街の発展度、経過時間
 	int Chara_Status[7] = { 1,0,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
 	int Max_Hp = 50;									//キャラのマックス体力
 	float Next_Level_Exp = 50;							//次のレベルアップに必要な経験値

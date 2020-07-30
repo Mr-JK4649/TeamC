@@ -1,6 +1,7 @@
 #pragma once
 
 #include "character.h"
+#include "Menu.h"
 
 Shop sh;
 
@@ -27,17 +28,66 @@ struct Shopping {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 
+		/*選択しない欄のカバー*/
+		if (shop->Depth == 0) {
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[2], 1);
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[3], 1);
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[4], 1);
+		}
+		if (shop->Depth == 1 || shop->Depth == 3) {
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[3], 1);
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[4], 1);
+		}
+		if (shop->Depth == 4) {
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[2], 1);
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[3], 1);
+			DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[4], 1);
+		}
+
 		/*選択肢の文字表示*/
 		if (shop->Depth < 5) {
 
 			SetFontSize(ch.size * 4);
 
+			const float w100 = ch.w / 100.0f;
+			const float h100 = ch.h / 100.0f;
+			
+			
+			/*ショップ内の選択肢表示*/
 			for (int i = 0; i < shop->Depth_Menu_Num[shop->Depth]; i++) {
 
 				DrawString((ch.w / 100.0f) * 10, (ch.h / 100.0f) * (15 + 18 * i), shop->Depth_Select_Name[shop->Depth][i], 0x000000, 1);
 
+				/*武力ゲージ〇未満によるアイテム非表示*/
+				if (menu.Return_Gage_Para(4) < 50) {
+					if (shop->Depth == 2 && (i == 1 || i == 2 || i == 4) || shop->Depth == 3 && (i == 1 || i == 2) || shop->Depth == 4 && i == 1) {
+						DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[i], 1);
+					}
+				}
+				else if (menu.Return_Gage_Para(4) < 100) {
+					if (shop->Depth == 2 && i == 2 || shop->Depth == 3 && i == 2) {
+						DrawExtendGraph(0, 0, ch.w, ch.h, sh.Cover[i], 1);
+					}
+				}
 			}
 
+			SetFontSize(ch.size * 3);
+			
+			/*アイテムの画像と説明の表示*/
+			if (shop->Depth == 2) {
+				DrawExtendGraph(w100 * 60, h100 * 10, w100 * 90, h100 * 55, sh.Weapon_img[shop->Depth_Menu_Select[shop->Depth]], 1);
+				DrawString(w100 * 51, h100 * 61, shop->Weapon_Info_String[shop->Depth_Menu_Select[shop->Depth]], 0x000000, 1);
+			}
+			if (shop->Depth == 3) {
+				DrawExtendGraph(w100 * 60, h100 * 10, w100 * 90, h100 * 55, sh.Shield_img[shop->Depth_Menu_Select[shop->Depth]], 1);
+				DrawString(w100 * 51, h100 * 61, shop->Shield_Info_String[shop->Depth_Menu_Select[shop->Depth]], 0x000000, 1);
+			}
+			if (shop->Depth == 4) {
+				DrawExtendGraph(w100 * 60, h100 * 10, w100 * 90, h100 * 55, sh.Item_img[shop->Depth_Menu_Select[shop->Depth]], 1);
+				DrawString(w100 * 51, h100 * 61, shop->Item_Info_String[shop->Depth_Menu_Select[shop->Depth]], 0x000000, 1);
+			}
+			
+			
 		}
 
 		/*アイテム一覧を開く*/
@@ -67,8 +117,8 @@ struct Shopping {
 				case Chara::Wood_Rod:		strcpy_s(item_name, Wood_Rod.Weapon_name);		break;
 				case Chara::Iron_Rod:		strcpy_s(item_name, Iron_Rod.Weapon_name);		break;
 				case Chara::Wood_Shield:	strcpy_s(item_name, Wood_Shield.Shield_name);	break;
+				case Chara::Stone_Shield:	strcpy_s(item_name, Stone_Shield.Shield_name);	break;
 				case Chara::Iron_Shield:	strcpy_s(item_name, Iron_Shield.Shield_name);	break;
-				case Chara::Tapi_Shield:	strcpy_s(item_name, Tapi_Shield.Shield_name);	break;
 				case Chara::Portion:		strcpy_s(item_name, "ポーション");				break;
 				case Chara::Tapi_MT:		strcpy_s(item_name, "タピオカＭＴ");			break;
 				default:					strcpy_s(item_name, "　　　　　　　　ーーー　　　　　　　　");		break;
@@ -160,11 +210,90 @@ struct Shopping {
 		else {
 
 			if (inp.f_up) {
-				if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
+				if (shop->Depth == 0 || shop->Depth == 1 || shop->Depth == 5) {
+					if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
+				}
+				else {
+					if (shop->Depth == 2) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 3;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 3) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else if (menu.Return_Gage_Para(4) < 100) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 4;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 3) shop->Depth_Menu_Select[shop->Depth] = 1;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 4) shop->Depth_Menu_Select[shop->Depth] = 3;
+						}
+						else {
+							if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
+						}
+					}
+					if (shop->Depth == 3) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else if (menu.Return_Gage_Para(4) < 100) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 1;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else {
+							if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
+						}
+					}
+					if (shop->Depth == 4) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else {
+							if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
+						}
+					}
+				}
 			}
 			if (inp.f_down) {
-				if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+				if (shop->Depth == 0 || shop->Depth == 1 || shop->Depth == 5) {
+					if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+				}
+				else {
+					if (shop->Depth == 2) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 3;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 3) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else if (menu.Return_Gage_Para(4) < 100) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 1;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 1) shop->Depth_Menu_Select[shop->Depth] = 3;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 3) shop->Depth_Menu_Select[shop->Depth] = 4;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 4) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else {
+							if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+					}
+					if (shop->Depth == 3) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else if (menu.Return_Gage_Para(4) < 100) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 1;
+							else if (shop->Depth_Menu_Select[shop->Depth] == 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else {
+							if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+					}
+					if (shop->Depth == 4) {
+						if (menu.Return_Gage_Para(4) < 50) {
+							if (shop->Depth_Menu_Select[shop->Depth] == 0) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+						else {
+							if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
+						}
+					}
+				}
 			}
+
 			if (inp.cancel) {
 
 				shop->Depth_Menu_Select[shop->Depth] = 0;
@@ -217,6 +346,7 @@ struct Shopping {
 
 	}
 
+	/*購入、確認用のメッセージ*/
 	void Confirm_Window_String(Shopping* shop) {
 		DrawRoundRect(ch.w5 + 5, ch.h4, ch.w5 * 4, ch.h4 * 2 + 20, 10, 10, 0x444444, 1);
 		DrawRoundRect(ch.w5 + 5, ch.h4, ch.w5 * 4, ch.h4 * 2 + 20, 10, 10, 0xaaaaaa, 0);
@@ -238,7 +368,7 @@ struct Shopping {
 		}
 
 		if (shop->Confirm_Sell) {
-			str.SuperString(ch.w / 2, ch.h4 + 5, Item_Name[ch.Menu_Items_Disp(&ch, shop->Depth_Menu_Select[shop->Depth])], 0xffffff, 1, ch.size * 2);
+			str.SuperString(ch.w / 2, ch.h4 + 5, Item_Name[ch.Menu_Items_Disp(&ch, shop->Depth_Menu_Select[shop->Depth])-1], 0xffffff, 1, ch.size * 2);
 			str.SuperString(ch.w / 2, ch.h4 + 5 + ch.size * 2, "を売却しますか？", 0xffffff, 1, ch.size * 2);
 			if (shop->Confirm_Select == 0) color = blue_color;
 			str.SuperString(ch.w / 2, ch.h4 + 5 + ch.size * 6, "いいえ　　　　　", color, 1, ch.size * 2);
@@ -250,6 +380,7 @@ struct Shopping {
 
 	}
 
+	/*購入したものをバッグに入れる*/
 	static void Input_Item(int bag_num, int item) {
 
 		ch.Input_Item(&ch, bag_num, item);
@@ -269,6 +400,7 @@ struct Shopping {
 		return i;
 	}
 
+	/*アイテム購入までの流れ*/
 	static void Buy_Items(Shopping* shop, int item, int price) {
 
 		/*このアイテムの値段が所持金を下回ってるか確認*/
@@ -305,14 +437,32 @@ private:
 	int Depth_Menu_Select[6] = { 0,0,0,0,0,0 };	//Depth別選択用の変数
 	int Depth_Menu_Num[6] = { 2,3,5,3,2,10 };	//Depth別の選択肢の数
 
-	char Item_Name[10][15] = { "木の剣","鉄の剣","エクスカリバー","木の杖","鉄の杖","木の盾","鉄の盾","タピオカの盾","ポーション","タピオカＭＴ" };
+	char Item_Name[10][15] = { "木の剣","鉄の剣","エクスカリバー","木の杖","鉄の杖","木の盾","石の盾","鉄の盾","ポーション","タピオカＭＴ" };
 	const int Item_Price[10] = { 50,100,200,75,150,40,160,640,60,100 };
 
 	const char Depth_Select_Name[5][5][30] = {
 		{"買う","売る"," "," "," "},
 		{"武器","盾","アイテム"," "," "},
 		{"木の剣","鉄の剣","エクスカリバー","木の杖","鉄の杖"},
-		{"木の盾","鉄の盾","タピオカの盾"," "," "},
+		{"木の盾","石の盾","鉄の盾"," "," "},
 		{"ポーション","タピオカＭＴ"," "," "," "}
+	};
+
+	/*アイテムの説明*/
+	const char Weapon_Info_String[5][200] = {
+		"攻撃力：Ｂ　　耐久力：Ｄ　\nーーーーーーーーーーーーーー\nありふれた木製の剣。\n殺傷能力はあるがすぐ壊れるた\nめ、複数本携帯が必須だ",
+		"攻撃力：Ａ　　耐久力：Ｃ　\nーーーーーーーーーーーーーー\nどう考えても重い鉄製の剣。\nこれ装備できる筋力があるなら\n素手で熊に勝てちゃうかも。",
+		"攻撃力；Ｓ　　耐久力：Ａ　\nーーーーーーーーーーーーーー\n誰もが知ってる伝説の剣。\nこの世界では量産型であるため\n金があるなら何本でも買える。",
+		"攻撃力：Ｄ　　耐久力：Ｓ　\nーーーーーーーーーーーーーー\n木製の杖。\nこれを装備していると魔法が使\nえる。攻撃力を見なければロマ\nンにあふれている武器。",
+		"攻撃力：Ｃ　　耐久力：ＳＳ\nーーーーーーーーーーーーーー\n鉄製の杖。\nこれを装備していると魔法が使\nえる。攻撃・耐久ともにグレー\nドアップしている。"
+	};
+	const char Shield_Info_String[3][200] = {
+		"防御力；Ｂ　　耐久力：Ａ　\nーーーーーーーーーーーーーー\n心配事が絶えない木製の盾。\n防げるか防げないかの曖昧さが\n一部スリルマニアの間で人気。\nなのかもしれない。",
+		"防御力：Ａ　　耐久力：Ｓ　\nーーーーーーーーーーーーーー\n太古の通貨のような石の盾。\n大地の恩恵を感じる気がするが\nそんな事がある筈もなく。",
+		"防御力；Ｓ　　耐久力；ＳＳ\nーーーーーーーーーーーーーー\n360度どこから見ても強い。\nこの金属光沢には誰もが憧れる\n説明など不要！強い(二度目)。"
+	};
+	const char Item_Info_String[2][200] = {
+		"回復：Ａ　\nーーーーーーーーーーーーーー\nありふれたポーション。\n使うと体の傷が癒えていく。\n飲んでるの？傷に塗ってるの？\nなどとは聞くなかれ。",
+		"回復：ＳＳ\nーーーーーーーーーーーーーー\nあーこれこれ。\n一般JK含め全JK御用達の飲み物\nこれをキメれば今日も一日頑張\nれる。"
 	};
 };
