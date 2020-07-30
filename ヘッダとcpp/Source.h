@@ -133,3 +133,32 @@ struct Home {
 	}
 
 };
+
+struct HATAKE {
+	int image = 0;
+	int testimage[4];
+	int tane[3];
+	int yasai[3];
+	int mizu[3];
+	int fremimage = 0;
+	int selectfrem = 0;
+	bool flg = true;
+	void ImageInput(struct HATAKE* p) {
+		p->image = LoadGraph("images/hatakeimage.png");
+		p->fremimage = LoadGraph("images/frem.png");
+		p->selectfrem = LoadGraph("images/selectfrem.png");
+		p->testimage[0] = LoadGraph("images/charUP.png");
+		p->testimage[1] = LoadGraph("images/charDOWN.png");
+		p->testimage[2] = LoadGraph("images/charLEFT.png");
+		p->testimage[3] = LoadGraph("images/charRIGHT.png");
+		p->tane[0] = LoadGraph("images/komugitane.png");
+		p->tane[1] = LoadGraph("images/jagaimotane.png");
+		p->tane[2] = LoadGraph("images/ninjintane.png");
+		p->yasai[0] = LoadGraph("images/komugi.png");
+		p->yasai[1] = LoadGraph("images/jagaimo.png");
+		p->yasai[2] = LoadGraph("images/ninjin.png");
+		p->mizu[0] = LoadGraph("images/komugimizu.png");
+		p->mizu[1] = LoadGraph("images/jagaimomizu.png");
+		p->mizu[2] = LoadGraph("images/ninjinmizu.png");
+	}
+};

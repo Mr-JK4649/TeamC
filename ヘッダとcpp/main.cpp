@@ -24,8 +24,8 @@
 * 変数の宣言
 ********************************************************************/
 int g_GameState;			//ゲームのシーン管理
-//void DrawHatake(int Width, int Height);
-//void Game_Hatake(int Width, int Height);
+void DrawHatake(int Width, int Height);
+void Game_Hatake(int Width, int Height);
 Input inp;
 String str;
 WindowScaler scale;
@@ -82,7 +82,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_WORK: Work_Draw(scale.Width, scale.Height); break;				//仕事紹介所
 
-		//case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+		case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
 
 		case GAME_CASINO: Casino_Draw(scale.Width, scale.Height);					//カジノ
 
