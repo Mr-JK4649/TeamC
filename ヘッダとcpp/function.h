@@ -12,6 +12,12 @@ void GameSSelect(int width, int height);
 // 拠点シーン
 void DrawGameMain(int width, int height);
 
+/*ゲーム進行に必要な数値を制御する*/
+void GameSystem(void);
+
+/*カジノ*/
+void Casino_Draw(int width, int height);
+
 //仕事紹介所
 void Work_Draw(int width, int height);
 

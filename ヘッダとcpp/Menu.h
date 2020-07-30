@@ -4,6 +4,7 @@
 
 #include "header.h"
 #include "string.h"
+#include "Input.h"
 
 /*メニュー表示用のやつ*/
 struct Menu {
@@ -18,8 +19,11 @@ struct Menu {
 	bool isBuilding_Enter = false;		//建物に入るフラグ
 	int Enter_Num = 0;					//建物の種類
 	int Enter_Select = 0;				//確認ウィンドウの選択で使うやつ
-	char Building_Name[3][20] = { "「仕事紹介所」","「雑貨屋」","「自宅」" };
+	char Building_Name[4][20] = { "「仕事紹介所」","「雑貨屋」","「自宅」","「カジノ」"};
 
+	bool Result_DWork_Flg = false;		//力仕事の報酬を表示
+	bool Result_FWork_Flg = false;		//調達の報酬を表示
+	int Result_Work_Money = 0;			//仕事で得た報酬
 
 	int item_select = 0;				//アイテム一覧ようの添え字
 	int item_select2 = 0;				//アイテム選択ウィンドウ用の添え字
@@ -105,10 +109,10 @@ struct Menu {
 
 			if (inp.space) {
 				if (Enter_Select == 1) {
-					if (Enter_Num == 0)g_GameState = GAME_WORK;	//仕事紹介所
-					if (Enter_Num == 1)g_GameState = GAME_SHOP;	//お店
-					if (Enter_Num == 2)g_GameState = GAME_HOME;	//自宅
-
+					if (Enter_Num == 0)g_GameState = GAME_WORK;		//仕事紹介所
+					if (Enter_Num == 1)g_GameState = GAME_SHOP;		//お店
+					if (Enter_Num == 2)g_GameState = GAME_HOME;		//自宅
+					if (Enter_Num == 3)g_GameState = GAME_CASINO;	//カジノ
 				}
 			}
 
@@ -116,13 +120,34 @@ struct Menu {
 
 		}
 
+		if (Result_DWork_Flg || Result_FWork_Flg) {
+			DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0x444444, 1);
+			DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(6, h - (h4 - 1), w - 6, h - 6, 10, 10, 0xffffff, 0);
+			str.SuperString(w / 2, h - (h / 10), "ＯＫ", 0xff0000, 1, size * 2);
+			if (Result_DWork_Flg) {
+				DrawFormatString(10, (h - h4) + 5, 0xffffff, "街の発展に協力した事により、以下の報酬を得た。\nお金　+%9dＧ\n発展度+%9d％", Result_Work_Money, 5);
+			}
+			if (Result_FWork_Flg) {
+				DrawFormatString(10, (h - h4) + 5, 0xffffff, "食料調達をした事により、以下の報酬を得た。\nお金　+%9dＧ\n食料　+%9d％", Result_Work_Money, 5);
+			}
+
+			if (inp.space) {
+				Result_DWork_Flg = false;
+				Result_FWork_Flg = false;
+			}
+		}
+
 		SetFontSize(16);
+
+		
 
 		/*メニュー内での操作*/
 		if(isMenu)Update();
 
 	}
 
+	/*メニューの操作*/
 	void Update() {
 
 		if (isItem_Menu) {
@@ -260,12 +285,15 @@ struct Menu {
 	/*ゲージを表示するやつ*/
 	void DrawGage(float w, float w5, float h, float h4) {
 		const int Gage_Height = h / 30;
+		Gage_Max[0] = Base_Status_Copy[1] * 2 + 100;		//人口ゲージのマックス値を設定
+		Gage[2] = Base_Status_Copy[1];						//発展度
+
 
 		for (int i = 0; i < 5; i++) {
 			
 			DrawString(w / 100.0f * 22, h / 100.0f * 27 + Gage_Height * 3 * i, Gage_Name[i], Gage_Color[i], 1);
-			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + Gage[i] * (w5 * 2) / 120, (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 1);
-			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + 100 * (w5 * 2) / 120, (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 0);
+			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + (w / 3) * (Gage[i] / Gage_Max[i]), (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 1);
+			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + (w / 3), (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 0);
 
 		}
 		
@@ -276,15 +304,54 @@ struct Menu {
 		item_kind = item_num;
 	}
 
-	/*発展度の取得*/
-	void Input_Gage(int time,int dev) {
-		Gage[0] = time / 600;
-		Gage[2] = dev;
-		Inclease();
+	/*キャラのステータスを持ってくる奴*/
+	void B_Status_C(int num, int para) {
+		Base_Status_Copy[num] = para;
 	}
 
-	void Inclease() {
+	/*ゲージの量を返す*/
+	float Return_Gage_Para(int num) {
 		
+		return Gage[num];
+	}
+
+	/*ゲージの最大値を返す*/
+	float Return_Gage_Max(int num) {
+
+		return Gage_Max[num];
+	}
+
+	/*ゲージを上昇させるやつ*/
+	void Inclease_Gage(int num,int para) {
+		Gage[num] += para;
+		if (Gage[num] < 0)Gage[num] = 0;
+	}
+
+	/*ゲージの最大値を増幅させる奴*/
+	void Incleace_Gage_Max(int num, int para) {
+		Gage_Max[num] += para;
+	}
+
+	void Input_Result(int kind_work, int par, int money) {
+		switch (kind_work) {
+		case 0:
+			
+			break;
+
+		case 1:
+
+			break;
+		}
+	}
+
+	/*仕事の報酬表示*/
+	void Result_Work() {
+		const int w = scale.Width;
+		const int h = scale.Height, h4 = scale.Height / 4;
+		DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0x444444, 1);
+		DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0xaaaaaa, 0);
+		DrawRoundRect(6, h - (h4 - 1), w - 6, h - 6, 10, 10, 0xffffff, 0);
+
 	}
 
 private:
@@ -295,9 +362,11 @@ private:
 	int item_kind = 0;																		//現在の位置のアイテムが何か調べてもらうやつ
 	const unsigned int white_color = 0xffffff;												//白
 	const unsigned int blue_color = 0x6666ff;												//青
-	int Gage[5] = { 10,25,45,75,100 };														//ゲージの値を保存するやつ
+	float Gage[5] = { 0,0,0,50,0 };														//ゲージの値を保存するやつ
+	float Gage_Max[5] = { 100,100,100,100,100 };													//各ゲージのマックスの値
 	char Gage_Name[5][11] = { "人口ゲージ","魔物ゲージ","発展ゲージ","食料ゲージ","武力ゲージ" };	//ゲージの名前
 	unsigned int Gage_Color[5] = { 0xffff00,0x880088,0x00ffff,0x00ff00,0xff0000 };
+	int Base_Status_Copy[3] = { 0 };
 };
 
 extern Menu menu;

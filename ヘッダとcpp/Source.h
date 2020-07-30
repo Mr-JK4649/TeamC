@@ -43,10 +43,37 @@ struct Base {
 
 extern Base base;
 
+struct Casino {
+	int background = 0;
+	int flg = true;
+
+	int Cards[52] = {0};
+
+	void ImageInput(Casino* p) {
+		p->background = LoadGraph("images/Casino.jpg");
+		LoadDivGraph("images/トランプカード2.png", 52, 13, 4, 265, 355, p->Cards, 1);
+	}
+
+};
+
+struct Work {
+	int background = 0;
+	bool flg = true;
+
+	void ImageInput(Work* p) {
+		p->background = LoadGraph("images/仕事紹介所.jpg");
+	}
+};
+
 struct Shop {
 	int background[6] = {0,0,0,0,0,0};
+	int Weapon_img[5] = { 0 };
+	int Shield_img[3] = { 0 };
+	int Item_img[2] = { 0 };
+	int Cover[5] = { 0 };
 	bool flg = true;
 	
+
 
 	void ImageInput(Shop* p) {
 		p->background[0] = LoadGraph("images/ShopSele1.jpg");
@@ -55,6 +82,25 @@ struct Shop {
 		p->background[3] = LoadGraph("images/ShopSele4.jpg");
 		p->background[4] = LoadGraph("images/ShopSele5.jpg");
 		p->background[5] = LoadGraph("images/shop.jpg");
+
+		p->Weapon_img[0] = LoadGraph("images/木の剣.png");
+		p->Weapon_img[1] = LoadGraph("images/鉄の剣.png");
+		p->Weapon_img[2] = LoadGraph("images/エクスカリバー.png");
+		p->Weapon_img[3] = LoadGraph("images/木の杖.png");
+		p->Weapon_img[4] = LoadGraph("images/鉄の杖.png");
+
+		p->Shield_img[0] = LoadGraph("images/木の盾.png");
+		p->Shield_img[1] = LoadGraph("images/石の盾.png");
+		p->Shield_img[2] = LoadGraph("images/鉄の盾.png");
+
+		p->Cover[0] = LoadGraph("images/shop_cover1.png");
+		p->Cover[1] = LoadGraph("images/shop_cover2.png");
+		p->Cover[2] = LoadGraph("images/shop_cover3.png");
+		p->Cover[3] = LoadGraph("images/shop_cover4.png");
+		p->Cover[4] = LoadGraph("images/shop_cover5.png");
+
+		p->Item_img[0] = LoadGraph("images/ポーション.png");
+		p->Item_img[1] = LoadGraph("images/ショップ_タピオカＭＴ.png");
 	}
 
 };

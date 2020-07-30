@@ -12,20 +12,26 @@ void Building_Serihu(int width, int height) {
 	const float w = (float)width * 4.0 / 100.0;
 	const float h = (float)height / 100.0;
 
-	if (inp.y) {
-		ch.Add_Exp(&ch, 50);
+
+	if (ch.num == 9 || ch.num == 10 || ch.num == 11) {
+
+		if (Building_Trriger(w, h, 19.0f, 50.0f, 26.8f, 58.5f))str.TexNum = 0;			//ŒŸ–âŠ
+		else if (Building_Trriger(w, h, 34.2f, 50.0f, 36.6f, 58.5f) && ch.Return_Base_Status(&ch,1) < 100 )str.TexNum = 1;		//ƒJƒWƒmŠÅ”Â
+		else if (Building_Trriger(w, h, 56.6f, 50.0f, 61.6f, 58.5f))str.TexNum = 3;		//Œf¦”Â
+		else if (Building_Trriger(w, h, 77.0f, 50.0f, 79.0f, 58.0f))str.TexNum = 4;		//‚¨“X‚Ìƒƒjƒ…[
+		else str.TexNum = 99;
+
+		if (Building_Trriger(w, h, 52.4f, 50.0f, 55.9f, 58.5f))menu.Enter_Num = 0;		//d–Ğ‰îŠ
+		else if (Building_Trriger(w, h, 72.2f, 50.0f, 76.2f, 58.5f))menu.Enter_Num = 1;	//‚¨“X
+		else if (Building_Trriger(w, h, 91.5f, 50.0f, 94.3f, 58.5f))menu.Enter_Num = 2;	//©‘î
+		else if (Building_Trriger(w, h, 34.2f, 50.0f, 36.6f, 58.5f) && ch.Return_Base_Status(&ch, 1) >= 100)menu.Enter_Num = 3; //ƒJƒWƒm
+		else menu.Enter_Num = 99;
+
 	}
-
-	if (Building_Trriger(w, h, 19.0f, 50.0f, 26.8f, 58.5f))str.TexNum = 0;			//ŒŸ–âŠ
-	else if (Building_Trriger(w, h, 34.2f, 50.0f, 36.6f, 58.5f))str.TexNum = 1;		//ƒJƒWƒmŠÅ”Â
-	else if (Building_Trriger(w, h, 56.6f, 50.0f, 61.6f, 58.5f))str.TexNum = 3;		//Œf¦”Â
-	else if (Building_Trriger(w, h, 77.0f, 50.0f, 79.0f, 58.0f))str.TexNum = 4;		//‚¨“X‚Ìƒƒjƒ…[
-	else str.TexNum = 99;
-
-	if (Building_Trriger(w, h, 52.4f, 50.0f, 55.9f, 58.5f))menu.Enter_Num = 0;		//d–Ğ‰îŠ
-	else if (Building_Trriger(w, h, 72.2f, 50.0f, 76.2f, 58.5f))menu.Enter_Num = 1;	//‚¨“X
-	else if (Building_Trriger(w, h, 91.5f, 50.0f, 94.3f, 58.5f))menu.Enter_Num = 2;	//©‘î
-	else menu.Enter_Num = 99;
+	else {
+		str.TexNum = 99;
+		menu.Enter_Num = 99;
+	}
 	
 }
 
@@ -41,7 +47,7 @@ int Building_Trriger(float w25, float h100, float x1, float y1, float x2, float 
 	const float sx = w25 * x1, ex = w25 * x2;
 	const float sy = h100 * y1, ey = h100 * y2;
 
-	//DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
+	DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
 
 	if (ch.HitCheck(&ch, sx, sy, ex, ey)) {
 		//DrawBox(5, 5, 100, 100, 0xff0000, 1);

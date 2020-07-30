@@ -27,6 +27,8 @@ struct Weapon {
 		}
 	}
 
+
+
 };
 
 extern Weapon Hand;					//素手。何でもできるＪＫの素手。強い(確信)
@@ -68,8 +70,8 @@ struct Shield {
 
 extern Shield Air;				//空気の盾。これで防げると思ったら大間違い。
 extern Shield Wood_Shield;		//木の盾
-extern Shield Iron_Shield;		//鉄の盾
-extern Shield Tapi_Shield;		//タピオカの盾　強い(確信)
+extern Shield Stone_Shield;		//鉄の盾
+extern Shield Iron_Shield;		//タピオカの盾　強い(確信)
 extern Shield shi;				//盾構造体のあれ
 extern Shield shi_work;			
 

@@ -3,21 +3,21 @@
 #include "character.h"
 
 Chara ch;									
-Weapon Hand = { 1.0f,-99,-99,"","なし",0};													//空気の剣。手ごたえ？忘れてきました。
-Weapon Wood_Sword = { 1.2f,20,30,"images/タピオカミルクティー.jpg" ,"木の剣",1};				//木の剣
-Weapon Iron_Sword = { 1.4f,50,75,"images/タピオカミルクティー.jpg" ,"鉄の剣",2};				//鉄の剣
-Weapon Exca_Sword = { 2.0f,100,150,"images/タピオカミルクティー.jpg" ,"エクスカリバー",3};	//エクスカリバー
-Weapon Wood_Rod = { 0.5f,200,300,"images/タピオカミルクティー.jpg" ,"木のロッド",4};			//木のロッド
-Weapon Iron_Rod = { 1.0f,600,900,"images/タピオカミルクティー.jpg","鉄のロッド" ,5};			//鉄のロッド
-Weapon wep = Hand;																			//武器構造体のあれ
-Weapon wep_work;																			//武器避難用のあれ
+Weapon Hand = { 1.0f,-99,-99,"","なし",0};												//空気の剣。手ごたえ？忘れてきました。
+Weapon Wood_Sword = { 1.2f,20,30,"images/木の剣.png" ,"木の剣",1};						//木の剣
+Weapon Iron_Sword = { 1.4f,50,75,"images/鉄の剣.png" ,"鉄の剣",2};						//鉄の剣
+Weapon Exca_Sword = { 2.0f,100,150,"images/エクスカリバー.png" ,"エクスカリバー",3};	//エクスカリバー
+Weapon Wood_Rod = { 0.5f,200,300,"images/木の杖.png" ,"木の杖",4};						//木の杖
+Weapon Iron_Rod = { 1.0f,600,900,"images/鉄の杖.png","鉄の杖" ,5};						//鉄の杖
+Weapon wep = Hand;																		//武器構造体のあれ
+Weapon wep_work;																		//武器避難用のあれ
 
-Shield Air = { 1.0f,-99,-99,"","なし",0 };													//空気の盾。これで防げると思ったら大間違いです。
-Shield Wood_Shield = { 3.0f,100,200,"images/タピオカミルクティー.jpg","木の盾" ,6};			//木の盾
-Shield Iron_Shield = { 8.0f,400,800,"images/タピオカミルクティー.jpg","鉄の盾" ,7};			//鉄の盾
-Shield Tapi_Shield = { 20.0f,2000,4000,"images/タピオカミルクティー.jpg","タピオカの盾" ,8};	//タピオカの盾　強い(確信)
-Shield shi = Air;																			//盾構造体のあれ
-Shield shi_work;																			//盾避難用のあれ
+Shield Air = { 1.0f,-99,-99,"","なし",0 };												//空気の盾。これで防げると思ったら大間違いです。
+Shield Wood_Shield = { 3.0f,100,200,"images/木の盾.png","木の盾" ,6};					//木の盾
+Shield Stone_Shield = { 8.0f,400,800,"images/石の盾.png","石の盾" ,7};					//石の盾
+Shield Iron_Shield = { 20.0f,2000,4000,"images/鉄の盾.png","鉄の盾" ,8};				//鉄の盾　強い(確信)
+Shield shi = Air;																		//盾構造体のあれ
+Shield shi_work;																		//盾避難用のあれ
 
 /*キャラの表示*/
 void Chara_Disp() {
@@ -34,7 +34,7 @@ void Chara_Update() {
 	ch.Move(&ch);
 
 	/*経過時間*/
-	ch.Add_Time(&ch);
+	/*ch.Add_Time(&ch);*/
 }
 
 /*ステータスの表示*/
@@ -60,8 +60,8 @@ void Menu_Item(int item_select) {
 			case Chara::Wood_Rod:		strcpy_s(item_name,Wood_Rod.Weapon_name);		break;
 			case Chara::Iron_Rod:		strcpy_s(item_name,Iron_Rod.Weapon_name);		break;
 			case Chara::Wood_Shield:	strcpy_s(item_name,Wood_Shield.Shield_name);	break;
+			case Chara::Stone_Shield:	strcpy_s(item_name,Stone_Shield.Shield_name);	break;
 			case Chara::Iron_Shield:	strcpy_s(item_name,Iron_Shield.Shield_name);	break;
-			case Chara::Tapi_Shield:	strcpy_s(item_name,Tapi_Shield.Shield_name);	break;
 			case Chara::Portion:		strcpy_s(item_name,"ポーション");				break;
 			case Chara::Tapi_MT:		strcpy_s(item_name,"タピオカＭＴ");				break;
 			default:					strcpy_s(item_name, "　　　　　　　　ーーー　　　　　　　　");		break;
@@ -104,13 +104,13 @@ void Use_Equipment_Item(int item_select) {
 
 		ch.Input_Item(&ch, item_select, wep_work.serial_num);
 	}
-	else if (item <= Chara::Tapi_Shield) {
+	else if (item <= Chara::Iron_Shield) {
 		shi_work = shi;
 		switch (item)
 		{
 			case Chara::Wood_Shield:	shi = Wood_Shield;	break;
+			case Chara::Stone_Shield:	shi = Stone_Shield;	break;
 			case Chara::Iron_Shield:	shi = Iron_Shield;	break;
-			case Chara::Tapi_Shield:	shi = Tapi_Shield;	break;
 			default:	ch.Delete_Item(&ch,item_select);	break;
 		}
 
