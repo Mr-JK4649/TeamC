@@ -5,13 +5,13 @@
 
 /*タイトルシーンの画像*/
 struct Title {
-	int image=0;
-	int logo=0;
+	int image[2] = { 0 };
+	int Arrow = 0;
 	bool flg = true;
 
 	void ImageInput(struct Title* p) {
-		p->image = LoadGraph("images/タイトル案１.jpg");
-		p->logo = LoadGraph("images/Tlogo2.png");
+		p->image[0] = LoadGraph("images/タイトル案１上選択矢印.jpg");
+		p->image[1] = LoadGraph("images/タイトル案１下選択矢印.jpg");
 	}
 };
 
@@ -47,11 +47,25 @@ struct Casino {
 	int background = 0;
 	int flg = true;
 
+	int Casino_Table = 0;			//緑のテーブルの画像
+	int Dragon_Tiger_img = 0;		//ドラゴンタイガーの説明
+	int Casino_War_img = 0;			//カジノウォーの説明
+
+	int Dragon_img = 0;				//ドラゴンタイガーのドラゴン
+	int Tiger_img = 0;				//ドラゴンタイガーのトラ
+
 	int Cards[52] = {0};
+	int Card_Back = 0;
 
 	void ImageInput(Casino* p) {
 		p->background = LoadGraph("images/Casino.jpg");
 		LoadDivGraph("images/トランプカード2.png", 52, 13, 4, 265, 355, p->Cards, 1);
+		p->Card_Back = LoadGraph("images/カードの裏.png");
+		p->Casino_Table = LoadGraph("images/カジノテーブル.jpg");
+		p->Dragon_Tiger_img = LoadGraph("images/ドラゴンタイガー.png");
+		p->Casino_War_img = LoadGraph("images/カジノウォー.png");
+		p->Dragon_img = LoadGraph("images/ドラゴン.png");
+		p->Tiger_img = LoadGraph("images/トラ.png");
 	}
 
 };
