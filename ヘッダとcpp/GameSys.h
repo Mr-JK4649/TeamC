@@ -8,6 +8,9 @@
 
 struct GameSystem {
 
+	static int Exit_Hatake;			//畑を出た時間
+	static int Enter_Hatake;			//畑をに入った時間
+
 	/*人口ゲージのシステム*/
 	static void Population_System() {
 		int GameTime = ch.Return_Base_Status(&ch, 2);
@@ -54,5 +57,16 @@ struct GameSystem {
 
 	}
 
+
+	/*畑の時間を入れる関数*/
+	static void Input_Time(int num) {
+		if (num == 0)Exit_Hatake = ch.Return_Base_Status(&ch, 2);				//畑を出た時の時間を入れる
+		if (num == 1)Enter_Hatake = ch.Return_Base_Status(&ch, 2);				//畑を出た時の時間を入れる
+	}
+
+	static int Return_Hatake_Time() {
+		
+		return (Enter_Hatake - Exit_Hatake);
+	}
 
 };

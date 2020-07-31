@@ -95,7 +95,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		}
 
 		/*éûä‘ÇÃçXêVÇ∆Ç©Ç‡ÇÎÇ‡ÇÎ*/
-		if (g_GameState == GAME_BASE || g_GameState == GAME_SHOP || g_GameState == GAME_HOME || g_GameState == GAME_WORK) {
+		if (g_GameState == GAME_BASE || g_GameState == GAME_SHOP || g_GameState == GAME_HOME || g_GameState == GAME_WORK || g_GameState == GAME_HATAKE) {
 			GameSystem();
 		}
 

@@ -1,5 +1,7 @@
 #include "GameSys.h"
 
+
+
 void GameSystem() {
 	
 	/*ŠÔ‚ÌXV*/
