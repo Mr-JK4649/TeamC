@@ -32,7 +32,10 @@ void DrawGameMain(int width, int height) {
 /*拠点の表示*/
 void Base_Disp(int width, int height) {
 	/*背景表示*/
-	DrawExtendGraph(base.move, 0, width * 4 + base.move, height, base.background, 1);
+
+
+	if(Return_Base_Status(1) >= 100) DrawExtendGraph(base.move, 0, width * 4 + base.move, height, base.background2, 1);
+	else DrawExtendGraph(base.move, 0, width * 4 + base.move, height, base.background, 1);
 
 
 	/*キャラの表示*/

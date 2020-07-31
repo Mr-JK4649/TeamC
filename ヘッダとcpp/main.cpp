@@ -54,11 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	SetDrawScreen(DX_SCREEN_BACK);					// ï`âÊêÊâÊñ Çó†Ç…Ç∑ÇÈ
 
 
-<<<<<<< HEAD
-	g_GameState = GAME_CASINO;
-=======
-	g_GameState = GAME_HATAKE;
->>>>>>> d3bef3ae1a55c9aff82adb587b72a4fbd057eaf5
+	g_GameState = GAME_TITLE;
 
 	// ÉQÅ[ÉÄÉãÅ[Év
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
@@ -103,6 +99,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 			g_GameState == GAME_SHOP ||
 			g_GameState == GAME_HOME ||
 			g_GameState == GAME_WORK ||
+			g_GameState == GAME_HATAKE ||
 			g_GameState == GAME_CASINO) {
 			GameSystem();
 		}

@@ -10,6 +10,7 @@ void Building_Serihu(int width,int height);
 //キャラクターの描画と更新
 void Chara_Disp(void);
 void Chara_Update(void);
+int Return_Base_Status(int num);
 
 /*メニュー用のステータスを取得する関数*/
 void Status_Disp(void);
