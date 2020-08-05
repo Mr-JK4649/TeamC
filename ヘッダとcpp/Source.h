@@ -30,12 +30,14 @@ struct Stage {
 /*‹’“_ƒV[ƒ“‚Ì‰æ‘œ*/
 struct Base {
 	int background = 0;
+	int background2 = 0;
 	int shadow = 0;
 	bool flg = true;
 	int move=0;
 
 	void ImageInput(struct Base* p) {
 		p->background = LoadGraph("images/’¬‚Ì•—Œi1.png");
+		p->background2 = LoadGraph("images/’¬‚Ì•—Œi2.png");
 		p->shadow = LoadGraph("images/ŠX‚Ì‰e.png");
 	}
 

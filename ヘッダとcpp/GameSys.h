@@ -51,7 +51,7 @@ struct GameSystem {
 		int GameTime = ch.Return_Base_Status(&ch, 2);
 		int Population_Par = (menu.Return_Gage_Para(0) / menu.Return_Gage_Max(0))*100;
 
-		if (GameTime % 1500 == 0) {												//ゲーム内時間50秒ごとに食料ゲージ人口ゲージ/25％減る
+		if (GameTime % 1500 == 0) {												//ゲーム内時間25秒ごとに食料ゲージ人口ゲージ/25％減る
 			menu.Inclease_Gage(3, -(Population_Par/25));							
 		}
 

@@ -24,7 +24,7 @@ void Building_Serihu(int width, int height) {
 		if (Building_Trriger(w, h, 52.4f, 50.0f, 55.9f, 58.5f))menu.Enter_Num = 0;		//d–Ğ‰îŠ
 		else if (Building_Trriger(w, h, 72.2f, 50.0f, 76.2f, 58.5f))menu.Enter_Num = 1;	//‚¨“X
 		else if (Building_Trriger(w, h, 91.5f, 50.0f, 94.3f, 58.5f))menu.Enter_Num = 2;	//©‘î
-		else if (Building_Trriger(w, h, 34.2f, 50.0f, 36.6f, 58.5f) && ch.Return_Base_Status(&ch, 1) >= 100)menu.Enter_Num = 3; //ƒJƒWƒm
+		else if (Building_Trriger(w, h, 38.0f, 50.0f, 42.0f, 58.5f) && ch.Return_Base_Status(&ch, 1) >= 100)menu.Enter_Num = 3; //ƒJƒWƒm
 		else menu.Enter_Num = 99;
 
 	}

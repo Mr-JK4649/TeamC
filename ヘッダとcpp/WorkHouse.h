@@ -78,6 +78,7 @@ struct Working {
 				}
 
 				wp->Work_Select[1] = 0;
+				wp->Depth = 0;
 				ch.Add_Base_Status(&ch, 0, Result_Money);					//•ñV‚Ì‚¨‹à
 				menu.Result_Work_Money = Result_Money;						//Œ‹‰Ê•\¦—p‚Ì•Ï”‚É‘ã“ü
 				g_GameState = GAME_BASE;
