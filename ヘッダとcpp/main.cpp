@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_WORK:		Work_Draw(scale.Width, scale.Height); break;			//édéñè–âÓèä
 
-		//case GAME_HATAKE: Game_Hatake(scale.Width, scale.Height); break;			//î®ä÷êî
+		case GAME_HATAKE: Game_Hatake(scale.Width, scale.Height); break;			//î®ä÷êî
 
 		case GAME_CASINO:	Casino_Draw(scale.Width, scale.Height);	break;			//ÉJÉWÉm
 

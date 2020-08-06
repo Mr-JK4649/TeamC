@@ -249,8 +249,8 @@ struct HATAKE {
 		p->image = LoadGraph("images/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
 		p->selectfrem = LoadGraph("images/selectfrem.png");
-		p->testimage[0] = LoadGraph("images/charUP.png");
-		p->testimage[1] = LoadGraph("images/charDOWN.png");
+		p->testimage[0] = LoadGraph("images/JK2_4.png");
+		p->testimage[1] = LoadGraph("images/JK2_1.png");
 		p->testimage[2] = LoadGraph("images/charLEFT.png");
 		p->testimage[3] = LoadGraph("images/charRIGHT.png");
 		p->tane[0] = LoadGraph("images/komugitane.png");

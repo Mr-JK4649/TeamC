@@ -1,6 +1,7 @@
 #include "GameSys.h"
 
 
+
 void GameSystem() {
 	
 	/*時間の更新*/
@@ -20,32 +21,6 @@ void GameSystem() {
 			ch.num = 6;
 			break;
 	}
-
-	/*ゲージアイコンの表示*/
-	DrawExtendGraph(scale.Width / 100.0f * 1, scale.Height / 100.0f * 93, scale.Width / 100.0f * 5, scale.Height / 100.0f * 99, base.Gage_Icon, 1);
-
-	/*ゲージの描画*/
-	if (menu.isGage_Menu) {
-		const float w100 = scale.Width / 100.0f;
-		const float h100 = scale.Height / 100.0f;
-
-		/*ゲージのボックス*/
-		DrawRoundRect(w100,		h100 * 40,	   w100 * 40,	  h100 * 99,	 10, 10, 0x444444, 1);
-		DrawRoundRect(w100,		h100 * 40,	   w100 * 40,	  h100 * 99,	 10, 10, 0xaaaaaa, 0);
-		DrawRoundRect(w100 + 1, h100 * 40 + 1, w100 * 40 - 1, h100 * 99 - 1, 10, 10, 0xffffff, 0);
-
-		/*ゲージの描画*/
-		menu.DrawGage(w100,h100);
-	}
-	/*ゲージフラグの切り替え*/
-	if (inp.sele) {
-		if (!menu.isGage_Menu &&
-			!menu.isMenu &&
-			!menu.isBuilding_Enter &&
-			!str.setTex) menu.isGage_Menu = true;
-		else menu.isGage_Menu = false;
-	}
-	
 
 	/*人口ゲージのシステム*/
 	GameSystem::Population_System();
