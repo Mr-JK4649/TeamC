@@ -20,7 +20,8 @@ enum GAME_MODE {
 	GAME_S_SELECT,	//ステージ選択
 	GAME_RESULT,	//リザルト
 	GAME_OVER,		//ゲームオーバー(？)
-	END = 99		//エンド用変数
+	END = 99,		//エンド用変数
+	GAME_DUNGEON	//ダンジョン
 };
 
 

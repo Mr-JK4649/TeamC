@@ -39,3 +39,6 @@ void DrawGameResult(int width, int height);
 // ゲームオーバー描画処理
 void DrawGameOver(int width, int height);
 
+//ダンジョン描画処理
+void DrawGameDungeon(int Width, int Height);
+
