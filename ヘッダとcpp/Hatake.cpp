@@ -27,7 +27,7 @@ enum eYASAI { KOMUGI = 30, JAGAIMO, NINJIN };
 enum Page { MENU, MENU2, MENU3 ,MENU4,MENU5};
 enum MAPDATA { NUL, WALL = 2, EXIT };
 //*****構造隊*****
-struct PLAYER{
+struct PLAYER {
 	//プレイヤー座標
 	int x, y;
 	int muki;
