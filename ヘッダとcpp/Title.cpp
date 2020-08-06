@@ -43,7 +43,7 @@ void DrawGameTitle(int Width, int Height) {
 	if (inp.space) {
 		PlaySoundMem(title.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 		StopSoundMem(title.bgm);
-		if (title.Arrow == 0) g_GameState = GAME_STORY;
+		if (title.Arrow == 0) g_GameState = GAME_BASE;
 		if (title.Arrow == 1) g_GameState = END;
 	}
 	
