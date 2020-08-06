@@ -3,7 +3,7 @@
 
 
 void Casino_Draw(int width, int height) {
-	if (casino.flg) { casino.ImageInput(&casino); casino.flg = false; }
+	//if (casino.flg) { casino.ImageInput(&casino); casino.flg = false; }
 	
 	/*îwåi*/
 	if(cas.Dragon_Tiger || cas.Casino_War)

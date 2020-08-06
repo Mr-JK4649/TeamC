@@ -13,7 +13,7 @@
 #include "string.h"
 #include "Weapons.h"
 
-
+extern Dungeon dungeon;
 
 struct Chara {
 	/*キャラの初期化フラグ*/
@@ -50,6 +50,7 @@ struct Chara {
 
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
+		/*キャラ画像の初期化*/
 		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
 
 		p->c_size = scale.Width / 6;
@@ -62,11 +63,34 @@ struct Chara {
 		h = scale.Height;				//画面の高さを取得
 		h4 = scale.Height / 4;			//画面の高さを4で割る
 		size = scale.Width / 100;		//画面の横幅に合わせた文字サイズ
+
+		/*効果音の初期化*/
+		p->FootSteps[0] = LoadSoundMem("sounds/拠点の足音1.mp3");
+		p->FootSteps[1] = LoadSoundMem("sounds/拠点の足音2.mp3");
+		p->FootSteps[2] = LoadSoundMem("sounds/拠点の足音3.mp3");
+		p->FootSteps[3] = LoadSoundMem("sounds/拠点の足音4.mp3");
 	}
 
 	/*キャラ画像の表示と当たり判定の表示*/
 	void Disp(Chara *p) {
-		DrawExtendGraph(p->x, p->y,p->x + p->c_size, p->y + p->c_size,p->jk[p->num + p->add],1);
+		switch (g_GameState) {
+		case GAME_BASE:
+			DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->jk[p->num + p->add], 1);
+			break;
+			//仮
+		case GAME_DUNGEON:
+			DrawExtendGraph(p->x - 100, p->y - 135, p->x + p->c_size - 100, p->y + p->c_size - 135, p->jk[p->num + p->add], 1);
+
+
+
+			//当たり判定
+			DrawBox(p->x + p->c_Hsize_s - 100, p->y - 135,
+				p->x + p->c_Hsize_e - 100, p->y + p->c_size - 135,
+				0xff0000, 0);
+			break;
+		}
+
+		//DrawExtendGraph(p->x, p->y,p->x + p->c_size, p->y + p->c_size,p->jk[p->num + p->add],1);
 		//DrawGraph(p->x, p->y, p->jk[p->num], 1);
 
 		//当たり判定
@@ -78,12 +102,6 @@ struct Chara {
 		//DrawFormatString(5, 5, 0x000000, "l:%4d r:%4d u:%4d d:%4d", inp.left, inp.right, inp.up, inp.down);
 		//DrawFormatString(5, 45, 0x000000, "n:%d a:%d", p->num, p->add);
 
-		if (inp.x) {
-			p->Base_Status[1] += 1;
-		}
-
-		DrawFormatString(5, 25, 0xffffff, "次に必要な経験値 = %d", (int)p->Next_Level_Exp);
-		DrawFormatString(5, 45, 0xffffff, "現在の経験値		= %d", p->Chara_Status[1]);
 	}
 
 	/*キャラの移動*/
@@ -98,7 +116,11 @@ struct Chara {
 				if (inp.left) {
 					if (p->x <= four / 8 && base.move != 0) base.move += 5 * speed;
 					else p->x -= 5 * speed;
-					if (p->x+p->c_Hsize_s <= 0) p->x = -p->c_Hsize_s;
+					//if (p->x+p->c_Hsize_s <= 0) p->x = -p->c_Hsize_s;
+					if (p->x + p->c_Hsize_s <= -50) {
+						g_GameState = GAME_DUNGEON;
+						p->x = 0;
+					}
 				}
 				if (inp.right) {
 					if (p->x >= four / 8 && base.move != -three + 50)base.move -= 5 *speed;
@@ -115,6 +137,51 @@ struct Chara {
 				}
 				if (base.move >= 0) base.move = 0;
 				if (base.move <= -three + 50) base.move = -three + 50;
+				break;
+
+				//ダンジョン移動
+			case GAME_DUNGEON:
+				if (inp.left) {						//左
+					if (p->x <= four / 8 && dungeon.move != 0) dungeon.move += 5 * speed;
+					else p->x -= 5 * speed;
+					if (p->x + p->c_Hsize_s <= 0) {
+						p->x = 100;
+						g_GameState = GAME_BASE;
+
+					}
+				}
+				if (inp.right) {					//右
+					if (p->x >= four / 8 && dungeon.move != -three + 50)dungeon.move -= 5 * speed;
+					else p->x += 5 * speed;
+					if (p->x + p->c_Hsize_e - dungeon.move >= four + 100) p->x = p->w + 155 - p->c_Hsize_e;
+				}
+				if (inp.up) {						//上
+					p->y -= 10 * speed;
+					if (p->y <= p->h / 10 * 4 - 25) {
+						p->y = p->h / 10 * 4 - 25;
+						//dungeon.up += 5 * speed;
+					}
+					/*while (dungeon.up<-684)
+					{
+						dungeon.up--;
+					}*/
+				}
+				//ジャンプ処理
+				p->y -= dungeon.jump;
+				dungeon.jump--;
+				if (p->y > four / 8 - 215) {
+					p->y = four / 8 - 215;
+					dungeon.jump = 0;
+				}
+				if (inp.down) {						//下
+					//dungeon.up -= 5 * speed;
+					/*p->y += 5 * speed;*/
+					/*if (p->y >= four / 2 && dungeon.up != -three + 50)dungeon.up -= 5 * speed;
+					if (p->y + c_size >= p->height) p->y = p->height - c_size;*/
+				}
+				if (dungeon.move >= 0)dungeon.move = 0;
+				if (dungeon.move <= -three + 50)dungeon.move = -three + 50;
+				DungeonHitHantei(p);
 				break;
 
 			default:
@@ -139,21 +206,26 @@ struct Chara {
 	/*キャラの移動アニメーション*/
 	void Anime(Chara* p) {
 		
-		const int fps = 60;
+		const int fps = 80;
 		const int a = 0,b = fps / 4,c = fps / 2,d = fps / 4 * 3;
 
 
 		switch (count % fps) {
 			case a:
+				PlaySoundMem(p->FootSteps[0], DX_PLAYTYPE_BACK, TRUE);
 				p->add = 1;
 				break;
 
 			case b:
+				p->add = 0;
+				break;
+
 			case d:
 				p->add = 0;
 				break;
 
 			case c:
+				PlaySoundMem(p->FootSteps[1], DX_PLAYTYPE_BACK, TRUE);
 				p->add = 2;
 				break;
 		}
@@ -228,7 +300,7 @@ struct Chara {
 		/*上段*/
 		DrawFormatString((w - w5) + 5, 10, 0xffffff, "所持金\n　　　 %9dＧ", p->Base_Status[0]);
 		DrawFormatString((w - w5) + 5, 10 + size * 4, 0xffffff, "発展度\n　　　 %9d％", p->Base_Status[1]);
-		DrawFormatString((w - w5) + 5, 10 + size * 8, 0xffffff, "生存時間\n　　　 %9d秒", p->Base_Status[2]/60);
+		DrawFormatString((w - w5) + 5, 10 + size * 8, 0xffffff, "生存時間\n %3d時間 %2d分 %2d秒", p->Base_Status[2]/216000,p->Base_Status[2]/3600%60,p->Base_Status[2]/60%60);
 
 		/*中段*/
 		str.SuperString((w - w5) + w5 / 2, 10 + size * 2 * (0 + 7), "ステータス", 0xffffff, 1, size * 2);
@@ -339,6 +411,32 @@ struct Chara {
 	int Return_Box_Item(Chara* p, int select) {
 		return Box_Item[select];
 	}
+	//ダンジョン当たり判定
+	void DungeonHitHantei(Chara* p) {
+		const int speed = 2;
+		const float  dx = 144.5, dy = 115;
+		int c = 0;
+		int F = -dungeon.move + x;		//スクロールしても動き続けるX座標
+
+		for (int i = 0; i < 12; i++) {
+			for (int j = 0; j <= 33; j++) {
+				if (dungeon.Map[i][j] == 1) {
+					//ブロックの当たり判定
+					DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
+					//DrawFormatString(5, 180, 0xFFFFFF, "dx:%.1f dy:%.1f x:%d y:%d c:%d F:%d", dx, dy, p->x, p->y, c, F);
+					//if (p->sx >j * 137 + dungeon.move&&p->x<j*137+198+dungeon.move&&p->y>i*108+dungeon.up&&p->y<i*108+110+dungeon.up) {
+					/*if (p->x > j * dx + dungeon.move && p->x <j * dx + dx+ dungeon.move &&
+						p->y >i * dy + dungeon.up && p->y  < i * dy + dy + dungeon.up) {*/
+						/*if (p->y > i * 108+ dungeon.up&& p->x > j * 138 + dungeon.move&& p->x < j * 145 + 100 + dungeon.move)dungeon.up += 5 * speed;
+						if(p->y < i * 108 + 110 + dungeon.up&& p->x > j * 138 + dungeon.move && p->x < j * 145 + 100 + dungeon.move)dungeon.up -= 5 * speed;*/
+					if (p->x > j * dx + dungeon.move && p->x < j * dx + dx + dungeon.move)c = 1;/*p->x += 5 * speed*/;
+					/*if (p->x < j * 137 + 198 + dungeon.move)p->x += 5 * speed;*/
+
+				//}
+				}
+			}
+		}
+	}
 
 private:
 	int x = 100, y = 400;								//キャラの画面上の座標
@@ -349,14 +447,16 @@ private:
 	int jk[12] = {0};									//キャラの画像
 	
 	int add=0;											//キャラの画像のアニメーション変数
-	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
-	int Chara_Status[7] = { 1,0,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
+	int Base_Status[3] = { 999,999,0 };					//キャラの所持金、街の発展度、経過時間
+	int Chara_Status[7] = { 1,999,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
 	int Max_Hp = 50;									//キャラのマックス体力
 	float Next_Level_Exp = 50;							//次のレベルアップに必要な経験値
 	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品
 	int Box_Item[30] = {0};								//アイテムボックス
 
-	const int zero = 0, one = 1;
+	const int zero = 0, one = 1;						//Return用の変数
+
+	int FootSteps[4] = { 0 };							//足音
 };
 
 extern Chara ch;

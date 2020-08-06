@@ -5,6 +5,7 @@
 #include "header.h"
 #include "string.h"
 #include "Input.h"
+#include "Source.h"
 
 /*メニュー表示用のやつ*/
 struct Menu {
@@ -15,6 +16,9 @@ struct Menu {
 	bool isItem_Equip = false;			//アイテム装備フラグ
 	bool isGage_Menu = false;			//ゲージ確認
 	bool isMove_Scene = false;			//シーン移動
+	bool Move_Scene = false;			//シーン移動時の処理用
+	int scene_t = 0;					//移動先のシーンを保存
+	bool isTIPS = false;				//メニューのTIPSの表示
 
 	bool isBuilding_Enter = false;		//建物に入るフラグ
 	int Enter_Num = 0;					//建物の種類
@@ -27,7 +31,13 @@ struct Menu {
 
 	int item_select = 0;				//アイテム一覧ようの添え字
 	int item_select2 = 0;				//アイテム選択ウィンドウ用の添え字
-	//int item_select_window_height = 0;	//アイテム選択のメニューの高さ
+
+	/*メニュー素材の初期化*/
+	void Init() {
+		SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
+		Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
+		Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
+	}
 
 	/*メニューの表示*/
 	void Draw() {
@@ -35,14 +45,16 @@ struct Menu {
 		const float h = scale.Height, h4 = h / 4;
 		const int size = scale.Width / 100;
 		
+		/*メニュー素材の初期化*/
+		if (Init_Flg) { Init(); Init_Flg = false; }
+
 		/*メニューの枠表示*/
-		if(isMenu)
-			Draw_Menu_Box(w, w5, h, h4);
+		Draw_Menu_Box(w, w5, h, h4);
 
 		
 		SetFontSize(size * 2);
 
-		if (isMenu) {
+		if (isMenu && !isTIPS) {
 
 			/*左メニューの文字*/
 			for (int i = 0; i < 3; i++) {
@@ -68,10 +80,6 @@ struct Menu {
 					l_color = 0xffffff;
 				}
 			}
-
-			/*ゲージのやーつ*/
-			if (isGage_Menu)
-				DrawGage(w, w5, h, h4);
 
 			/*シーン移動のやつ*/
 			if (isMove_Scene) {
@@ -101,22 +109,35 @@ struct Menu {
 			color = white_color;
 
 			if (inp.f_left) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (--Enter_Select < 0) Enter_Select = 1;
 			}
 			if (inp.f_right) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (++Enter_Select > 1) Enter_Select = 0;
 			}
 
 			if (inp.space) {
-				if (Enter_Select == 1) {
-					if (Enter_Num == 0)g_GameState = GAME_WORK;		//仕事紹介所
-					if (Enter_Num == 1)g_GameState = GAME_SHOP;		//お店
-					if (Enter_Num == 2)g_GameState = GAME_HOME;		//自宅
-					if (Enter_Num == 3)g_GameState = GAME_CASINO;	//カジノ
+				if (Enter_Select == 0) {
+					PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+					scene_t = g_GameState;
 				}
+				if (Enter_Select == 1) {
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+					if (Enter_Num == 0)scene_t = GAME_WORK;		//仕事紹介所
+					if (Enter_Num == 1)scene_t = GAME_SHOP;		//お店
+					if (Enter_Num == 2)scene_t = GAME_HOME;		//自宅
+					if (Enter_Num == 3)scene_t = GAME_CASINO;	//カジノ
+				}
+				Move_Scene = true;
 			}
 
-			if (inp.cancel) { isBuilding_Enter = false; Enter_Select = 0; }
+			if (inp.cancel) {
+				PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+				scene_t = g_GameState;
+				isBuilding_Enter = false;
+				Enter_Select = 0;
+			}
 
 		}
 
@@ -133,99 +154,182 @@ struct Menu {
 			}
 
 			if (inp.space) {
+				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 				Result_DWork_Flg = false;
 				Result_FWork_Flg = false;
 			}
 		}
 
+		if (isTIPS) {
+
+			for (int i = 0; i < 7; i++) {
+
+				if (TIPS_Select[0] == i) color = blue_color;
+
+				str.SuperString(20, 20 + (size * 4) * i, TIPS_String[i], color, 0, size * 2);
+
+				color = white_color;
+			}
+			
+			if (TIPS_Depth == 1) {
+				DrawExtendGraph(w / 100.0f * 22, h / 100.0f * 4, w / 100.0f * 79, h / 100.0f * 82, base.Tips_img[TIPS_Select[0]][TIPS_Select[1]], 1);
+				DrawFormatString(w/100.0f * 67, h/100.0f * 85, 0xffffff, "Pages %d / %d", TIPS_Select[1] + 1, TIPS_Select_Pages[TIPS_Select[0]]);
+			}
+		}
+
 		SetFontSize(16);
 
-		
-
 		/*メニュー内での操作*/
-		if(isMenu)Update();
+		if(isMenu || isGage_Menu)Update();
 
 	}
 
 	/*メニューの操作*/
 	void Update() {
 
-		if (isItem_Menu) {
+		if (isGage_Menu) {
+			if (inp.cancel) {
+				PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+				isGage_Menu = false;
+			}
+		}
+		else if (isItem_Menu) {
 
 			if (isItem_Select_Menu) {								//アイテムを選択したとき
 				if (inp.f_up) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 					if (--item_select2 < 0) item_select2 = 1;
 				}
 				if (inp.f_down) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 					if (++item_select2 > 1) item_select2 = 0;
 				}
 				if (inp.space) {
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 					if (item_select2 == 0) isItem_Equip = true;		//アイテムを装備する
 					if (item_select2 == 1) isItem_Delete = true;	//アイテムを捨てる	
 					isItem_Select_Menu = false;
 
 				}
-				if (inp.cancel) isItem_Select_Menu = false;
+				if (inp.cancel) {
+					PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+					isItem_Select_Menu = false;
+				}
 			}
 			else {													//アイテムを選択してないとき
 
 				if (inp.f_up) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 					if (--item_select < 0) item_select = 9;
 				}
 				if (inp.f_down) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 					if (++item_select > 9) item_select = 0;
 				}
-				if (inp.space && item_kind != 0) { isItem_Select_Menu = true; item_select2 = 0; }
-				if (inp.cancel) isItem_Menu = false;
+				if (inp.space && item_kind != 0) {
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+					isItem_Select_Menu = true;
+					item_select2 = 0;
+				}
+				if (inp.cancel) {
+					PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+					isItem_Menu = false;
+				}
 
 			}
 
 		}
-		else if (isGage_Menu) {
-			if (inp.cancel) isGage_Menu = false;
+		else if (isTIPS) {
+			if (TIPS_Depth == 0) {
+				if (inp.f_up) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
+					if (--TIPS_Select[TIPS_Depth] < 0) TIPS_Select[TIPS_Depth] = 6;
+				}
+				if (inp.f_down) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
+					if (++TIPS_Select[TIPS_Depth] > 6) TIPS_Select[TIPS_Depth] = 0;
+				}
+
+				if (inp.space) {
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+					TIPS_Depth = 1;
+				}
+
+				if (inp.cancel) {
+					PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+					TIPS_Select[TIPS_Depth] = 0;
+					isTIPS = false;
+				}
+			}
+			else if (TIPS_Depth == 1) {
+				if (inp.f_left) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
+					if (--TIPS_Select[TIPS_Depth] < 0) TIPS_Select[TIPS_Depth] = TIPS_Select_Pages[TIPS_Select[0]] - 1;
+				}
+				if (inp.f_right) {
+					PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
+					if (++TIPS_Select[TIPS_Depth] > TIPS_Select_Pages[TIPS_Select[0]] - 1) TIPS_Select[TIPS_Depth] = 0;
+				}
+
+				if (inp.cancel) {
+					TIPS_Select[TIPS_Depth] = 0;
+					TIPS_Depth = 0;
+				}
+			}
 		}
 		else if (isMove_Scene) {
 
 			if (inp.f_left) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (--item_select < 0) item_select = 1;
 			}
 			if (inp.f_right) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (++item_select > 1) item_select = 0;
 			}
 
 			if (inp.space) {
+				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (item_select == 0) isMove_Scene = false;
 				if (item_select == 1 && g_GameState == GAME_BASE) {
-					g_GameState = GAME_TITLE;
+					scene_t = GAME_TITLE;
 					item_select = 0;
 					menu_num = 0;
 					isMove_Scene = false;
 					isMenu = false;
+					Move_Scene = true;
 				}
-				//if (item_select == 1 && g_GameState == GAME_DUNGEON) g_GameState = GAME_BASE;
+				//if (item_select == 1 && g_GameState == GAME_DUNGEON) scene_t = GAME_BASE;
 				
 			}
 
-			if (inp.cancel)isMove_Scene = false;
+			if (inp.cancel) {
+				PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+				isMove_Scene = false;
+			}
 		}
 		else {
 			if (inp.f_up) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (--menu_num < 0) menu_num = 2;
 			}
 			if (inp.f_down) {
+				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (++menu_num > 2) menu_num = 0;
 			}
 
 			if (inp.space) {
+				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 				switch (menu_num) {
 				case 0: isItem_Menu = true;		break;
-				case 1:	isGage_Menu = true;		break;
+				case 1:	isTIPS = true;			break;
 				case 2: isMove_Scene = true;	break;
 				}
 				item_select = 0;
 			}
 
 			if (inp.cancel) {
+				PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
 				isMenu = false;
 			}
 		}
@@ -235,32 +339,37 @@ struct Menu {
 	/*ステータスを表示する枠*/
 	void Draw_Menu_Box(float w,float w5, float h,float h4) {
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-		DrawBox(0, 0, scale.Width, scale.Height, 0x000000, 1);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		const float w100 = w / 100.0f;
+		const float h100 = h / 100.0f;
 
-		//上段　所持金、発展度、生存時間
-		DrawRoundRect(w - w5, 5, w - 5, h4, 10, 10, 0x444444, 1);
-		DrawRoundRect(w - w5, 5, w - 5, h4, 10, 10, 0xaaaaaa, 0);
-		DrawRoundRect(w - w5 + 1, 6, w - 6, h4 - 1, 10, 10, 0xffffff, 0);
+		if (isMenu && !isTIPS) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			DrawBox(0, 0, scale.Width, scale.Height, 0x000000, 1);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-		//中段　レベル、経験値、体力、攻撃力、防御力
-		DrawRoundRect(w - w5, (h4 + 5), w - 5, (h4 + 5) + h4 * 1, 10, 10, 0x444444, 1);
-		DrawRoundRect(w - w5, (h4 + 5), w - 5, (h4 + 5) + h4 * 1, 10, 10, 0xaaaaaa, 0);
-		DrawRoundRect(w - w5 + 1, (h4 + 5) + 1, w - 6, (h4 + 5) + h4 * 1 - 1, 10, 10, 0xffffff, 0);
+			//上段　所持金、発展度、生存時間
+			DrawRoundRect(w - w5, 5, w - 5, h4, 10, 10, 0x444444, 1);
+			DrawRoundRect(w - w5, 5, w - 5, h4, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(w - w5 + 1, 6, w - 6, h4 - 1, 10, 10, 0xffffff, 0);
 
-		//下段	装備
-		DrawRoundRect(w - w5, (h4 + 5) + h4 * 1 + 5, w - 5, (h4 + 5) + h4 * 2, 10, 10, 0x444444, 1);
-		DrawRoundRect(w - w5, (h4 + 5) + h4 * 1 + 5, w - 5, (h4 + 5) + h4 * 2, 10, 10, 0xaaaaaa, 0);
-		DrawRoundRect(w - w5 + 1, (h4 + 5) + h4 * 1 + 6, w - 6, (h4 + 5) + h4 * 2 - 1, 10, 10, 0xffffff, 0);
+			//中段　レベル、経験値、体力、攻撃力、防御力
+			DrawRoundRect(w - w5, (h4 + 5), w - 5, (h4 + 5) + h4 * 1, 10, 10, 0x444444, 1);
+			DrawRoundRect(w - w5, (h4 + 5), w - 5, (h4 + 5) + h4 * 1, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(w - w5 + 1, (h4 + 5) + 1, w - 6, (h4 + 5) + h4 * 1 - 1, 10, 10, 0xffffff, 0);
 
-		/*左側*/
-		DrawRoundRect(5, 5, w5, h4, 10, 10, 0x444444, 1);
-		DrawRoundRect(5, 5, w5, h4, 10, 10, 0xaaaaaa, 0);
-		DrawRoundRect(5 + 1, 6, w5-1, h4 - 1, 10, 10, 0xffffff, 0);
+			//下段	装備
+			DrawRoundRect(w - w5, (h4 + 5) + h4 * 1 + 5, w - 5, (h4 + 5) + h4 * 2, 10, 10, 0x444444, 1);
+			DrawRoundRect(w - w5, (h4 + 5) + h4 * 1 + 5, w - 5, (h4 + 5) + h4 * 2, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(w - w5 + 1, (h4 + 5) + h4 * 1 + 6, w - 6, (h4 + 5) + h4 * 2 - 1, 10, 10, 0xffffff, 0);
+
+			/*左側*/
+			DrawRoundRect(5, 5, w5, h4, 10, 10, 0x444444, 1);
+			DrawRoundRect(5, 5, w5, h4, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(5 + 1, 6, w5 - 1, h4 - 1, 10, 10, 0xffffff, 0);
+		}
 
 		/*アイテムのやーつとゲージのやーつ*/
-		if (isItem_Menu || isGage_Menu) {
+		if (isItem_Menu) {
 			DrawRoundRect(w5 * 1 + 5, h4, w5 * 3, h4 * 3 + 20, 10, 10, 0x444444, 1);
 			DrawRoundRect(w5 * 1 + 5, h4, w5 * 3, h4 * 3 + 20, 10, 10, 0xaaaaaa, 0);
 			DrawRoundRect(w5 * 1 + 6, h4 + 1, w5 * 3 - 1, h4 * 3 +19, 10, 10, 0xffffff, 0);
@@ -279,21 +388,39 @@ struct Menu {
 			DrawRoundRect(w5 * 3 + 5, h4 + 20 * item_select, w5 * 4 - 20, h4 * 2 + 20 * item_select, 10, 10, 0xaaaaaa, 0);
 			DrawRoundRect(w5 * 3 + 6, h4 + 20 * item_select + 1, w5 * 4 - 21, h4 * 2 + 20 * item_select - 1, 10, 10, 0xffffff, 0);
 		}
+
+		/*TIPS表示のやーつ*/
+		if (isTIPS) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+			DrawBox(0, 0, scale.Width, scale.Height, 0x000000, 1);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+			DrawRoundRect(w100, h100, w100 * 20, h100 * 70, 10, 10, 0x444444, 1);
+			DrawRoundRect(w100, h100, w100 * 20, h100 * 70, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(w100 + 1, h100 + 1, w100 * 20 - 1, h100 * 70 - 1, 10, 10, 0xffffff, 0);
+			if (TIPS_Depth == 1) {
+				DrawRoundRect(w100 * 21, h100, w100 * 80, h100 * 90, 10, 10, 0x444444, 1);
+				DrawRoundRect(w100 * 21, h100, w100 * 80, h100 * 90, 10, 10, 0xaaaaaa, 0);
+				DrawRoundRect(w100 * 21 + 1, h100 + 1, w100 * 80 - 1, h100 * 90 - 1, 10, 10, 0xffffff, 0);
+			}
+		}
 		
 	}
 
 	/*ゲージを表示するやつ*/
-	void DrawGage(float w, float w5, float h, float h4) {
-		const int Gage_Height = h / 30;
+	void DrawGage(float w100, float h100) {
+		const int Gage_Height = scale.Height / 30;			//ゲージの幅
 		Gage_Max[0] = Base_Status_Copy[1] * 2 + 100;		//人口ゲージのマックス値を設定
 		Gage[2] = Base_Status_Copy[1];						//発展度
 
+		str.SuperString(w100 * 20.5, h100 * 41.5f, "ゲージシステム", 0xccccff,1,scale.Width / 100 * 3);
 
 		for (int i = 0; i < 5; i++) {
 			
-			DrawString(w / 100.0f * 22, h / 100.0f * 27 + Gage_Height * 3 * i, Gage_Name[i], Gage_Color[i], 1);
-			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + (w / 3) * (Gage[i] / Gage_Max[i]), (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 1);
-			DrawBox(w5 + 20, (h4 + Gage_Height * 3 * i + 40), (w5 + 20) + (w / 3), (h4 + Gage_Height * 3 * i + 40) + Gage_Height, Gage_Color[i], 0);
+			//DrawString(w100 * 22, h100 * 27 + Gage_Height * 3 * i, Gage_Name[i], Gage_Color[i], 1);
+			str.SuperString(w100 * 2, h100 * 47.5f + Gage_Height * 3 * i, Gage_Name[i], Gage_Color[i], 0, scale.Width / 100 * 2);
+			DrawBox(w100 * 2, (h100 * 51 + Gage_Height * 3 * i), (w100 * 2) + (w100 * 37) * (Gage[i] / Gage_Max[i]), (h100 * 51 + Gage_Height * 3 * i) + Gage_Height, Gage_Color[i], 1);
+			DrawBox(w100 * 2, (h100 * 51 + Gage_Height * 3 * i), (w100 * 2) + (w100 * 37), (h100 * 51 + Gage_Height * 3 * i) + Gage_Height, Gage_Color[i], 0);
 
 		}
 		
@@ -332,18 +459,6 @@ struct Menu {
 		Gage_Max[num] += para;
 	}
 
-	void Input_Result(int kind_work, int par, int money) {
-		switch (kind_work) {
-		case 0:
-			
-			break;
-
-		case 1:
-
-			break;
-		}
-	}
-
 	/*仕事の報酬表示*/
 	void Result_Work() {
 		const int w = scale.Width;
@@ -355,18 +470,28 @@ struct Menu {
 	}
 
 private:
-	char Menu_String[4][20] = {"所持品を見る","現状の確認","タイトルへ戻る","街へ戻る"};	//メニューレイヤー1で表示するやつ
+	char Menu_String[4][20] = {"所持品を見る","ＴＩＰＳ","タイトルへ戻る","街へ戻る"};		//メニューレイヤー1で表示するやつ
 	char Item_Select_String[2][14] = { "装備する/使う","捨てる" };							//アイテム一覧でアイテム選択時に表示するやつ
 	short color = 0;																		//現在の位置を表すのに使うやつ
 	int menu_num = 0,menu_num2 = 0;															//メニュー選択に使うやつ
 	int item_kind = 0;																		//現在の位置のアイテムが何か調べてもらうやつ
 	const unsigned int white_color = 0xffffff;												//白
 	const unsigned int blue_color = 0x6666ff;												//青
-	float Gage[5] = { 0,0,0,50,0 };														//ゲージの値を保存するやつ
-	float Gage_Max[5] = { 100,100,100,100,100 };													//各ゲージのマックスの値
-	char Gage_Name[5][11] = { "人口ゲージ","魔物ゲージ","発展ゲージ","食料ゲージ","武力ゲージ" };	//ゲージの名前
-	unsigned int Gage_Color[5] = { 0xffff00,0x880088,0x00ffff,0x00ff00,0xff0000 };
+	float Gage[5] = { 0,0,0,50,100 };														//ゲージの値を保存するやつ
+	float Gage_Max[5] = { 100,100,100,100,100 };														//各ゲージのマックスの値
+	char Gage_Name[5][11] = { "人口ゲージ","魔物ゲージ","発展ゲージ","食料ゲージ","武力ゲージ" };		//ゲージの名前
+	unsigned int Gage_Color[5] = { 0xffff00,0x880088,0x00ffff,0x00ff00,0xff0000 };						//各ゲージの色
+	char TIPS_String[7][21] = { "操作方法","目的とルール","キャラクター","拠点でできる事","畑でできる事","ダンジョン","ゲージ" };	//TIPSの文字列
+	int TIPS_Depth = 0;																	//TIPSメニューのれべる
+	int TIPS_Select_Pages[7] = { 2,2,4,5,5,5,4 };										//各TIPSのページ数
+	int TIPS_Select[2] = {0};															//TIPS選択と各ページ用
 	int Base_Status_Copy[3] = { 0 };
+
+	bool Init_Flg = true;
+
+	int SelectMove_SE = 0;
+	int Select_SE = 0;
+	int Cansel_SE = 0;
 };
 
 extern Menu menu;

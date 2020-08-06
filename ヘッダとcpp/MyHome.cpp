@@ -3,18 +3,22 @@
 
 #pragma warning(disable : 4244)
 
-Home home;
-
-
+//Home home;
 
 void Home_Draw(int width, int height) {
-	if (home.flg) { home.ImageInput(&home); }
+	//if (home.flg) { home.ImageInput(&home); home.flg = false; }
 
 	const float w = (float)width / 100.0f;
 	const float h = (float)height / 100.0f;
 	const int size = w / 100;
 
+	/*背景*/
 	DrawExtendGraph(0, 0, width, height, home.background, 1);
+
+	/*BGM*/
+	if (CheckSoundMem(home.bgm) == false && CheckSoundMem(home.Bed_bgm) == false) {
+		PlaySoundMem(home.bgm, DX_PLAYTYPE_BACK, 1);
+	}
 
 	if (ch.Pic_Item || ch.Put_Item) {
 		/*ボックスアイテム表示*/
@@ -117,7 +121,7 @@ void Home_Draw(int width, int height) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, home.Bed_Alpha);
 		DrawBox(0, 0, width, height, 0x000000, 1);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		
+
 		if (home.Bed_Alpha >= 255) home.Bed_Alpha_Add *= -1;
 		if (home.Bed_Alpha < 0) {
 			home.Bed_Alpha = 0;
@@ -132,34 +136,49 @@ void Home_Draw(int width, int height) {
 	if (!ch.GoTo_Bed) {
 		if (!ch.Open_ItemBox) {
 			if (inp.f_up) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (--home.home_select < 0) home.home_select = 3;
 			}
 			if (inp.f_down) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (++home.home_select > 3) home.home_select = 0;
 			}
 			if (inp.space) {
+				PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, 1);
 				if (home.home_select == 0) ch.Open_ItemBox = true;
-				if (home.home_select == 1) ch.GoTo_Bed = true;
+				if (home.home_select == 1) {
+					ch.GoTo_Bed = true;
+					StopSoundMem(home.bgm);
+					PlaySoundMem(home.Bed_bgm, DX_PLAYTYPE_BACK, 1);
+				}
 				if (home.home_select == 2) g_GameState = GAME_HATAKE;
-				if (home.home_select == 3) g_GameState = GAME_BASE;
+				if (home.home_select == 3) {
+					StopSoundMem(home.bgm);
+					g_GameState = GAME_BASE;
+				}
 			}
 		}
 		else if (ch.Pic_Item) {
 			if (inp.f_up) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (--home.Box_Select3 < 0) home.Box_Select3 = 29;
 			}
 			if (inp.f_down) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (++home.Box_Select3 > 29) home.Box_Select3 = 0;
 			}
 			if (inp.space) {
+				PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Pic_Item_Box(&ch, home.Box_Select3);
 			}
 			if (inp.f_right) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Pic_Item = false;
 				ch.Put_Item = true;
 				home.Box_Select3 = 0;
 			}
 			if (inp.cancel) {
+				PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Pic_Item = false;
 				home.Box_Select3 = 0;
 			}
@@ -171,36 +190,45 @@ void Home_Draw(int width, int height) {
 		}
 		else if (ch.Put_Item) {
 			if (inp.f_up) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (--home.Box_Select4 < 0) home.Box_Select4 = 9;
 			}
 			if (inp.f_down) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (++home.Box_Select4 > 9) home.Box_Select4 = 0;
 			}
 			if (inp.space) {
+				PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Put_Item_Box(&ch, home.Box_Select4);
 			}
 			if (inp.f_left) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Put_Item = false;
 				ch.Pic_Item = true;
 				home.Box_Select4 = 0;
 			}
 			if (inp.cancel) {
+				PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Put_Item = false;
 				home.Box_Select4 = 0;
 			}
 		}
 		else if (ch.Open_ItemBox) {
 			if (inp.f_up) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (--home.Box_Select2 < 0) home.Box_Select2 = 1;
 			}
 			if (inp.f_down) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, 1);
 				if (++home.Box_Select2 > 1) home.Box_Select2 = 0;
 			}
 			if (inp.space) {
+				PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, 1);
 				if (home.Box_Select2 == 0) ch.Pic_Item = true;
 				if (home.Box_Select2 == 1) ch.Put_Item = true;
 			}
 			if (inp.cancel) {
+				PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, 1);
 				ch.Open_ItemBox = false;
 				home.Box_Select2 = 0;
 			}
