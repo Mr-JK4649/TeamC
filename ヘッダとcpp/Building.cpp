@@ -47,7 +47,7 @@ int Building_Trriger(float w25, float h100, float x1, float y1, float x2, float 
 	const float sx = w25 * x1, ex = w25 * x2;
 	const float sy = h100 * y1, ey = h100 * y2;
 
-	DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
+	//DrawBox(sx + base.move, sy, ex + base.move, ey, 0xffff00, 0);
 
 	if (ch.HitCheck(&ch, sx, sy, ex, ey)) {
 		//DrawBox(5, 5, 100, 100, 0xff0000, 1);

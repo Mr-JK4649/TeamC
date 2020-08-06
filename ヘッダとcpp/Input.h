@@ -22,7 +22,7 @@ struct Input {
 
 
 	/*‚»‚Ì‘¼‚ÌƒL[*/
-	bool space = 0,start = 0,cancel = 0,x = 0, z = 0,y = 0;
+	bool space = 0,start = 0,sele = 0,cancel = 0,x = 0, z = 0,y = 0;
 
 	int a=0;
 
@@ -48,6 +48,7 @@ struct Input {
 		if (NowKey & PAD_INPUT_C)		inp->y = true;			else inp->y = false;			//‚xƒ{ƒ^ƒ“ˆê‰ñ
 		if (NowKey & PAD_INPUT_X)		inp->x = true;			else inp->x = false;			//‚wƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_R)		inp->start = true;		else inp->start = false;		//‚r‚s‚`‚q‚sƒ{ƒ^ƒ“ˆê‰ñ
+		if (KeyFlg & PAD_INPUT_L)		inp->sele = true;		else inp->sele = false;			//‚r‚d‚k‚d‚b‚sƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_LEFT)	inp->f_left = true;		else inp->f_left = false;		//¶ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_RIGHT)	inp->f_right = true;	else inp->f_right = false;		//‰Eˆê‰ñ
 		if (KeyFlg & PAD_INPUT_UP)		inp->f_up = true;		else inp->f_up = false;			//ãˆê‰ñ

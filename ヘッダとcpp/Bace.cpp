@@ -11,19 +11,28 @@
 #pragma warning(disable : 6385)
 
 Menu menu;
-Base base;
 
 
 void DrawGameMain(int width, int height) {
 	
-	/*初期化*/
-	if (base.flg) { base.ImageInput(&base); base.flg = false; }
 
 	/*拠点の描画関数*/
 	Base_Disp(width, height);						//拠点内の描画
 
+	/*BGMとシーン移動の処理*/
+	if (menu.Move_Scene) {
+		if (g_GameState != menu.scene_t) {
+			StopSoundMem(base.bgm);
+			g_GameState = menu.scene_t;
+		}
+		menu.Move_Scene = false;
+	}
+	else if (CheckSoundMem(base.bgm) == false) {
+		PlaySoundMem(base.bgm, DX_PLAYTYPE_BACK, 1);
+	}
+
 	/*拠点の更新関数*/
-	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg)
+	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu)
 		Base_Update(width, height);					//拠点内の移動、その他更新
 	
 
@@ -47,18 +56,23 @@ void Base_Disp(int width, int height) {
 
 
 	menu.Draw();
-	if (menu.isMenu == true) {  menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
+	if (menu.isMenu && !menu.isTIPS) {  menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
 	if (menu.isItem_Menu) { Menu_Item(menu.item_select); }										//アイテムメニューを開く
 	if (menu.isItem_Equip) { Use_Equipment_Item(menu.item_select); menu.isItem_Equip = false; }	//アイテムの装備、使用
 	if (menu.isItem_Delete) { Delete_Item(menu.item_select); menu.isItem_Delete = false; }		//アイテムの削除
-	if (!str.setTex && inp.start && !menu.Result_DWork_Flg && !menu.Result_FWork_Flg) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
+	if (!str.setTex &&
+		inp.start &&
+		!menu.Result_DWork_Flg &&
+		!menu.Result_FWork_Flg &&
+		!menu.isTIPS &&
+		!menu.isGage_Menu) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
 
 	DrawFormatString(5, 5, 0xffffff, "%d", inp.a);
 }
 
 /*拠点のシステム*/
 void Base_Update(int width, int height) {
-
+	
 	/*キャラの移動など*/
 	if (!menu.isMenu && !str.setTex && !menu.isBuilding_Enter)Chara_Update();
 
@@ -73,7 +87,11 @@ void Base_Update(int width, int height) {
 
 	/*建物の入り口を調べた時の*/
 	if (menu.Enter_Num != 99 && !menu.isMenu && inp.space == true) {
-		menu.isBuilding_Enter =!menu.isBuilding_Enter;
+		if (!menu.isBuilding_Enter) {
+			PlaySoundMem(base.BC_window_pop, DX_PLAYTYPE_BACK, TRUE);
+			menu.isBuilding_Enter = true;\
+		}
+		else menu.isBuilding_Enter = false;
 		menu.Enter_Select = 0;
 	}
 

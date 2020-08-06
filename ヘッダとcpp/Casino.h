@@ -2,7 +2,7 @@
 
 #include "character.h"
 
-Casino casino;
+//Casino casino;
 
 struct Casino_System {
 	bool Dragon_Tiger = false;		//ドラゴンタイガーをプレイ
@@ -221,7 +221,7 @@ struct Casino_System {
 					break;
 
 				case 1:																		//ＢＥＴタイム
-					DrawString(w * 2, h * 71, "それではＢＥＴタイムに移ります。", 0xffffff, 1);
+					DrawString(w * 2, h * 71, "何に賭けますか？", 0xffffff, 1);
 					for (int i = 0; i < 4; i++) {
 						if (Bet_Select == i) color = blue_color;
 						str.SuperString(w * 85, h * (73 + (size / 2) * i), Bet_Select_String[i], color, 1, size * 2);
@@ -364,10 +364,11 @@ struct Casino_System {
 						}
 					}
 					DrawFormatString(w * 2, h * 75, 0xffffff, "「%s」です。%9dＧの払い戻しになります。", DT_Result_Sting[DT_Result], DT_Result_Money);
-					ch.Add_Base_Status(&ch, 0, DT_Result_Money);
+					
 
 					str.SuperString(w * 85, h * 80, "戻る", 0xff0000, 1, size * 3);
 					if (inp.space) {
+						ch.Add_Base_Status(&ch, 0, DT_Result_Money);
 						Depth = 0;
 						DT_Phase = 0;
 						Dragon_Tiger = false;
@@ -515,10 +516,11 @@ struct Casino_System {
 					DrawString(w * 2, h * 51, "結果は..............\n", 0xffffff, 1);
 					DrawFormatString(w * 2, h * 75, 0xffffff, "「%s」です。\n%9dＧ\nの払い戻しになります。", CW_Result_String[CW_Result], CW_Result_Money);
 
-					ch.Add_Base_Status(&ch, 0, CW_Result_Money);
+					
 
 					str.SuperString(w * 85, h * 80, "戻る", 0xff0000, 1, size * 3);
 					if (inp.space) {
+						ch.Add_Base_Status(&ch, 0, CW_Result_Money);
 						Bet_Money = 0;
 						CW_Tie_Select = 0;
 						CW_Result = 0;

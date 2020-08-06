@@ -53,8 +53,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	SetDrawScreen(DX_SCREEN_BACK);					// 描画先画面を裏にする
 
+	//Init();										//画像や音楽などのファイルを初期化する
 
-	g_GameState = GAME_TITLE;
+	g_GameState = GAME_INIT;
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
@@ -70,7 +71,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_TITLE:	DrawGameTitle(scale.Width, scale.Height); break;		//ゲームタイトル処理
 
-		//case GAME_INIT:		GameInit();  break;									//ゲーム初期処理
+		case GAME_INIT:		Init();  break;											//ゲーム初期処理
+
+		case GAME_STORY:	Story(scale.Width, scale.Height); break;				//ゲームシーケンス
 
 		//case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
 
@@ -78,21 +81,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_BASE:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
-		case GAME_SHOP: Shop_Draw(scale.Width, scale.Height);	break;				//拠点の店
+		case GAME_SHOP:		Shop_Draw(scale.Width, scale.Height);	break;			//拠点の店
 
-		case GAME_HOME: Home_Draw(scale.Width, scale.Height); break;				//自宅
+		case GAME_HOME:		Home_Draw(scale.Width, scale.Height); break;			//自宅
 
-		case GAME_WORK: Work_Draw(scale.Width, scale.Height); break;				//仕事紹介所
+		case GAME_WORK:		Work_Draw(scale.Width, scale.Height); break;			//仕事紹介所
 
 		//case GAME_HATAKE: Game_Hatake(scale.Width, scale.Height); break;			//畑関数
 
-		case GAME_CASINO: Casino_Draw(scale.Width, scale.Height);					//カジノ
+		case GAME_CASINO:	Casino_Draw(scale.Width, scale.Height);	break;			//カジノ
 
 		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
 
 		//case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
 
-		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
+		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;				// ゲームオーバー描画処理
 
 		}
 
