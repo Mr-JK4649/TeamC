@@ -3,6 +3,9 @@
 //キー入力のやつ
 void KeyInput(void);
 
+//ゲームシーケンス？
+void Story(int width, int height);
+
 // ゲーム初期化処理
 void GameInit(void);
 
@@ -39,3 +42,5 @@ void DrawGameResult(int width, int height);
 // ゲームオーバー描画処理
 void DrawGameOver(int width, int height);
 
+//構造体の初期化
+void Init(void);

@@ -50,6 +50,7 @@ struct Chara {
 
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
+		/*キャラ画像の初期化*/
 		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
 
 		p->c_size = scale.Width / 6;
@@ -62,6 +63,12 @@ struct Chara {
 		h = scale.Height;				//画面の高さを取得
 		h4 = scale.Height / 4;			//画面の高さを4で割る
 		size = scale.Width / 100;		//画面の横幅に合わせた文字サイズ
+
+		/*効果音の初期化*/
+		p->FootSteps[0] = LoadSoundMem("sounds/拠点の足音1.mp3");
+		p->FootSteps[1] = LoadSoundMem("sounds/拠点の足音2.mp3");
+		p->FootSteps[2] = LoadSoundMem("sounds/拠点の足音3.mp3");
+		p->FootSteps[3] = LoadSoundMem("sounds/拠点の足音4.mp3");
 	}
 
 	/*キャラ画像の表示と当たり判定の表示*/
@@ -78,12 +85,6 @@ struct Chara {
 		//DrawFormatString(5, 5, 0x000000, "l:%4d r:%4d u:%4d d:%4d", inp.left, inp.right, inp.up, inp.down);
 		//DrawFormatString(5, 45, 0x000000, "n:%d a:%d", p->num, p->add);
 
-		if (inp.x) {
-			p->Base_Status[1] += 1;
-		}
-
-		DrawFormatString(5, 25, 0xffffff, "次に必要な経験値 = %d", (int)p->Next_Level_Exp);
-		DrawFormatString(5, 45, 0xffffff, "現在の経験値		= %d", p->Chara_Status[1]);
 	}
 
 	/*キャラの移動*/
@@ -139,21 +140,26 @@ struct Chara {
 	/*キャラの移動アニメーション*/
 	void Anime(Chara* p) {
 		
-		const int fps = 60;
+		const int fps = 80;
 		const int a = 0,b = fps / 4,c = fps / 2,d = fps / 4 * 3;
 
 
 		switch (count % fps) {
 			case a:
+				PlaySoundMem(p->FootSteps[0], DX_PLAYTYPE_BACK, TRUE);
 				p->add = 1;
 				break;
 
 			case b:
+				p->add = 0;
+				break;
+
 			case d:
 				p->add = 0;
 				break;
 
 			case c:
+				PlaySoundMem(p->FootSteps[1], DX_PLAYTYPE_BACK, TRUE);
 				p->add = 2;
 				break;
 		}
@@ -228,7 +234,7 @@ struct Chara {
 		/*上段*/
 		DrawFormatString((w - w5) + 5, 10, 0xffffff, "所持金\n　　　 %9dＧ", p->Base_Status[0]);
 		DrawFormatString((w - w5) + 5, 10 + size * 4, 0xffffff, "発展度\n　　　 %9d％", p->Base_Status[1]);
-		DrawFormatString((w - w5) + 5, 10 + size * 8, 0xffffff, "生存時間\n　　　 %9d秒", p->Base_Status[2]/60);
+		DrawFormatString((w - w5) + 5, 10 + size * 8, 0xffffff, "生存時間\n %3d時間 %2d分 %2d秒", p->Base_Status[2]/216000,p->Base_Status[2]/3600%60,p->Base_Status[2]/60%60);
 
 		/*中段*/
 		str.SuperString((w - w5) + w5 / 2, 10 + size * 2 * (0 + 7), "ステータス", 0xffffff, 1, size * 2);
@@ -349,14 +355,16 @@ private:
 	int jk[12] = {0};									//キャラの画像
 	
 	int add=0;											//キャラの画像のアニメーション変数
-	int Base_Status[3] = { 999,0,0 };					//キャラの所持金、街の発展度、経過時間
-	int Chara_Status[7] = { 1,0,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
+	int Base_Status[3] = { 999,999,0 };					//キャラの所持金、街の発展度、経過時間
+	int Chara_Status[7] = { 1,999,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
 	int Max_Hp = 50;									//キャラのマックス体力
 	float Next_Level_Exp = 50;							//次のレベルアップに必要な経験値
 	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品
 	int Box_Item[30] = {0};								//アイテムボックス
 
-	const int zero = 0, one = 1;
+	const int zero = 0, one = 1;						//Return用の変数
+
+	int FootSteps[4] = { 0 };							//足音
 };
 
 extern Chara ch;

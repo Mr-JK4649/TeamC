@@ -10,6 +10,7 @@
 enum GAME_MODE {
 	GAME_TITLE,		//タイトル
 	GAME_INIT,		//初期化
+	GAME_STORY,		//シーケンス？
 	GAME_END,		//エンド
 	GAME_BASE,		//拠点
 	GAME_HATAKE,	//畑のやつ

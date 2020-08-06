@@ -21,7 +21,7 @@ Shield shi_work;																		//盾避難用のあれ
 
 /*キャラの表示*/
 void Chara_Disp() {
-	if (ch.flg) { ch.Init(&ch); ch.flg = false; }
+	if (ch.flg == true) { ch.Init(&ch); ch.flg = false; }
 	
 	/*キャラクターの描画*/
 	ch.Disp(&ch);

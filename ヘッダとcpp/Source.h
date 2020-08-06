@@ -2,23 +2,54 @@
 #include "DxLib.h"
 #include <stdio.h>
 
+struct SoundE {
+	int flg = true;
+
+	int SelectMove_SE = 0;			//メニューでの選択上下音
+	int Select_SE = 0;				//メニューでの決定音
+	int Cansel_SE = 0;				//メニューでのキャンセル音
+
+	
+
+	void Init(SoundE* p) {
+		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
+		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
+		p->Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
+
+		
+	}
+};
+
+extern SoundE se;
 
 /*タイトルシーンの画像*/
 struct Title {
 	int image[2] = { 0 };
 	int Arrow = 0;
+	
+	int bgm = 0;
+	int SelectMove_SE = 0;
+	int Select_SE = 0;
+
 	bool flg = true;
 
 	void ImageInput(struct Title* p) {
 		p->image[0] = LoadGraph("images/タイトル案１上選択矢印.jpg");
 		p->image[1] = LoadGraph("images/タイトル案１下選択矢印.jpg");
+
+		p->bgm = LoadSoundMem("sounds/タイトルBGM2.mp3",3);
+		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
+		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
 	}
 };
+
+extern Title title;
 
 /*ステージシーンの画像*/
 struct Stage {
 	int background = 0;
-	int Button;
+	int Button = 0;
+	bool flg = true;
 
 	void ImageInput(struct Stage* p) {
 		p->background = LoadGraph("images/aaa.png");
@@ -26,6 +57,8 @@ struct Stage {
 	}
 
 };
+
+extern Stage stage;
 
 /*拠点シーンの画像*/
 struct Base {
@@ -35,10 +68,46 @@ struct Base {
 	bool flg = true;
 	int move=0;
 
+	int bgm = 0;
+	int SelectMove_SE = 0;
+	int Select_SE = 0;
+	int Cansel_SE = 0;
+
+	int Gage_Icon = 0;
+
+	int BC_window_pop = 0;			//建物に入る際の確認ウィンドウをポップアップする音
+
+	int Tips_img[7][5] = { 0 };		//TIPSの画像
+
 	void ImageInput(struct Base* p) {
 		p->background = LoadGraph("images/町の風景1.png");
 		p->background2 = LoadGraph("images/町の風景2.png");
 		p->shadow = LoadGraph("images/街の影.png");
+		p->Gage_Icon = LoadGraph("images/ゲージアイコン.png");
+
+		p->bgm = LoadSoundMem("sounds/拠点BGM2.mp3", 3);
+		
+		p->BC_window_pop = LoadSoundMem("sounds/建物確認.mp3");
+
+		//操作方法TIPS
+		Tips_img[0][0] = LoadGraph("images/C操作方法.png");
+		Tips_img[0][1] = LoadGraph("images/K操作方法.png");
+
+		//目的とルール
+		Tips_img[1][0] = LoadGraph("images/目的.png");
+		Tips_img[1][1] = LoadGraph("images/ルール.png");
+
+		//キャラクターTIPS
+		Tips_img[2][0] = LoadGraph("images/ステータス1.png");
+		Tips_img[2][1] = LoadGraph("images/ステータス2.png");
+		Tips_img[2][2] = LoadGraph("images/装備品.png");
+		Tips_img[2][3] = LoadGraph("images/所持品.png");
+
+		//ゲージについて
+		Tips_img[6][0] = LoadGraph("images/ゲージについて.png");
+		Tips_img[6][1] = LoadGraph("images/各ゲージについて1.png");
+		Tips_img[6][2] = LoadGraph("images/各ゲージについて2.png");
+		Tips_img[6][3] = LoadGraph("images/各ゲージについて3.png");
 	}
 
 };
@@ -72,6 +141,8 @@ struct Casino {
 
 };
 
+extern Casino casino;
+
 struct Work {
 	int background = 0;
 	bool flg = true;
@@ -81,15 +152,20 @@ struct Work {
 	}
 };
 
+extern Work work;
+
 struct Shop {
-	int background[6] = {0,0,0,0,0,0};
-	int Weapon_img[5] = { 0 };
-	int Shield_img[3] = { 0 };
-	int Item_img[2] = { 0 };
-	int Cover[5] = { 0 };
+	int background[6] = {0,0,0,0,0,0};		//武器屋背景
+	int Weapon_img[5] = { 0 };				//武器の画像
+	int Shield_img[3] = { 0 };				//盾の画像
+	int Item_img[2] = { 0 };				//アイテムの画像
+	int Cover[5] = { 0 };					//買えない商品のカバー
 	bool flg = true;
 	
-
+	int bgm = 0;							//ＢＧＭ
+	int SelectMove_SE = 0;					//選択時の音
+	int Select_SE = 0;						//決定時の音
+	int Cansel_SE = 0;						//キャンセル時の音
 
 	void ImageInput(Shop* p) {
 		p->background[0] = LoadGraph("images/ShopSele1.jpg");
@@ -117,6 +193,8 @@ struct Shop {
 
 		p->Item_img[0] = LoadGraph("images/ポーション.png");
 		p->Item_img[1] = LoadGraph("images/ショップ_タピオカＭＴ.png");
+
+		
 	}
 
 };
@@ -144,11 +222,19 @@ struct Home {
 	unsigned int white_color = 0xffffff;
 	unsigned int blue_color = 0x6666ff;
 
+	int bgm = 0;
+	int Bed_bgm = 0;
+
 	void ImageInput(Home* p) {
 		p->background = LoadGraph("images/home2.jpg");
+
+		p->bgm = LoadSoundMem("sounds/自宅BGM2.mp3");
+		p->Bed_bgm = LoadSoundMem("sounds/自宅ベッドBGM.mp3");
 	}
 
 };
+
+extern Home home;
 
 struct HATAKE {
 	int image = 0;
@@ -178,3 +264,5 @@ struct HATAKE {
 		p->mizu[2] = LoadGraph("images/ninjinmizu.png");
 	}
 };
+
+extern HATAKE hatake;
