@@ -44,3 +44,6 @@ void DrawGameOver(int width, int height);
 
 //\‘¢‘Ì‚Ì‰Šú‰»
 void Init(void);
+
+//ƒ_ƒ“ƒWƒ‡ƒ“
+void DrawGameDungeon(int Width, int Height);

@@ -24,8 +24,8 @@
 * 変数の宣言
 ********************************************************************/
 int g_GameState;			//ゲームのシーン管理
-void DrawHatake(int Width, int Height);
-void Game_Hatake(int Width, int Height);
+//void DrawHatake(int Width, int Height);
+//void Game_Hatake(int Width, int Height);
 Input inp;
 String str;
 WindowScaler scale;
@@ -76,6 +76,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 		case GAME_STORY:	Story(scale.Width, scale.Height); break;				//ゲームシーケンス
 
 		//case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
+
+		case GAME_DUNGEON:  DrawGameDungeon(scale.Width, scale.Height); break;			//ゲームダンジョン画面処理
 
 		case GAME_BASE:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
