@@ -32,9 +32,42 @@ void DrawGameMain(int width, int height) {
 	}
 
 	/*拠点の更新関数*/
-	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu)
+	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu && !menu.isTutorial)
 		Base_Update(width, height);					//拠点内の移動、その他更新
 	
+
+	if (menu.isTutorial) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		DrawBox(0, 0, width, height,0x000000,TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		
+		const float w100 = (float)width / 100.0f;
+		const float h100 = (float)height / 100.0f;
+
+		DrawRoundRect(w100 * 21, h100, w100 * 80, h100 * 90, 10, 10, 0x444444, 1);
+		DrawRoundRect(w100 * 21, h100, w100 * 80, h100 * 90, 10, 10, 0xaaaaaa, 0);
+		DrawRoundRect(w100 * 21 + 1, h100 + 1, w100 * 80 - 1, h100 * 90 - 1, 10, 10, 0xffffff, 0);
+
+		
+		DrawExtendGraph(w100 * 22, h100 * 4, w100 * 79, h100 * 82, base.Tutorial_img[menu.Tutorial_Select], 1);
+		DrawFormatString(w100 * 67, h100 * 85, 0xffffff, "Pages %d / %d", menu.Tutorial_Select + 1, 3);
+
+		if (inp.f_left) {
+			PlaySoundMem(se.SelectMove_SE,DX_PLAYTYPE_BACK,TRUE);
+			if (--menu.Tutorial_Select < 0) menu.Tutorial_Select = 2;
+		}
+		if (inp.f_right) {
+			PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
+			if (++menu.Tutorial_Select > 2) menu.Tutorial_Select = 0;
+		}
+
+		if (inp.cancel || inp.space) {
+			PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+			menu.Tutorial_Select = 0;
+			menu.isTutorial = false;
+		}
+		
+	}
 
 }
 

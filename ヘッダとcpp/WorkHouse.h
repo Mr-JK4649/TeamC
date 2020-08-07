@@ -42,6 +42,56 @@ struct Working {
 				wp->color = wp->white_color;
 			}
 		}
+		if (wp->Depth == 2) {
+			for (int i = 0; i < 3; i++) {
+				if (Work_Select[2] == i)wp->color = wp->blue_color;
+				str.SuperString(ch.w / 2, ch.h / 100.0f * (41 + 8 * i), wp->Selct_String3[i], wp->color, 1, ch.size * 2);
+				wp->color = wp->white_color;
+			}
+
+			if (inp.space) {
+				
+
+			}
+		}
+		if (wp->Depth == 3) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, Anim_Alpha);
+			DrawBox(0, 0, ch.w, ch.h, 0x000000, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+			if (Anim_Count == 0) {
+				if (Anim_Alpha > 255) Anim_Count = 1;
+				Anim_Alpha += 2;
+			}
+			if (Anim_Count == 1) {
+				Anim_Alpha -= 4;
+				if (Anim_Alpha < 0) {
+					Anim_Alpha = 0;
+					Anim_Count = 2;
+				}
+			}
+			if (Anim_Count == 2) {
+				const int w = ch.w;
+				const int h = ch.h;
+				const int w5 = w / 5;
+				const int h4 = h / 4;
+
+
+				DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0x444444, 1);
+				DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0xaaaaaa, 0);
+				DrawRoundRect(6, h - (h4 - 1), w - 6, h - 6, 10, 10, 0xffffff, 0);
+				str.SuperString(w / 2, h - (h / 10), "‚n‚j", 0xff0000, 1, ch.size * 2);
+				if (isPower_Work) {
+					DrawFormatString(10, (h - h4) + 5, 0xffffff, "ŠX‚Ì”­“W‚É‹¦—Í‚µ‚½Ž–‚É‚æ‚èAˆÈ‰º‚Ì•ñV‚ð“¾‚½B\n‚¨‹à@+%9d‚f\n”­“W“x+%9d“", Result_Money, 5);
+				}
+				if (isFood_Work) {
+					DrawFormatString(10, (h - h4) + 5, 0xffffff, "H—¿’²’B‚ð‚µ‚½Ž–‚É‚æ‚èAˆÈ‰º‚Ì•ñV‚ð“¾‚½B\n‚¨‹à@+%9d‚f\nH—¿@+%9d“", Result_Money, 5);
+				}
+
+				
+			}
+		}
+		
 	}
 
 	void Update(Working* wp) {
@@ -69,6 +119,7 @@ struct Working {
 					ch.Add_Base_Status(&ch, 1, 5);							//”­“W“x‚ð‘‚â‚·
 
 					menu.Result_DWork_Flg = true;
+					isPower_Work = true;
 				}
 
 				//H—¿’²’B
@@ -78,25 +129,62 @@ struct Working {
 					menu.Inclease_Gage(3, 5);								//H—¿ƒQ[ƒW‚ð‘‚â‚·
 
 					menu.Result_FWork_Flg = true;
+					isFood_Work = true;
 				}
 
 				wp->Work_Select[1] = 0;
-				wp->Depth = 0;
+				wp->Depth = 3;
 				ch.Add_Base_Status(&ch, 0, Result_Money);					//•ñV‚Ì‚¨‹à
-				menu.Result_Work_Money = Result_Money;						//Œ‹‰Ê•\Ž¦—p‚Ì•Ï”‚É‘ã“ü
-				g_GameState = GAME_BASE;
+				menu.Input_Work_Result(Result_Money, 5, 5);					//Œ‹‰Ê•\Ž¦—p‚Ì•Ï”‚É‘ã“ü
+				
 			}
 			else if (wp->Depth == 2) {
-				for (int i = 0; i < 2; i++) {
-					if (wp->Work_Select[wp->Depth] == i)wp->color = wp->blue_color;
-					str.SuperString(ch.w / 2, ch.h/100.0f * (41 + 8 * i), wp->Selct_String3[i], wp->color, 1, ch.size * 2);
-					wp->color = wp->white_color;
+				if (Work_Select[2] == 0) {
+					if (isPower_Work) {
+						Result_Money = 50 + ch.Return_Base_Status(&ch, 1);
+
+						ch.Add_Base_Status(&ch, 1, 5);							//”­“W“x‚ð‘‚â‚·
+
+						menu.Result_DWork_Flg = true;
+						isFood_Work = false;
+					}
+					if (isFood_Work) {
+						Result_Money = 20 + ch.Return_Base_Status(&ch, 1) / 2;
+
+						menu.Inclease_Gage(3, 5);								//H—¿ƒQ[ƒW‚ð‘‚â‚·
+
+						menu.Result_FWork_Flg = true;
+					}
+
+					wp->Work_Select[2] = 0;
+					wp->Depth = 3;
+					ch.Add_Base_Status(&ch, 0, Result_Money);					//•ñV‚Ì‚¨‹à
+					menu.Input_Work_Result(Result_Money, 5, 5);					//Œ‹‰Ê•\Ž¦—p‚Ì•Ï”‚É‘ã“ü
+				}
+				if (Work_Select[2] == 1) {
+					Result_Money = 0;
+					isPower_Work = false;
+					isFood_Work = false;
+					Depth = 1;
+				}
+				if (Work_Select[2] == 2) {
+					Result_Money = 0;
+					isPower_Work = false;
+					isFood_Work = false;
+					g_GameState = GAME_BASE;
 				}
 			}
+			else if (wp->Depth == 3) {
+
+				Depth = 2;
+				Anim_Count = 0;
+				Anim_Alpha = 0;
+			}
+			
 		}
 
 		if (inp.cancel) {
-			wp->Work_Select[wp->Depth] = 0;
+			if (wp->Depth < 3) wp->Work_Select[wp->Depth] = 0;
 			if (wp->Depth == 0)g_GameState = GAME_BASE;
 			if (wp->Depth == 1)wp->Depth = 0;
 		}
