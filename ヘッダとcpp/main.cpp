@@ -60,9 +60,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
 
+		Sleep(1);
 
 
-		ClearDrawScreen();														// 画面の初期化
+		ClearDrawScreen();															// 画面の初期化
 
 		inp.InputKey(&inp);
 		inp.InputMouse(&inp);
@@ -87,13 +88,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_WORK:		Work_Draw(scale.Width, scale.Height); break;			//仕事紹介所
 
-		case GAME_HATAKE:   Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+		case GAME_HATAKE: Game_Hatake(scale.Width, scale.Height); break;			//畑関数
 
 		case GAME_CASINO:	Casino_Draw(scale.Width, scale.Height);	break;			//カジノ
 
 		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
 
-		//case GAME_OVER:	DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
+		//case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
 
 		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;				// ゲームオーバー描画処理
 

@@ -28,6 +28,10 @@ struct Title {
 	int bgm = 0;
 	int SelectMove_SE = 0;
 	int Select_SE = 0;
+	int Start_SE = 0;
+	
+	//あらすじ用
+	int Story_bgm = 0;
 
 	bool flg = true;
 
@@ -38,6 +42,9 @@ struct Title {
 		p->bgm = LoadSoundMem("sounds/タイトルBGM2.mp3",3);
 		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
 		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
+		p->Start_SE = LoadSoundMem("sounds/ゲームスタート.mp3");
+
+		p->Story_bgm = LoadSoundMem("sounds/あらすじBGM.mp3");
 	}
 };
 
@@ -77,6 +84,8 @@ struct Base {
 
 	int Tips_img[7][5] = { 0 };		//TIPSの画像
 
+	int Tutorial_img[3] = { 0 };	//拠点に入ったときにチュートリアルを出す
+
 	void ImageInput(struct Base* p) {
 		p->background = LoadGraph("images/町の風景1.png");
 		p->background2 = LoadGraph("images/町の風景2.png");
@@ -86,6 +95,10 @@ struct Base {
 		p->bgm = LoadSoundMem("sounds/拠点BGM2.mp3", 3);
 		
 		p->BC_window_pop = LoadSoundMem("sounds/建物確認.mp3");
+
+		p->Tutorial_img[0] = LoadGraph("images/C操作方法.png");
+		p->Tutorial_img[1] = LoadGraph("images/K操作方法.png");
+		p->Tutorial_img[2] = LoadGraph("images/TIPS確認.png");
 
 		//操作方法TIPS
 		Tips_img[0][0] = LoadGraph("images/C操作方法.png");
@@ -126,6 +139,9 @@ struct Casino {
 	int Cards[52] = {0};
 	int Card_Back = 0;
 
+	int bgm = 0;
+
+
 	void ImageInput(Casino* p) {
 		p->background = LoadGraph("images/Casino.jpg");
 		LoadDivGraph("images/トランプカード2.png", 52, 13, 4, 265, 355, p->Cards, 1);
@@ -135,6 +151,8 @@ struct Casino {
 		p->Casino_War_img = LoadGraph("images/カジノウォー.png");
 		p->Dragon_img = LoadGraph("images/ドラゴン.png");
 		p->Tiger_img = LoadGraph("images/トラ.png");
+
+		p->bgm = LoadSoundMem("sounds/カジノBGM.mp3");
 	}
 
 };
@@ -161,9 +179,7 @@ struct Shop {
 	bool flg = true;
 	
 	int bgm = 0;							//ＢＧＭ
-	int SelectMove_SE = 0;					//選択時の音
-	int Select_SE = 0;						//決定時の音
-	int Cansel_SE = 0;						//キャンセル時の音
+	int Pay_SE = 0;							//支払い時の効果音
 
 	void ImageInput(Shop* p) {
 		p->background[0] = LoadGraph("images/ShopSele1.jpg");
@@ -192,7 +208,7 @@ struct Shop {
 		p->Item_img[0] = LoadGraph("images/ポーション.png");
 		p->Item_img[1] = LoadGraph("images/ショップ_タピオカＭＴ.png");
 
-		
+		p->Pay_SE = LoadSoundMem("sounds/お店の支払い.mp3");
 	}
 
 };

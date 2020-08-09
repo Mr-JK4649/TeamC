@@ -14,6 +14,8 @@ struct String {
 	bool setTex = false;
 	int TexNum = 99;
 
+	bool Fade_String_Box = false;
+
 	/******************************************************************
  　　　　　　　　　	  文字の表示を変えるやつ
 	 int型		x,y		表示したい座標
@@ -56,17 +58,17 @@ struct String {
 		length = strlen(str);
 
 		/*セリフが出る枠*/
-		Serihu_Window();
+		if(!Fade_String_Box)Serihu_Window();
 
 		/*セリフの表示*/
 		if (setTex) {
 			if (count++ >= speed) { 
 				if(s <= length) s += 2; 
 				count = 0;
+				strncpy_s(buf, str, s);
 			}
 
 			/*文字の表示*/
-			strncpy_s(buf, str, s);
 			SuperString(x, y, buf, color, 0, size);
 			if (strlen(buf) >= strlen(str))FinFlg = true;
 		}
@@ -105,7 +107,7 @@ private:
 	int length=0;
 	bool FinFlg = false;
 	int count = 0, s = 0, life = 0;
-	char buf[500] = "";
+	char buf[4000] = "";
 };
 
 extern String str;

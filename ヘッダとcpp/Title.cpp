@@ -5,21 +5,20 @@
 #include "header.h"
 
 
-//Title title;
 
 void DrawGameTitle(int Width, int Height) {
 
 	const float w = (float)Width * 4.0 / 100.0;
 	const float h = (float)Height / 100.0;
+	static bool Start_Anim_Flg = false;
+	static int Start_Anime_Count = 0;
 
-	//ˆê‰ñ‚¾‚¯‰Šú‰»
-	//if (title.flg) { title.ImageInput(&title); title.flg = false; }
 
 	/*”wŒi‚Ì•\¦*/
 	DrawExtendGraph(0, 0, Width, Height, title.image[title.Arrow], 1);
 
 	/*‚a‚f‚l‚ÌÄ¶*/
-	if (CheckSoundMem(title.bgm) == false) {
+	if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
 		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);
 		DrawBox(0, 0, 200, 200, 0xffff00, 1);
 	}
@@ -31,20 +30,35 @@ void DrawGameTitle(int Width, int Height) {
 	SetFontSize(16);
 	
 	
-	if (inp.f_up) {
+	if (!Start_Anim_Flg && inp.f_up) {
 		PlaySoundMem(title.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 		if (--title.Arrow < 0) title.Arrow = 1;
 	}
-	if (inp.f_down) {
+	if (!Start_Anim_Flg && inp.f_down) {
 		PlaySoundMem(title.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 		if (++title.Arrow > 1) title.Arrow = 0;
 	}
 
-	if (inp.space) {
+	if (!Start_Anim_Flg && inp.space) {
 		PlaySoundMem(title.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 		StopSoundMem(title.bgm);
-		if (title.Arrow == 0) g_GameState = GAME_BASE;
+		if (title.Arrow == 0) Start_Anim_Flg = true;
 		if (title.Arrow == 1) g_GameState = END;
+	}
+
+	/*ˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“—p*/
+	if (Start_Anim_Flg) {
+		if (CheckSoundMem(title.Start_SE) == false) PlaySoundMem(title.Start_SE, DX_PLAYTYPE_BACK, TRUE);
+		SetDrawArea(0 + Start_Anime_Count, 0 + (Start_Anime_Count / 2), Width - Start_Anime_Count, Height - (Start_Anime_Count / 2));
+		
+		if (Start_Anime_Count > Width / 2) {
+			g_GameState = GAME_STORY;
+			Start_Anime_Count = 0;
+			Start_Anim_Flg = false;
+			SetDrawArea(0, 0, Width, Height);
+		}
+
+		Start_Anime_Count += (Width/400);
 	}
 	
 }
