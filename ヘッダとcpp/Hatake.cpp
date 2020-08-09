@@ -161,6 +161,7 @@ void InitYasaiData();
 //void Bag();//ここまで8/06
 //*****処理呼び出し*****
 void Game_Hatake(int Width, int Height) {
+	SetFontSize(20);//文字サイズ確認
 	if (flg) {
 		InitPlayer(); flg = false;	//一回のみ初期化
 		InitYasaiData();
@@ -534,18 +535,20 @@ void Count(){
 }
 //成長データ
 void Growth() {
-	for (int i = 0; i < 54; i++) {//1分
-		if (Yasaidata[i].count >= 3600) {
-			for (int i = 0; i < MAP_HEIGHT; i++) {
+	int i = 0;
+	for (; i < 54; i++) {//1分
+		if (Yasaidata[i].count >= 360) {
+			DrawFormatString(i*100,200, GetColor(255, 255, 255),"i[%d]",i);
+			/*for (int i = 0; i < MAP_HEIGHT; i++) {
 				for (int j = 0; j < MAP_WIDTH; j++) {
 					if (KOMUGI_MIZU == tane[i][j]) { tane[i][j] = KOMUGI; }
 					else if (JAGAIMO_MIZU == tane[i][j]) { tane[i][j] = JAGAIMO; }
 					else if (NINJIN_MIZU == tane[i][j]) { tane[i][j] = NINJIN; }
-
 				}
-			}
+			}*/
 		}
 	}
+	DrawFormatString(100, 200, GetColor(255, 255, 255), "i[%d]", i);
 }
 ////////////収穫処理////////////////////////////////////////////////////////////////////////////////////////////////////
 void Syukaku() {
@@ -730,22 +733,21 @@ int gpUpdateKey() {
 }
 //デバック
 void Debag() {
-	//for (int i = 0; i < MAP_HEIGHT; i++) {
-	//	for (int j = 0; j < MAP_WIDTH; j++) {
-	//		DrawFormatString(j * CHIP_SIZE + 32, i * CHIP_SIZE + 32, GetColor(255, 255, 0), "%d", tane[i][j]);
-	//		DrawBox(j * CHIP_SIZE, i * CHIP_SIZE, (j + 1) * CHIP_SIZE, (i + 1) * CHIP_SIZE, GetColor(255, 255, 255), FALSE);
-	//	}
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			DrawFormatString(j * CHIP_SIZE + 32, i * CHIP_SIZE + 32, GetColor(255, 255, 0), "%d", tane[i][j]);
+			DrawBox(j * CHIP_SIZE, i * CHIP_SIZE, (j + 1) * CHIP_SIZE, (i + 1) * CHIP_SIZE, GetColor(255, 255, 255), FALSE);
+		}
+	}
+	DrawFormatString(100, 200, GetColor(255, 0, 0), "taneflg [%d]",taneflg);
+	//for (int i = 0; i < 30; i++) {
+	//	DrawFormatString(100, i * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].count);
 	//}
-	//DrawFormatString(100, 200, GetColor(255, 0, 0), "taneflg [%d]",taneflg);
-	for (int i = 0; i < 30; i++) {
-		DrawFormatString(100, i * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].count);
-	}
-	for (int i = 30; i < 54; i++) {
-		DrawFormatString(300, (i % 30) * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].count);
-	}
+	//for (int i = 30; i < 54; i++) {
+	//	DrawFormatString(300, (i % 30) * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].count);
+	//}
 	DrawFormatString(400, 100, GetColor(255, 0, 0), "plantflg [%d]",plantflg);
 	DrawFormatString(400, 150, GetColor(255, 255, 0), "yasaiflg [%d]", yasaiflg);
-	DrawFormatString(400, 150, GetColor(255, 255, 0), "yasaiflg [%d]");
 	//GameSystem::Input_Time(0);//でる時間を入れるやつ　畑処理
 	
 }

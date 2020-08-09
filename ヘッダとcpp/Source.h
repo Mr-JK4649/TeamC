@@ -15,8 +15,6 @@ struct SoundE {
 		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
 		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
 		p->Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
-
-		
 	}
 };
 
@@ -251,8 +249,8 @@ struct HATAKE {
 		p->selectfrem = LoadGraph("images/selectfrem.png");
 		p->testimage[0] = LoadGraph("images/JK2_4.png");
 		p->testimage[1] = LoadGraph("images/JK2_1.png");
-		p->testimage[2] = LoadGraph("images/charLEFT.png");
-		p->testimage[3] = LoadGraph("images/charRIGHT.png");
+		p->testimage[2] = LoadGraph("images/JK2_10.png");
+		p->testimage[3] = LoadGraph("images/JK2_7.png");
 		p->tane[0] = LoadGraph("images/komugitane.png");
 		p->tane[1] = LoadGraph("images/jagaimotane.png");
 		p->tane[2] = LoadGraph("images/ninjintane.png");
