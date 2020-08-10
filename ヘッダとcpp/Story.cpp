@@ -1,37 +1,45 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include "string.h"
-#include "Input.h"
 
-
-#define SCROLL_SPEED 1
-#define STORY_MAX 10000
-#define SCROOL_END 300
-
-int scroll_y = 0;
-FILE* fp;
-//const char Story_String[STORY_MAX] = "「異世界転移」、「異世界転生」などの言葉が\n流行り出したのは、いつ頃からだろうか。";
-char Story_String2[STORY_MAX] = "";
-char Story_String3[STORY_MAX] = "";
-char* p;
+#include "Story.h"
 
 void Story(int width, int height) {
-	fp = fopen("story.txt", "r");
+
+	if (flg) {
+		str.setTex = true;
+		str.Fade_String_Box = true;
+		PlaySoundMem(title.Story_bgm, DX_PLAYTYPE_BACK, TRUE);
+		flg = false;
+	}
 	
-	fgets(Story_String2, STORY_MAX, fp);
+	str.Fade_String_Box = true;
+	DrawBox(0, 0, width, height, 0x000000, 1);
 
-	strcpy(Story_String3, Story_String2);
-
-	DrawString(5, 20, Story_String2, 0xffffff, 1);
-
-	str.setTex = true;
 	if (str.setTex) {
-		scroll_y += SCROLL_SPEED;
-		str.Serihu(Story_String3, (float)width / 100.0f * 30, (float)height / 100.0f * 50 - scroll_y, 0xffffff, width / 100 * 2);
-		if (inp.space) {
+		if (scroll_y <= SCROOL_END) {
+			str.SuperString((float)width / 100.0f * 1, (float)height / 100.0f * 96, "[Skip] 'X'key or 'B'Button", 0xffffff, 0, width / 100 * 2);
+			scroll_y += SCROLL_SPEED;
+		}
+		else {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+			str.SuperString((float)width / 100.0f * 50, (float)height / 100.0f * 80, "-Press 'X' Key or 'B' Button to Start-", 0xffffff, 1, width / 100 * 2);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+			alpha += add_alpha;
+			if (alpha >= 255 || alpha < 0) add_alpha *= -1;
+		}
+		str.Serihu(Story_String, (float)width / 100.0f * 5, (float)height / 100.0f * 50 - (scroll_y / 2), 0xffffff, width / 100 * 3);
+		if (scroll_y <= SCROOL_END && inp.space) {
 			str.Serihu_Skip_Fin();
 			scroll_y = SCROOL_END;
 		}
+		else if (inp.space) {
+			str.Serihu_Skip_Fin();
+		}
+	}
+	else {
+		scroll_y = 0;
+		StopSoundMem(title.Story_bgm);
+		str.Fade_String_Box = false;
+		g_GameState = GAME_BASE;
 	}
 
-	fclose(fp);
 }

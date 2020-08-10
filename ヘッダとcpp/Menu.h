@@ -28,9 +28,13 @@ struct Menu {
 	bool Result_DWork_Flg = false;		//力仕事の報酬を表示
 	bool Result_FWork_Flg = false;		//調達の報酬を表示
 	int Result_Work_Money = 0;			//仕事で得た報酬
+	int Result_Work_Par[2] = {2};		//仕事で得たゲージの増加
 
 	int item_select = 0;				//アイテム一覧ようの添え字
 	int item_select2 = 0;				//アイテム選択ウィンドウ用の添え字
+
+	bool isTutorial = true;				//チュートリアル
+	int Tutorial_Select = 0;			//チュートリアルの選択肢
 
 	/*メニュー素材の初期化*/
 	void Init() {
@@ -146,15 +150,23 @@ struct Menu {
 			DrawRoundRect(5, h - h4, w - 5, h - 5, 10, 10, 0xaaaaaa, 0);
 			DrawRoundRect(6, h - (h4 - 1), w - 6, h - 6, 10, 10, 0xffffff, 0);
 			str.SuperString(w / 2, h - (h / 10), "ＯＫ", 0xff0000, 1, size * 2);
-			if (Result_DWork_Flg) {
+			/*if (Result_DWork_Flg) {
 				DrawFormatString(10, (h - h4) + 5, 0xffffff, "街の発展に協力した事により、以下の報酬を得た。\nお金　+%9dＧ\n発展度+%9d％", Result_Work_Money, 5);
 			}
 			if (Result_FWork_Flg) {
 				DrawFormatString(10, (h - h4) + 5, 0xffffff, "食料調達をした事により、以下の報酬を得た。\nお金　+%9dＧ\n食料　+%9d％", Result_Work_Money, 5);
+			}*/
+
+			if (Result_FWork_Flg || Result_DWork_Flg) {
+				DrawFormatString(10, (h - h4) + 5, 0xffffff, "仕事をした事により、以下の報酬を得た。\nお金　+%9dＧ\n発展度+%9d％\n食料　+%9d％", Result_Work_Money, Result_Work_Par[0],Result_Work_Par[1]);
+
 			}
 
 			if (inp.space) {
 				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+				Result_Work_Money = 0;
+				Result_Work_Par[0] = 0;
+				Result_Work_Par[1] = 0;
 				Result_DWork_Flg = false;
 				Result_FWork_Flg = false;
 			}
@@ -457,6 +469,13 @@ struct Menu {
 	/*ゲージの最大値を増幅させる奴*/
 	void Incleace_Gage_Max(int num, int para) {
 		Gage_Max[num] += para;
+	}
+
+	/*仕事の結果を入れる*/
+	void Input_Work_Result(int money, int dev, int food) {
+		Result_Work_Money += money;
+		Result_Work_Par[0] += dev;
+		Result_Work_Par[1] += food;
 	}
 
 	/*仕事の報酬表示*/
