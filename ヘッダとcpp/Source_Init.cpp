@@ -35,6 +35,6 @@ void Init() {
 
 	if (Loading_Par >= 80.0f) {
 		str.SuperString(w100 * 50, h100 * 40, "“Ç‚Ýž‚ÝŠ®—¹!", 0xffffff, 1, size * 2);
-		if(++count >= 100)g_GameState = GAME_TITLE;
+		if(++count >= 100)g_GameState = GAME_DUNGEON;
 	}
 }

@@ -79,14 +79,8 @@ struct Chara {
 			break;
 			//仮
 		case GAME_DUNGEON:
-			DrawExtendGraph(p->x - 100, p->y - 135, p->x + p->c_size - 100, p->y + p->c_size - 135, p->jk[p->num + p->add], 1);
+			DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->jk[p->num + p->add], 1);
 
-
-
-			//当たり判定
-			DrawBox(p->x + p->c_Hsize_s - 100, p->y - 135,
-				p->x + p->c_Hsize_e - 100, p->y + p->c_size - 135,
-				0xff0000, 0);
 			break;
 		}
 
@@ -113,14 +107,19 @@ struct Chara {
 
 		switch (g_GameState) {
 			case GAME_BASE:
+				if (p->x + p->c_Hsize_s <= -50) {
+					g_GameState = GAME_DUNGEON;
+					p->x = 100;
+					p->y = 0;
+					p->sx = 0;
+					p->sy = 0;
+				}
+
 				if (inp.left) {
 					if (p->x <= four / 8 && base.move != 0) base.move += 5 * speed;
 					else p->x -= 5 * speed;
 					//if (p->x+p->c_Hsize_s <= 0) p->x = -p->c_Hsize_s;
-					if (p->x + p->c_Hsize_s <= -50) {
-						g_GameState = GAME_DUNGEON;
-						p->x = 0;
-					}
+					
 				}
 				if (inp.right) {
 					if (p->x >= four / 8 && base.move != -three + 50)base.move -= 5 *speed;
@@ -137,41 +136,69 @@ struct Chara {
 				}
 				if (base.move >= 0) base.move = 0;
 				if (base.move <= -three + 50) base.move = -three + 50;
+				if (inp.down)p->num = 6;
+				if (inp.up)p->num = 9;
 				break;
 
 				//ダンジョン移動
 			case GAME_DUNGEON:
+				static float jumpForce = 30.0f;			//ジャンプ力
+				static float gravity = 5.0f;			//重力
+				static bool isJump = false;				//ジャンプしているかどうか
+				static bool isDansa = false;			//段差に乗ってるかどうか
+				int sxB = (p->x + p->c_Hsize_s - dungeon.move) / 145.5f;
+				int exB = (p->x + p->c_Hsize_e - dungeon.move) / 145.5f;
+				int yB = (p->y + p->c_size - dungeon.up) / 115.0f;
+
+				DrawFormatString(100, 100, 0xFFFFFF, "sx:%4d y:%4d flg:%d jum:%d", p->x + p->c_Hsize_s - dungeon.move, p->y + p->c_size - dungeon.up,isDansa,isJump);
+				DrawFormatString(100, 200, 0xFFFFFF, "du:%d", dungeon.up);
+				DrawFormatString(100, 300, 0xFFFFFF, "D_MAP y:%d,x:%d",yB,exB);
+
+				DrawLine(0, (p->y + p->c_size - 115 * 10), w, (p->y + p->c_size - 115 * 10), 0xff0000, 1);
+				DrawLine((p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, h, 0xff0000, 1);
+				DrawLine((p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, h, 0xff0000, 1);
+
+				if (p->x + p->c_Hsize_s <= 0) {
+					p->x = 100;
+					p->y = 400;
+					g_GameState = GAME_BASE;
+					
+				}
+
 				if (inp.left) {						//左
 					if (p->x <= four / 8 && dungeon.move != 0) dungeon.move += 5 * speed;
 					else p->x -= 5 * speed;
-					if (p->x + p->c_Hsize_s <= 0) {
-						p->x = 100;
-						g_GameState = GAME_BASE;
-
-					}
+					
 				}
 				if (inp.right) {					//右
 					if (p->x >= four / 8 && dungeon.move != -three + 50)dungeon.move -= 5 * speed;
 					else p->x += 5 * speed;
 					if (p->x + p->c_Hsize_e - dungeon.move >= four + 100) p->x = p->w + 155 - p->c_Hsize_e;
 				}
-				if (inp.up) {						//上
-					p->y -= 10 * speed;
-					if (p->y <= p->h / 10 * 4 - 25) {
-						p->y = p->h / 10 * 4 - 25;
-						//dungeon.up += 5 * speed;
-					}
-					/*while (dungeon.up<-684)
-					{
-						dungeon.up--;
-					}*/
-				}
+				
+				
 				//ジャンプ処理
-				p->y -= dungeon.jump;
-				dungeon.jump--;
-				if (p->y > four / 8 - 215) {
-					p->y = four / 8 - 215;
+				if (inp.cancel && !isJump) isJump = true;
+				if (isJump) { p->y -= jumpForce; jumpForce -= jumpForce / 7.5f; }
+
+				//重力の処理
+				if (!isDansa && !isJump) {
+					
+					p->y += gravity;
+				}
+
+				//段差に乗る
+				if (dungeon.Map[yB][sxB] == 1 ||
+					dungeon.Map[yB][exB] == 1) isDansa = true;
+				else isDansa = false;
+					
+
+				/*高さのリセット*/
+				if (isDansa && jumpForce < 0) {
+					//p->y =  yB;
 					dungeon.jump = 0;
+					jumpForce = 120.0f;
+					isJump = false;
 				}
 				if (inp.down) {						//下
 					//dungeon.up -= 5 * speed;
@@ -184,15 +211,11 @@ struct Chara {
 				DungeonHitHantei(p);
 				break;
 
-			default:
-				break;
 		}
 
 
 		if (inp.left)p->num = 3;
 		if (inp.right)p->num = 0;
-		if (inp.down)p->num = 6;
-		if (inp.up)p->num = 9;
 		if (inp.left || inp.right || inp.up || inp.down) Anime(p);
 		else { p->count = 0; p->add = 0;}
 
@@ -414,14 +437,17 @@ struct Chara {
 	//ダンジョン当たり判定
 	void DungeonHitHantei(Chara* p) {
 		const int speed = 2;
-		const float  dx = 144.5, dy = 115;
+		const float  dx = 144.5f, dy = 115.0f;
 		int c = 0;
 		int F = -dungeon.move + x;		//スクロールしても動き続けるX座標
 
 		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j <= 33; j++) {
+			for (int j = 0; j < 34; j++) {
+				DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
+
 				if (dungeon.Map[i][j] == 1) {
 					//ブロックの当たり判定
+					//if(dungeon.Map[i][j] == 1)
 					DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
 					//DrawFormatString(5, 180, 0xFFFFFF, "dx:%.1f dy:%.1f x:%d y:%d c:%d F:%d", dx, dy, p->x, p->y, c, F);
 					//if (p->sx >j * 137 + dungeon.move&&p->x<j*137+198+dungeon.move&&p->y>i*108+dungeon.up&&p->y<i*108+110+dungeon.up) {
@@ -436,15 +462,18 @@ struct Chara {
 				}
 			}
 		}
+
+
 	}
 
 private:
-	int x = 100, y = 400;								//キャラの画面上の座標
+	int x = 100, y = 300;								//キャラの画面上の座標
 	int sx = 0, ex = 0, sy = 0, ey = 0;					//キャラのフィールド上の座標
 	int c_size = 0;										//キャラの大きさを画面サイズに合わせる変数
 	int c_Hsize_s = 0, c_Hsize_e = 0;					//キャラの当たり判定の開始位置と終了位置を決める辺陬
 	int count = 0;										//アニメーション遷移用のカウント
 	int jk[12] = {0};									//キャラの画像
+
 	
 	int add=0;											//キャラの画像のアニメーション変数
 	int Base_Status[3] = { 999,999,0 };					//キャラの所持金、街の発展度、経過時間
