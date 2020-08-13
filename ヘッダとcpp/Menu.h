@@ -65,7 +65,7 @@ struct Menu {
 
 				if (menu_num == i) color = blue_color;
 
-				if (g_GameState == GAME_BASE/* || g_GameState == GAME_DUNGEON && i != 2*/)
+				if (g_GameState == GAME_BASE || g_GameState == GAME_DUNGEON && i != 2)
 					str.SuperString(10 + (w5 - 10) / 2, 20 + (size * 4) * i, Menu_String[i], color, 1, size * 2);
 				else
 					str.SuperString(10 + (w5 - 10) / 2, 20 + (size * 4) * i, Menu_String[i + 1], color, 1, size * 2);
@@ -303,7 +303,7 @@ struct Menu {
 			if (inp.space) {
 				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (item_select == 0) isMove_Scene = false;
-				if (item_select == 1 && g_GameState == GAME_BASE) {
+				else if (item_select == 1 && g_GameState == GAME_BASE) {
 					scene_t = GAME_TITLE;
 					item_select = 0;
 					menu_num = 0;
@@ -311,7 +311,7 @@ struct Menu {
 					isMenu = false;
 					Move_Scene = true;
 				}
-				//if (item_select == 1 && g_GameState == GAME_DUNGEON) scene_t = GAME_BASE;
+				else if (item_select == 1 && g_GameState == GAME_DUNGEON) scene_t = GAME_BASE;
 				
 			}
 

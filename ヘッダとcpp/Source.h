@@ -323,3 +323,5 @@ struct Dungeon {
 		p->stage = LoadGraph("images/簡単ステージ.png");
 	}
 };
+
+extern Dungeon dungeon;
