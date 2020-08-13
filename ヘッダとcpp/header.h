@@ -1,7 +1,6 @@
 #pragma once
 #include <stdio.h>
 #define _USE_MATH_DEFINES
-#include <wingdi.h>
 #include <windows.h>
 
 #pragma warning(disable : 4244)

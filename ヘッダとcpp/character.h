@@ -5,7 +5,6 @@
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <wingdi.h>
 #include <windows.h>
 
 #include "Source.h"
@@ -51,7 +50,16 @@ struct Chara {
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
 		/*キャラ画像の初期化*/
-		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
+		LoadDivGraph("images/キャラ最新版.png",12,12,1,200,200,p->jk,0);
+		LoadDivGraph("images/木の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[0], 1);
+		LoadDivGraph("images/鉄の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[1], 1);
+		LoadDivGraph("images/エクス装備.png", 6, 6, 1, 200, 200, p->Equip_img[2], 1);
+		LoadDivGraph("images/木の杖装備.png", 6, 6, 1, 200, 200, p->Equip_img[3], 1);
+		LoadDivGraph("images/鉄の杖装備.png", 6, 6, 1, 200, 200, p->Equip_img[4], 1);
+		LoadDivGraph("images/木の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[5], 1);
+		LoadDivGraph("images/石の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[6], 1);
+		LoadDivGraph("images/鉄の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[7], 1);
+
 
 		p->c_size = scale.Width / 6;
 		p->c_Hsize_s = c_size / 3;
@@ -79,22 +87,14 @@ struct Chara {
 			break;
 			//仮
 		case GAME_DUNGEON:
+			if(wep.serial_num != 0 && p->num / 3 == 1) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[wep.serial_num - 1][p->num + p->add], 1);	//武器の表示
+			if (shi.serial_num != 0 && p->num / 3 == 0) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[shi.serial_num - 1][p->num + p->add], 1);	//盾の表示
 			DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->jk[p->num + p->add], 1);
+			if (shi.serial_num != 0 && p->num / 3 == 1) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[shi.serial_num - 1][p->num + p->add], 1);	//盾の表示
+			if (wep.serial_num != 0 && p->num / 3 == 0) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[wep.serial_num - 1][p->num + p->add], 1);	//武器の表示
 
 			break;
 		}
-
-		//DrawExtendGraph(p->x, p->y,p->x + p->c_size, p->y + p->c_size,p->jk[p->num + p->add],1);
-		//DrawGraph(p->x, p->y, p->jk[p->num], 1);
-
-		//当たり判定
-		/*DrawBox(p->x+p->c_Hsize_s,p->y,
-				p->x+p->c_Hsize_e,p->y+p->c_size,
-				0xff0000,0);*/
-
-		/*ここから下はデバッグ用*/
-		//DrawFormatString(5, 5, 0x000000, "l:%4d r:%4d u:%4d d:%4d", inp.left, inp.right, inp.up, inp.down);
-		//DrawFormatString(5, 45, 0x000000, "n:%d a:%d", p->num, p->add);
 
 	}
 
@@ -110,7 +110,7 @@ struct Chara {
 				if (p->x + p->c_Hsize_s <= -50) {
 					g_GameState = GAME_DUNGEON;
 					p->x = 100;
-					p->y = 0;
+					p->y = 250;
 					p->sx = 0;
 					p->sy = 0;
 				}
@@ -143,16 +143,17 @@ struct Chara {
 				//ダンジョン移動
 			case GAME_DUNGEON:
 				static float jumpForce = 30.0f;			//ジャンプ力
-				static float gravity = 5.0f;			//重力
+				static float gravity = 15.0f;			//重力
 				static bool isJump = false;				//ジャンプしているかどうか
 				static bool isDansa = false;			//段差に乗ってるかどうか
 				int sxB = (p->x + p->c_Hsize_s - dungeon.move) / 145.5f;
 				int exB = (p->x + p->c_Hsize_e - dungeon.move) / 145.5f;
-				int yB = (p->y + p->c_size - dungeon.up) / 115.0f;
+				int syB = (p->y - dungeon.up) / 115.0f;
+				int eyB = (p->y + p->c_size - dungeon.up) / 115.0f;
 
 				DrawFormatString(100, 100, 0xFFFFFF, "sx:%4d y:%4d flg:%d jum:%d", p->x + p->c_Hsize_s - dungeon.move, p->y + p->c_size - dungeon.up,isDansa,isJump);
 				DrawFormatString(100, 200, 0xFFFFFF, "du:%d", dungeon.up);
-				DrawFormatString(100, 300, 0xFFFFFF, "D_MAP y:%d,x:%d",yB,exB);
+				DrawFormatString(100, 300, 0xFFFFFF, "D_MAP y:%d,x:%d",eyB,exB);
 
 				DrawLine(0, (p->y + p->c_size - 115 * 10), w, (p->y + p->c_size - 115 * 10), 0xff0000, 1);
 				DrawLine((p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, h, 0xff0000, 1);
@@ -188,13 +189,14 @@ struct Chara {
 				}
 
 				//段差に乗る
-				if (dungeon.Map[yB][sxB] == 1 ||
-					dungeon.Map[yB][exB] == 1) isDansa = true;
+				if (dungeon.Map[eyB][sxB] == 1 ||
+					dungeon.Map[eyB][exB] == 1) isDansa = true;
 				else isDansa = false;
 					
 
 				/*高さのリセット*/
-				if (isDansa && jumpForce < 0) {
+				if (isDansa || dungeon.Map[syB][sxB] == 1 ||
+					dungeon.Map[syB][exB] == 1) {
 					//p->y =  yB;
 					dungeon.jump = 0;
 					jumpForce = 120.0f;
@@ -467,12 +469,13 @@ struct Chara {
 	}
 
 private:
-	int x = 100, y = 300;								//キャラの画面上の座標
+	int x = 100, y = 400;								//キャラの画面上の座標
 	int sx = 0, ex = 0, sy = 0, ey = 0;					//キャラのフィールド上の座標
 	int c_size = 0;										//キャラの大きさを画面サイズに合わせる変数
 	int c_Hsize_s = 0, c_Hsize_e = 0;					//キャラの当たり判定の開始位置と終了位置を決める辺陬
 	int count = 0;										//アニメーション遷移用のカウント
 	int jk[12] = {0};									//キャラの画像
+	int Equip_img[8][6] = { 0 };						//装備品の画像
 
 	
 	int add=0;											//キャラの画像のアニメーション変数
