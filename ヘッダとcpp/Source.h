@@ -15,8 +15,6 @@ struct SoundE {
 		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
 		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
 		p->Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
-
-		
 	}
 };
 
@@ -254,7 +252,7 @@ extern Home home;
 
 struct HATAKE {
 	int image = 0;
-	int testimage[4];
+	int testimage[12];
 	int tane[3];
 	int yasai[3];
 	int mizu[3];
@@ -265,19 +263,32 @@ struct HATAKE {
 		p->image = LoadGraph("images/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
 		p->selectfrem = LoadGraph("images/selectfrem.png");
-		p->testimage[0] = LoadGraph("images/JK2_4.png");
-		p->testimage[1] = LoadGraph("images/JK2_1.png");
-		p->testimage[2] = LoadGraph("images/charLEFT.png");
-		p->testimage[3] = LoadGraph("images/charRIGHT.png");
-		p->tane[0] = LoadGraph("images/komugitane.png");
-		p->tane[1] = LoadGraph("images/jagaimotane.png");
-		p->tane[2] = LoadGraph("images/ninjintane.png");
+		//下向き image_DOWN
+		p->testimage[0] = LoadGraph("images/JK2_1.png");
+		p->testimage[1] = LoadGraph("images/JK2_2.png");
+		p->testimage[2] = LoadGraph("images/JK2_3.png");
+		//上向き image_UP
+		p->testimage[3] = LoadGraph("images/JK2_4.png");
+		p->testimage[4] = LoadGraph("images/JK2_5.png");
+		p->testimage[5] = LoadGraph("images/JK2_6.png");
+		//右向き image_RIGHT
+		p->testimage[6] = LoadGraph("images/JK2_7.png");
+		p->testimage[7] = LoadGraph("images/JK2_8.png");
+		p->testimage[8] = LoadGraph("images/JK2_9.png");
+		//左向き image_LEFT
+		p->testimage[9] = LoadGraph("images/JK2_10.png");
+		p->testimage[10] = LoadGraph("images/JK2_11.png");
+		p->testimage[11] = LoadGraph("images/JK2_12.png");
+
+		p->tane[0] = LoadGraph("images/KomugiTane.png");
+		p->tane[1] = LoadGraph("images/JagaimoTane.png");
+		p->tane[2] = LoadGraph("images/NinjinTane.png");
 		p->yasai[0] = LoadGraph("images/komugi.png");
 		p->yasai[1] = LoadGraph("images/jagaimo.png");
 		p->yasai[2] = LoadGraph("images/ninjin.png");
-		p->mizu[0] = LoadGraph("images/komugimizu.png");
-		p->mizu[1] = LoadGraph("images/jagaimomizu.png");
-		p->mizu[2] = LoadGraph("images/ninjinmizu.png");
+		p->mizu[0] = LoadGraph("images/KomugiMizu.png");
+		p->mizu[1] = LoadGraph("images/JagaimoMizu.png");
+		p->mizu[2] = LoadGraph("images/NinjinMizu.png");
 	}
 };
 
