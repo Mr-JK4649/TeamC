@@ -24,6 +24,7 @@ void DrawGameMain(int width, int height) {
 		if (g_GameState != menu.scene_t) {
 			StopSoundMem(base.bgm);
 			g_GameState = menu.scene_t;
+			//Move_Scene_Init_Flg();
 		}
 		menu.Move_Scene = false;
 	}

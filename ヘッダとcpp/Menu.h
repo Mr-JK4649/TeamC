@@ -311,7 +311,14 @@ struct Menu {
 					isMenu = false;
 					Move_Scene = true;
 				}
-				else if (item_select == 1 && g_GameState == GAME_DUNGEON) scene_t = GAME_BASE;
+				else if (item_select == 1 && g_GameState == GAME_DUNGEON) {
+					scene_t = GAME_BASE;
+					item_select = 0;
+					menu_num = 0;
+					isMove_Scene = false;
+					isMenu = false;
+					Move_Scene = true;
+				}
 				
 			}
 
@@ -463,7 +470,7 @@ struct Menu {
 	/*ゲージを上昇させるやつ*/
 	void Inclease_Gage(int num,int para) {
 		Gage[num] += para;
-		if (Gage[num] < 0)Gage[num] = 0;
+		if (Gage[num] < 0) Gage[num] = 0;
 	}
 
 	/*ゲージの最大値を増幅させる奴*/
@@ -496,7 +503,7 @@ private:
 	int item_kind = 0;																		//現在の位置のアイテムが何か調べてもらうやつ
 	const unsigned int white_color = 0xffffff;												//白
 	const unsigned int blue_color = 0x6666ff;												//青
-	float Gage[5] = { 0,0,0,50,100 };														//ゲージの値を保存するやつ
+	float Gage[5] = { 0,0,0,50,0 };															//ゲージの値を保存するやつ
 	float Gage_Max[5] = { 100,100,100,100,100 };														//各ゲージのマックスの値
 	char Gage_Name[5][11] = { "人口ゲージ","魔物ゲージ","発展ゲージ","食料ゲージ","武力ゲージ" };		//ゲージの名前
 	unsigned int Gage_Color[5] = { 0xffff00,0x880088,0x00ffff,0x00ff00,0xff0000 };						//各ゲージの色

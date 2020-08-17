@@ -135,3 +135,8 @@ void Use_Equipment_Item(int item_select) {
 void Delete_Item(int item_select) {
 	ch.Delete_Item(&ch,item_select);
 }
+
+/*‹’“_ˆÚ“®‚ÌŽž‚Ì‚ ‚ê*/
+void Move_Scene_Init_Flg() {
+	ch.init_flg = true;
+}

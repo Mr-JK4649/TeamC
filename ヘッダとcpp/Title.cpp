@@ -19,8 +19,7 @@ void DrawGameTitle(int Width, int Height) {
 
 	/*ÇaÇfÇlÇÃçƒê∂*/
 	if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
-		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);
-		DrawBox(0, 0, 200, 200, 0xffff00, 1);
+		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);;
 	}
 	
 	SetFontSize(20);

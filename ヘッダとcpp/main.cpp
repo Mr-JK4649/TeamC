@@ -76,7 +76,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_STORY:	Story(scale.Width, scale.Height); break;				//ゲームシーケンス
 
-		//case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;		//ステージ選択画面処理
+		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;			//ステージ選択画面処理
 
 		case GAME_DUNGEON:  DrawGameDungeon(scale.Width, scale.Height); break;			//ゲームダンジョン画面処理
 
