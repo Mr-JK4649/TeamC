@@ -198,7 +198,6 @@ struct Dungeon_Sys {
 				}
 
 
-
 				/*“G‚ÌHP‚ª0‚É‚È‚Á‚½‚ç*/
 				if (Enemy_Hp < 0) {
 					Battle_Finish_Process();

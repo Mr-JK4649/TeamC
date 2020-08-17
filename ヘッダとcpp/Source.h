@@ -442,8 +442,8 @@ struct Dungeon {
 	
 
 	void ImageInput(struct Dungeon* p) {
-		p->background = LoadGraph("images/ダンジョン背景.png");
-		p->stage = LoadGraph("images/簡単ステージ.png");
+		p->background = LoadGraph("images/Dungeon_Background.png");
+		p->stage = LoadGraph("images/Stage1.png");
 
 		/*エフェクト*/
 		LoadDivGraph("images/Effects/hit_effect.png", 10, 1, 10, 640, 480, p->Hit_Effect, 1);
