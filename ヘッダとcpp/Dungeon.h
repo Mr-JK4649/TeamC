@@ -143,8 +143,8 @@ struct Dungeon_Sys {
 		switch (Battle_Phase)
 		{
 			case 0:
-				//Battle_Turn = GetRand(1);
-				Battle_Turn = 0;
+				Battle_Turn = GetRand(1);
+				//Battle_Turn = 0;
 				ch.x = 100;
 				ch.y = 1150 + dungeon.up - ch.c_size + 144.5f;
 				dungeon.Cobolt_y = 320;

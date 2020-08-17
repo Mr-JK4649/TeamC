@@ -54,14 +54,14 @@ void DrawGameDungeon(int Width, int Height) {
 
 	
 	/*雑魚的エンカウント*/
-	//if (!ch.isBattle && ++d_sys.Cool_Time > 300) {
-	//	if (GetRand(10) == 0) {
-	//		d_sys.Enemy_Num = GetRand(2) + 4 * d_sys.Dungeon_Num;
-	//		//d_sys.Enemy_Num = 9;
-	//		ch.isBattle = true;
-	//		d_sys.Cool_Time = 0;
-	//	}
-	//}
+	if (!ch.isBattle && ++d_sys.Cool_Time > 300) {
+		if (GetRand(10) == 0) {
+			d_sys.Enemy_Num = GetRand(2) + 4 * d_sys.Dungeon_Num;
+			//d_sys.Enemy_Num = 9;
+			ch.isBattle = true;
+			d_sys.Cool_Time = 0;
+		}
+	}
 	
 
 	DungeonMap(Width, Height);
