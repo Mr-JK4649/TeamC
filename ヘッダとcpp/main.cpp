@@ -57,6 +57,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	g_GameState = GAME_INIT;
 
+
 	// ÉQÅ[ÉÄÉãÅ[Év
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
 
