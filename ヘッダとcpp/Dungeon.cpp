@@ -55,6 +55,7 @@ void DrawGameDungeon(int Width, int Height) {
 			ch.init_flg = true;
 			ch.isBattle = false;
 			d_sys.Cool_Time = 0;
+			d_sys.Battle_Finish_Process();
 		}
 		menu.Move_Scene = false;
 	}
