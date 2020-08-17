@@ -147,7 +147,6 @@ struct Dungeon_Sys {
 				//Battle_Turn = 0;
 				ch.x = 100;
 				ch.y = 1150 + dungeon.up - ch.c_size + 144.5f;
-				dungeon.Cobolt_y = 320;
 				Enemy_Hp = dungeon.Enemy_Status[Enemy_Num][0];
 				if (dungeon.Battle_Enemy_Pos[Enemy_Num][0] != -99) Enemy_x = dungeon.Battle_Enemy_Pos[Enemy_Num][0];
 				else Enemy_x = ch.x + ch.c_size + 420 - dungeon.move;
@@ -177,9 +176,6 @@ struct Dungeon_Sys {
 						Effect_Flg = true;
 					}
 
-					DrawFormatString(100, 100, 0xffffff, "e_num %d\ne_cnt %d", Effect_Num, Effect_Count);
-					DrawFormatString(200, 100, 0xffffff, "en_num %d\nene_x %d\nene_y %d", Enemy_Num, Enemy_x,Enemy_y);
-
 					if (Effect_Flg) Battle_Attack_Effect_Disp();
 				}
 				/*ìGÇÃÉ^Å[Éì*/
@@ -188,26 +184,31 @@ struct Dungeon_Sys {
 					Battle_Enemy_Update();
 				}
 
+				DrawFormatString(100, 100, 0xffffff, "e_num %d\ne_cnt %d", Effect_Num, Effect_Count);
+				DrawFormatString(200, 100, 0xffffff, "en_num %d\nene_x %d\nene_y %d\nene_hp %d", Enemy_Num, Enemy_x, Enemy_y, Enemy_Hp);
+
+
+				SetFontSize(30);
+				DrawFormatString(ch.w / 2 - 90, ch.h4 / 2, 0xffffff, "écÇË%2dïb", battle_Time / 60);
+				SetFontSize(16);
+
+				battle_Time -= 1;		//éûä‘Çå∏ÇÁÇ∑
+				if (battle_Time <= 0) {
+					Battle_Phase = 2;
+				}
+
+
 				/*ìGÇÃHPÇ™0Ç…Ç»Ç¡ÇΩÇÁ*/
-				if (Enemy_Hp <= 0) {
+				if (Enemy_Hp < 0) {
 					Battle_Finish_Process();
 					ch.Add_Exp(&ch, dungeon.Enemy_Status[Enemy_Num][3]);
-					
-					menu.Inclease_Gage(4, 50);			//ÉQÅ[ÉWÇëùÇ‚Ç∑
+
 				}
 
 				/*Ç±Ç¡ÇøÇÃëÃóÕÇ™0Ç…Ç»Ç¡ÇΩÇÁ*/
 				if (ch.Return_Chara_Status(&ch, 2) < 0) {
 					Battle_Finish_Process();
 					g_GameState = GAME_BASE;
-				}
-
-				SetFontSize(30);
-				DrawFormatString(ch.w / 2 - 90, ch.h4 / 2, 0xffffff, "écÇË%2dïb", battle_Time / 60);
-				SetFontSize(16);
-				battle_Time -= 1;		//éûä‘Çå∏ÇÁÇ∑
-				if (battle_Time <= 0) {
-					Battle_Phase = 2;
 				}
 				break;
 
@@ -245,7 +246,10 @@ struct Dungeon_Sys {
 		ch.y = 250;
 		Cool_Time = 0;
 		Effect_Flg = false;
-		if(Enemy_Num == 3 || Enemy_Num == 7 || Enemy_Num == 11)Boss_Flg[Enemy_Num] = false;
+		if (Enemy_Num == 3 || Enemy_Num == 7 || Enemy_Num == 11) {
+			Boss_Flg[Enemy_Num % 3] = false;
+			menu.Inclease_Gage(4, 50);			//ÉQÅ[ÉWÇëùÇ‚Ç∑
+		}
 		ch.isBattle = false;
 	}
 

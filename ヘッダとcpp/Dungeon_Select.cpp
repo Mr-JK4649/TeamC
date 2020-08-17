@@ -15,4 +15,7 @@ void GameSSelect(int width, int height) {
 
 	if(inp.space)
 		g_GameState = GAME_DUNGEON;
+
+	if (inp.cancel)
+		g_GameState = GAME_BASE;
 }
