@@ -101,6 +101,7 @@ struct String {
 	/*•Ï”‚Ì‰Šú‰»*/
 	void Init() {
 		s = 0;
+		strcpy_s(buf, "");
 		length = 0;
 		count = 0;
 		life = 0;
