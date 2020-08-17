@@ -442,7 +442,7 @@ struct Dungeon {
 	
 
 	void ImageInput(struct Dungeon* p) {
-		p->background = LoadGraph("images/Dungeon_Background.png");
+		p->background = LoadGraph("images/Dungeon_Background.png"); 
 		p->stage = LoadGraph("images/Stage1.png");
 
 		/*エフェクト*/
