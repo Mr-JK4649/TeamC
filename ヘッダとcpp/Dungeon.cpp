@@ -53,6 +53,8 @@ void DrawGameDungeon(int Width, int Height) {
 			//StopSoundMem(dungeon.bgm);
 			g_GameState = menu.scene_t;
 			ch.init_flg = true;
+			ch.isBattle = false;
+			d_sys.Cool_Time = 0;
 		}
 		menu.Move_Scene = false;
 	}
