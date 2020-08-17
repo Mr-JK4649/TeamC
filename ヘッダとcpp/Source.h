@@ -253,9 +253,9 @@ extern Home home;
 struct HATAKE {
 	int image = 0;
 	int testimage[12];
-	int tane[3];
-	int yasai[3];
-	int mizu[3];
+	int tane[4];
+	int yasai[9];
+	int mizu[4];
 	int fremimage = 0;
 	int selectfrem = 0;
 	bool flg = true;
@@ -283,12 +283,20 @@ struct HATAKE {
 		p->tane[0] = LoadGraph("images/KomugiTane.png");
 		p->tane[1] = LoadGraph("images/JagaimoTane.png");
 		p->tane[2] = LoadGraph("images/NinjinTane.png");
+		p->tane[3] = LoadGraph("images/KyabetuTane.png");
 		p->yasai[0] = LoadGraph("images/komugi.png");
 		p->yasai[1] = LoadGraph("images/jagaimo.png");
 		p->yasai[2] = LoadGraph("images/ninjin.png");
+		p->yasai[3] = LoadGraph("images/daikon.png");
+		p->yasai[4] = LoadGraph("images/kyabetu.png");
+		p->yasai[5] = LoadGraph("images/satumaimo.png");
+		p->yasai[6] = LoadGraph("images/burokori.png");
+		p->yasai[7] = LoadGraph("images/kabocya.png");
+		p->yasai[8] = LoadGraph("images/suika.png");
 		p->mizu[0] = LoadGraph("images/KomugiMizu.png");
 		p->mizu[1] = LoadGraph("images/JagaimoMizu.png");
 		p->mizu[2] = LoadGraph("images/NinjinMizu.png");
+		p->mizu[3] = LoadGraph("images/KyabetuMizu.png");
 	}
 };
 
