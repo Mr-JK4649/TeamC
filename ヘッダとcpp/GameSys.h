@@ -9,7 +9,7 @@
 struct GameSystem {
 
 	static int Exit_Hatake;			//畑を出た時間
-	static int Enter_Hatake;			//畑をに入った時間
+	static int Enter_Hatake;		//畑をに入った時間
 
 	/*人口ゲージのシステム*/
 	static void Population_System() {

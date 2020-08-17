@@ -5,7 +5,6 @@
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <wingdi.h>
 #include <windows.h>
 
 #include "Source.h"
@@ -18,7 +17,16 @@ extern Dungeon dungeon;
 struct Chara {
 	/*キャラの初期化フラグ*/
 	bool flg = true;
+	bool init_flg = true;
 
+	/*バトル関連*/
+	int x = 100, y = 400;								//キャラの画面上の座標
+	int c_size = 0;										//キャラの大きさを画面サイズに合わせる変数
+	int c_Hsize_s = 0, c_Hsize_e = 0;					//キャラの当たり判定の開始位置と終了位置を決める変数
+	int Turn = 0;										//バトルのターンを保存するフラグ
+	bool isBattle = false;								//バトル開始のフラグ
+
+	/*アイテムボックス関連*/
 	bool Open_ItemBox = false;		//ボックスフラグ
 	bool Pic_Item = false;			//ボックスからアイテムを取るフラグ
 	bool Put_Item = false;			//ボックスにアイテムを入れるフラグ
@@ -51,7 +59,16 @@ struct Chara {
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
 		/*キャラ画像の初期化*/
-		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
+		LoadDivGraph("images/キャラ最新版.png",12,12,1,200,200,p->jk,0);
+		LoadDivGraph("images/木の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[0], 1);
+		LoadDivGraph("images/鉄の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[1], 1);
+		LoadDivGraph("images/エクス装備.png", 6, 6, 1, 200, 200, p->Equip_img[2], 1);
+		LoadDivGraph("images/木の杖装備.png", 6, 6, 1, 200, 200, p->Equip_img[3], 1);
+		LoadDivGraph("images/鉄の杖装備.png", 6, 6, 1, 200, 200, p->Equip_img[4], 1);
+		LoadDivGraph("images/木の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[5], 1);
+		LoadDivGraph("images/石の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[6], 1);
+		LoadDivGraph("images/鉄の盾装備.png", 6, 6, 1, 200, 200, p->Equip_img[7], 1);
+
 
 		p->c_size = scale.Width / 6;
 		p->c_Hsize_s = c_size / 3;
@@ -79,22 +96,14 @@ struct Chara {
 			break;
 			//仮
 		case GAME_DUNGEON:
+			if(wep.serial_num != 0 && p->num / 3 == 1) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[wep.serial_num - 1][p->num + p->add], 1);	//武器の表示
+			if (shi.serial_num != 0 && p->num / 3 == 0) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[shi.serial_num - 1][p->num + p->add], 1);	//盾の表示
 			DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->jk[p->num + p->add], 1);
+			if (shi.serial_num != 0 && p->num / 3 == 1) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[shi.serial_num - 1][p->num + p->add], 1);	//盾の表示
+			if (wep.serial_num != 0 && p->num / 3 == 0) DrawExtendGraph(p->x, p->y, p->x + p->c_size, p->y + p->c_size, p->Equip_img[wep.serial_num - 1][p->num + p->add], 1);	//武器の表示
 
 			break;
 		}
-
-		//DrawExtendGraph(p->x, p->y,p->x + p->c_size, p->y + p->c_size,p->jk[p->num + p->add],1);
-		//DrawGraph(p->x, p->y, p->jk[p->num], 1);
-
-		//当たり判定
-		/*DrawBox(p->x+p->c_Hsize_s,p->y,
-				p->x+p->c_Hsize_e,p->y+p->c_size,
-				0xff0000,0);*/
-
-		/*ここから下はデバッグ用*/
-		//DrawFormatString(5, 5, 0x000000, "l:%4d r:%4d u:%4d d:%4d", inp.left, inp.right, inp.up, inp.down);
-		//DrawFormatString(5, 45, 0x000000, "n:%d a:%d", p->num, p->add);
 
 	}
 
@@ -104,15 +113,21 @@ struct Chara {
 		const int three = scale.Width * 3;
 		const int four = scale.Width * 4;
 		const int speed = 2;
+		
 
 		switch (g_GameState) {
 			case GAME_BASE:
-				if (p->x + p->c_Hsize_s <= -50) {
-					g_GameState = GAME_DUNGEON;
+				if (init_flg) {
 					p->x = 100;
-					p->y = 0;
-					p->sx = 0;
-					p->sy = 0;
+					p->y = 400;
+					base.move = 0;
+					init_flg = false;
+				}
+
+				if (p->x + p->c_Hsize_s <= -50) {
+					StopSoundMem(base.bgm);
+					g_GameState = GAME_S_SELECT;
+					init_flg = true;
 				}
 
 				if (inp.left) {
@@ -142,73 +157,101 @@ struct Chara {
 
 				//ダンジョン移動
 			case GAME_DUNGEON:
-				static float jumpForce = 30.0f;			//ジャンプ力
-				static float gravity = 5.0f;			//重力
-				static bool isJump = false;				//ジャンプしているかどうか
-				static bool isDansa = false;			//段差に乗ってるかどうか
-				int sxB = (p->x + p->c_Hsize_s - dungeon.move) / 145.5f;
-				int exB = (p->x + p->c_Hsize_e - dungeon.move) / 145.5f;
-				int yB = (p->y + p->c_size - dungeon.up) / 115.0f;
-
-				DrawFormatString(100, 100, 0xFFFFFF, "sx:%4d y:%4d flg:%d jum:%d", p->x + p->c_Hsize_s - dungeon.move, p->y + p->c_size - dungeon.up,isDansa,isJump);
-				DrawFormatString(100, 200, 0xFFFFFF, "du:%d", dungeon.up);
-				DrawFormatString(100, 300, 0xFFFFFF, "D_MAP y:%d,x:%d",yB,exB);
-
-				DrawLine(0, (p->y + p->c_size - 115 * 10), w, (p->y + p->c_size - 115 * 10), 0xff0000, 1);
-				DrawLine((p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, h, 0xff0000, 1);
-				DrawLine((p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, h, 0xff0000, 1);
-
-				if (p->x + p->c_Hsize_s <= 0) {
+				if (init_flg) {
 					p->x = 100;
-					p->y = 400;
-					g_GameState = GAME_BASE;
-					
+					p->y = 250;
+					p->sx = 0;
+					p->sy = 0;
+					dungeon.move = 0;
+					init_flg = false;
 				}
 
-				if (inp.left) {						//左
-					if (p->x <= four / 8 && dungeon.move != 0) dungeon.move += 5 * speed;
-					else p->x -= 5 * speed;
-					
-				}
-				if (inp.right) {					//右
-					if (p->x >= four / 8 && dungeon.move != -three + 50)dungeon.move -= 5 * speed;
-					else p->x += 5 * speed;
-					if (p->x + p->c_Hsize_e - dungeon.move >= four + 100) p->x = p->w + 155 - p->c_Hsize_e;
-				}
-				
-				
-				//ジャンプ処理
-				if (inp.cancel && !isJump) isJump = true;
-				if (isJump) { p->y -= jumpForce; jumpForce -= jumpForce / 7.5f; }
+				sxB = (float)(p->x + p->c_Hsize_s - dungeon.move) / 144.5f;
+				exB = (float)(p->x + p->c_Hsize_e - dungeon.move) / 144.5f;
+				syB = (p->y - dungeon.up) / 115.0f;
+				eyB = (p->y + p->c_size - dungeon.up) / 115.0f;
+				eyB2 = (p->y + (p->c_size / 10) * 9 - dungeon.up) / 115.0f;
 
-				//重力の処理
-				if (!isDansa && !isJump) {
-					
-					p->y += gravity;
+				/*DrawFormatString(100, 100, 0xFFFFFF, "sx:%4d y:%4d flg:%d jum:%d", p->x + p->c_Hsize_s - dungeon.move, p->y + p->c_size - dungeon.up,isDansa,isJump);
+				DrawFormatString(100, 200, 0xFFFFFF, "du:%d,j_f;%f", dungeon.up,jumpForce);
+				DrawFormatString(100, 300, 0xFFFFFF, "D_MAP y:%d,x:%d",eyB,exB);*/
+
+				/*DrawLine(0, (p->y + p->c_size - 115 * 10), w, (p->y + p->c_size - 115 * 10), 0xff0000, 1);
+				DrawLine((p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_s - dungeon.move) + dungeon.move, h, 0xff0000, 1);
+				DrawLine((p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, 0, (p->x + p->c_Hsize_e - dungeon.move) + dungeon.move, h, 0xff0000, 1);*/
+
+				if (p->x + p->c_Hsize_s <= 0 && !isBattle) {
+					g_GameState = GAME_S_SELECT;
+					init_flg = true;
 				}
 
-				//段差に乗る
-				if (dungeon.Map[yB][sxB] == 1 ||
-					dungeon.Map[yB][exB] == 1) isDansa = true;
-				else isDansa = false;
-					
+				if (isBattle) {
+					if (inp.left) {						//左
+							p->x -= 5 * speed;
+							if (p->x + p->c_Hsize_s <= 0) p->x = -c_Hsize_s;
 
-				/*高さのリセット*/
-				if (isDansa && jumpForce < 0) {
-					//p->y =  yB;
-					dungeon.jump = 0;
-					jumpForce = 120.0f;
-					isJump = false;
+					}
+					if (inp.right) {					//右
+							p->x += 5 * speed;
+						if (p->x + p->c_Hsize_e >= w) p->x = w - p->c_Hsize_e;
+					}
+					
 				}
-				if (inp.down) {						//下
-					//dungeon.up -= 5 * speed;
-					/*p->y += 5 * speed;*/
-					/*if (p->y >= four / 2 && dungeon.up != -three + 50)dungeon.up -= 5 * speed;
-					if (p->y + c_size >= p->height) p->y = p->height - c_size;*/
+				else {
+					if (inp.left) {						//左
+						if (p->x <= four / 8 && dungeon.move != 0 && dungeon.Map[eyB2][sxB] != 1) dungeon.move += 5 * speed;
+						else if (dungeon.Map[eyB2][sxB] != 1) p->x -= 5 * speed;
+
+					}
+					if (inp.right) {					//右
+						if (p->x >= four / 8 && dungeon.move != -three + 50 && dungeon.Map[eyB2][exB] != 1)dungeon.move -= 5 * speed;
+						else if (dungeon.Map[eyB2][exB] != 1) p->x += 5 * speed;
+						if (p->x + p->c_Hsize_e >= w) p->x = w - p->c_Hsize_e;
+					}
+
+
+
+					//ジャンプ処理
+					if (inp.cancel && !isJump) { isJump = true; jumpForce = jump_init; }
+					if (isJump) {
+						p->y -= jumpForce;
+						if (dungeon.Map[syB][sxB] == 1) jumpForce = -jump_init;
+						jumpForce -= jump_init / 10.0f;
+					}
+
+					//重力の処理
+					if (!isDansa && !isJump) {
+						p->y += gravity;
+					}
+
+
+					//段差に乗る
+					if (dungeon.Map[eyB][sxB] == 1 ||
+						dungeon.Map[eyB][exB] == 1) {
+						isDansa = true;
+
+					}
+					else isDansa = false;
+
+
+					/*高さのリセット*/
+					if ((isDansa) && jumpForce < 0) {
+						p->y = 115.0f * eyB + dungeon.up - p->c_size;
+						dungeon.jump = 0;
+						isJump = false;
+					}
+					if (inp.down) {						//下
+						//dungeon.up -= 5 * speed;
+						/*p->y += 5 * speed;*/
+						/*if (p->y >= four / 2 && dungeon.up != -three + 50)dungeon.up -= 5 * speed;
+						if (p->y + c_size >= p->height) p->y = p->height - c_size;*/
+					}
+					if (dungeon.move >= 0)dungeon.move = 0;
+					if (dungeon.move <= -three + 50)dungeon.move = -three + 50;
+					DungeonHitHantei(p);
+
 				}
-				if (dungeon.move >= 0)dungeon.move = 0;
-				if (dungeon.move <= -three + 50)dungeon.move = -three + 50;
-				DungeonHitHantei(p);
+
 				break;
 
 		}
@@ -356,6 +399,16 @@ struct Chara {
 		return p->Base_Status[num];
 	}
 
+	/*キャラのステータスを返す*/
+	int Return_Chara_Status(Chara* p, int num) {
+		return p->Chara_Status[num];
+	}
+
+	/*キャラのステータスをかさん*/
+	void Add_Chara_Status(Chara* p, int num, int para) {
+		p->Chara_Status[num] += para;
+	}
+
 	/*アイテム削除*/
 	void Delete_Item(Chara* p,int select) {
 		p->Chara_Items[select] = 0;
@@ -443,12 +496,12 @@ struct Chara {
 
 		for (int i = 0; i < 12; i++) {
 			for (int j = 0; j < 34; j++) {
-				DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
+				//DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
 
 				if (dungeon.Map[i][j] == 1) {
 					//ブロックの当たり判定
 					//if(dungeon.Map[i][j] == 1)
-					DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
+					//DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
 					//DrawFormatString(5, 180, 0xFFFFFF, "dx:%.1f dy:%.1f x:%d y:%d c:%d F:%d", dx, dy, p->x, p->y, c, F);
 					//if (p->sx >j * 137 + dungeon.move&&p->x<j*137+198+dungeon.move&&p->y>i*108+dungeon.up&&p->y<i*108+110+dungeon.up) {
 					/*if (p->x > j * dx + dungeon.move && p->x <j * dx + dx+ dungeon.move &&
@@ -466,18 +519,41 @@ struct Chara {
 
 	}
 
+	//ボスに触れたかのあたりはんてい
+	int Dungeon_Boss_Encount(Chara* p, int bx1, int by1, int bx2, int by2) {
+		int sx = p->x + p->c_Hsize_s - dungeon.move;
+		int ex = p->x + p->c_Hsize_e - dungeon.move;
+		int sy = p->y;
+		int ey = p->y + p->c_size;
+
+		if (ex > bx1 && ex < bx2 && ey > by1 && ey < by2) return one;
+		else if (sx > bx1 && sx < bx2 && ey > by1 && ey < by2) return one;
+
+		return zero;
+	}
+
 private:
-	int x = 100, y = 300;								//キャラの画面上の座標
+	
 	int sx = 0, ex = 0, sy = 0, ey = 0;					//キャラのフィールド上の座標
-	int c_size = 0;										//キャラの大きさを画面サイズに合わせる変数
-	int c_Hsize_s = 0, c_Hsize_e = 0;					//キャラの当たり判定の開始位置と終了位置を決める辺陬
+	
 	int count = 0;										//アニメーション遷移用のカウント
 	int jk[12] = {0};									//キャラの画像
+	int Equip_img[8][6] = { 0 };						//装備品の画像
 
+	const float jump_init = 30.0f;			//ジャンプの高さ
+	float jumpForce = 30.0f;			//ジャンプ力
+	float gravity = 15.0f;			//重力
+	bool isJump = false;				//ジャンプしているかどうか
+	bool isDansa = false;			//段差に乗ってるかどうか
+	int sxB = 0;
+	int exB = 0;
+	int syB = 0;
+	int eyB = 0;
+	int eyB2 = 0;
 	
 	int add=0;											//キャラの画像のアニメーション変数
-	int Base_Status[3] = { 999,999,0 };					//キャラの所持金、街の発展度、経過時間
-	int Chara_Status[7] = { 1,999,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
+	int Base_Status[3] = { 0,0,0 };				//キャラの所持金、街の発展度、経過時間
+	int Chara_Status[7] = { 1,0,20,20,0,10,0 };			//キャラのレベル、経験値、体力、攻撃力、武器の攻撃力、防御力、盾の防御力
 	int Max_Hp = 50;									//キャラのマックス体力
 	float Next_Level_Exp = 50;							//次のレベルアップに必要な経験値
 	int Chara_Items[10] = { 0,0,0,0,0,0,0,0,0,0 };		//キャラの所持品

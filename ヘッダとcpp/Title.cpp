@@ -19,13 +19,12 @@ void DrawGameTitle(int Width, int Height) {
 
 	/*ＢＧＭの再生*/
 	if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
-		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);
-		DrawBox(0, 0, 200, 200, 0xffff00, 1);
+		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);;
 	}
 	
 	SetFontSize(20);
 
-	DrawString(5, 5, "ビルド日付：2020年8月6日20時00分", 0xff0000, 1);
+	DrawString(5, 5, "ビルド日付：2020年8月13日20時20分", 0xff0000, 1);
 
 	SetFontSize(16);
 	

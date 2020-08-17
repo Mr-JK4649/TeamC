@@ -19,6 +19,9 @@ void Menu_Item(int item_select);
 void Use_Equipment_Item(int item_select);		//アイテム装備/使う
 void Delete_Item(int item_select);				//アイテム削除
 
+/*シーン移動のフラグとか*/
+void Move_Scene_Init_Flg(void);
+
 
 char Player_Serihu[5][200] = { "ここは検問所ね。\n街を出入りする際に怪しい動きをしたら逮捕されちゃうかも。\n、、、、、、、、、、、なんてね。",		//検問所で出るセリフ
 							   "カジノ建設予定地と書いてあるわ。\n出来たら一回くらい来てみてもいいかもしれないわね。",						//カジノ(未建設)で出るセリフ

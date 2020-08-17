@@ -184,11 +184,9 @@ struct Shopping {
 					if (shop->Confirm_Select == 1) {
 						if (shop->Depth == 2) {
 							shop->Buy_Items(shop, shop->Depth_Menu_Select[shop->Depth] + 1, shop->Item_Price[shop->Depth_Menu_Select[shop->Depth]]);
-							DrawBox(200, 200, 400, 400, 0xff0000, 1);
 						}
 						if (shop->Depth == 3) {
 							shop->Buy_Items(shop, shop->Depth_Menu_Select[shop->Depth] + 6, shop->Item_Price[shop->Depth_Menu_Select[shop->Depth] + 5]);
-							DrawBox(200, 200, 400, 400, 0x0000ff, 1);
 						}
 						if (shop->Depth == 4) {
 							shop->Buy_Items(shop, shop->Depth_Menu_Select[shop->Depth] + 9, shop->Item_Price[shop->Depth_Menu_Select[shop->Depth] + 8]);
@@ -415,7 +413,6 @@ struct Shopping {
 		/*このアイテムの値段が所持金を下回ってるか確認*/
 		if (ch.Check_Enough_Money(&ch, price) == 1) {
 
-			DrawBox(400, 200, 600, 400, 0xffffff, 1);
 
 			/*お支払い*/
 			ch.Pay_Money(&ch, price);
