@@ -29,9 +29,11 @@ struct Title {
 	int SelectMove_SE = 0;
 	int Select_SE = 0;
 	int Start_SE = 0;
+	bool Start_SE_Flg = true;
 	
 	//‚ ‚ç‚·‚¶—p
 	int Story_bgm = 0;
+	bool Story_bgm_Flg = true;
 
 	bool flg = true;
 

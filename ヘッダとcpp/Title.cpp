@@ -47,7 +47,11 @@ void DrawGameTitle(int Width, int Height) {
 
 	/*移動アニメーション用*/
 	if (Start_Anim_Flg) {
-		if (CheckSoundMem(title.Start_SE) == false) PlaySoundMem(title.Start_SE, DX_PLAYTYPE_BACK, TRUE);
+		if (CheckSoundMem(title.Start_SE) == false && title.Start_SE_Flg) {
+			PlaySoundMem(title.Start_SE, DX_PLAYTYPE_BACK, TRUE);
+			title.Start_SE_Flg = false;
+		}
+		
 		SetDrawArea(0 + Start_Anime_Count, 0 + (Start_Anime_Count / 2), Width - Start_Anime_Count, Height - (Start_Anime_Count / 2));
 		
 		if (Start_Anime_Count > Width / 2) {
@@ -55,6 +59,7 @@ void DrawGameTitle(int Width, int Height) {
 			Start_Anime_Count = 0;
 			Start_Anim_Flg = false;
 			SetDrawArea(0, 0, Width, Height);
+			title.Start_SE_Flg = true;
 		}
 
 		Start_Anime_Count += (Width/400);

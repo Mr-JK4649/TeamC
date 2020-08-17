@@ -89,6 +89,8 @@ struct String {
 	void Serihu_Skip_Fin() {
 		if (FinFlg) {
 			Init();
+			setTex = false;
+			FinFlg = false;
 		}
 		else {
 			s = length;
@@ -102,8 +104,6 @@ struct String {
 		length = 0;
 		count = 0;
 		life = 0;
-		setTex = false;
-		FinFlg = false;
 	}
 
 private:

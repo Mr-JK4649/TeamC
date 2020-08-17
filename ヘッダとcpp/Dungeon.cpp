@@ -21,6 +21,15 @@ void DrawGameDungeon(int Width, int Height) {
 	/*プレイヤーの移動*/
 	if (!menu.isMenu && !menu.isGage_Menu && !ch.isBattle && !d_sys.Effect_Flg)ch.Move(&ch);
 
+	/*雑魚的エンカウント*/
+	if (!ch.isBattle && ++d_sys.Cool_Time > 300) {
+		if (GetRand(10) == 0) {
+			d_sys.Enemy_Num = GetRand(2) + 4 * d_sys.Dungeon_Num;
+			//d_sys.Enemy_Num = 9;
+			ch.isBattle = true;
+			d_sys.Cool_Time = 0;
+		}
+	}
 
 	/*敵の描画と更新*/
 	if (!ch.isBattle) {
@@ -53,15 +62,7 @@ void DrawGameDungeon(int Width, int Height) {
 	if (inp.start) menu.isMenu = !menu.isMenu;
 
 	
-	/*雑魚的エンカウント*/
-	if (!ch.isBattle && ++d_sys.Cool_Time > 300) {
-		if (GetRand(10) == 0) {
-			d_sys.Enemy_Num = GetRand(2) + 4 * d_sys.Dungeon_Num;
-			//d_sys.Enemy_Num = 9;
-			ch.isBattle = true;
-			d_sys.Cool_Time = 0;
-		}
-	}
+	
 	
 
 	DungeonMap(Width, Height);
