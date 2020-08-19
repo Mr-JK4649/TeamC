@@ -246,9 +246,11 @@ struct Dungeon_Sys {
 		ch.y = 250;
 		Cool_Time = 0;
 		Effect_Flg = false;
-		if (Enemy_Num == 3 || Enemy_Num == 7 || Enemy_Num == 11) {
-			Boss_Flg[Enemy_Num % 3] = false;
-			menu.Inclease_Gage(4, 50);			//ゲージを増やす
+		if (Enemy_Hp <= 0) {
+			if (Enemy_Num == 3 || Enemy_Num == 7 || Enemy_Num == 11) {
+				Boss_Flg[Enemy_Num % 3] = false;
+				menu.Inclease_Gage(4, 50);			//ゲージを増やす
+			}
 		}
 		ch.isBattle = false;
 	}
