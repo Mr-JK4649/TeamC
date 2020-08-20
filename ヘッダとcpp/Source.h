@@ -255,42 +255,68 @@ extern Home home;
 struct HATAKE {
 	int image = 0;
 	int testimage[12];
-	int tane[3];
-	int yasai[3];
-	int mizu[3];
+	int playerjouro[4];
+	int tane[9];
+	int yasai[9];
+	int mizu[9];
 	int fremimage = 0;
 	int selectfrem = 0;
 	bool flg = true;
 	void ImageInput(struct HATAKE* p) {
-		p->image = LoadGraph("images/hatakeimage.png");
+		p->image = LoadGraph("images/Hatake/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
 		p->selectfrem = LoadGraph("images/selectfrem.png");
-		//下向き image_DOWN
-		p->testimage[0] = LoadGraph("images/JK2_1.png");
-		p->testimage[1] = LoadGraph("images/JK2_2.png");
-		p->testimage[2] = LoadGraph("images/JK2_3.png");
-		//上向き image_UP
-		p->testimage[3] = LoadGraph("images/JK2_4.png");
-		p->testimage[4] = LoadGraph("images/JK2_5.png");
-		p->testimage[5] = LoadGraph("images/JK2_6.png");
-		//右向き image_RIGHT
-		p->testimage[6] = LoadGraph("images/JK2_7.png");
-		p->testimage[7] = LoadGraph("images/JK2_8.png");
-		p->testimage[8] = LoadGraph("images/JK2_9.png");
-		//左向き image_LEFT
-		p->testimage[9] = LoadGraph("images/JK2_10.png");
-		p->testimage[10] = LoadGraph("images/JK2_11.png");
-		p->testimage[11] = LoadGraph("images/JK2_12.png");
-
-		p->tane[0] = LoadGraph("images/KomugiTane.png");
-		p->tane[1] = LoadGraph("images/JagaimoTane.png");
-		p->tane[2] = LoadGraph("images/NinjinTane.png");
-		p->yasai[0] = LoadGraph("images/komugi.png");
-		p->yasai[1] = LoadGraph("images/jagaimo.png");
-		p->yasai[2] = LoadGraph("images/ninjin.png");
-		p->mizu[0] = LoadGraph("images/KomugiMizu.png");
-		p->mizu[1] = LoadGraph("images/JagaimoMizu.png");
-		p->mizu[2] = LoadGraph("images/NinjinMizu.png");
+		//キャラじょうろ
+		p->playerjouro[0] = LoadGraph("images/char/JK_jouro.png");
+		p->playerjouro[1] = LoadGraph("images/char/JK_jouroL1.png");
+		p->playerjouro[2] = LoadGraph("images/char/JK_jouroR1.png");
+		p->playerjouro[3] = LoadGraph("images/char/JK2_4.png");
+		//キャラ下向き image_DOWN
+		p->testimage[0] = LoadGraph("images/char/JK2_1.png");
+		p->testimage[1] = LoadGraph("images/char/JK2_2.png");
+		p->testimage[2] = LoadGraph("images/char/JK2_3.png");
+		//キャラ上向き image_UP
+		p->testimage[3] = LoadGraph("images/char/JK2_4.png");
+		p->testimage[4] = LoadGraph("images/char/JK2_5.png");
+		p->testimage[5] = LoadGraph("images/char/JK2_6.png");
+		//キャラ右向き image_RIGHT
+		p->testimage[6] = LoadGraph("images/char/JK2_7.png");
+		p->testimage[7] = LoadGraph("images/char/JK2_8.png");
+		p->testimage[8] = LoadGraph("images/char/JK2_9.png");
+		//キャラ左向き image_LEFT
+		p->testimage[9] = LoadGraph("images/char/JK2_10.png");
+		p->testimage[10] = LoadGraph("images/char/JK2_11.png");
+		p->testimage[11] = LoadGraph("images/char/JK2_12.png");
+		//種画像
+		p->tane[0] = LoadGraph("images/Hatake/KomugiTane.png");
+		p->tane[1] = LoadGraph("images/Hatake/JagaimoTane.png");
+		p->tane[2] = LoadGraph("images/Hatake/NinjinTane.png");
+		p->tane[3] = LoadGraph("images/Hatake/KomugiTane.png");
+		p->tane[4] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[5] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[6] = LoadGraph("images/Hatake/JagaimoTane.png");
+		p->tane[7] = LoadGraph("images/Hatake/NinjinTane.png");
+		p->tane[8] = LoadGraph("images/Hatake/KyabetuTane.png");
+		//野菜画像
+		p->yasai[0] = LoadGraph("images/Hatake/komugi.png");
+		p->yasai[1] = LoadGraph("images/Hatake/jagaimo.png");
+		p->yasai[2] = LoadGraph("images/Hatake/ninjin.png");
+		p->yasai[3] = LoadGraph("images/Hatake/daikon.png");
+		p->yasai[4] = LoadGraph("images/Hatake/kyabetu.png");
+		p->yasai[5] = LoadGraph("images/Hatake/satumaimo.png");
+		p->yasai[6] = LoadGraph("images/Hatake/burokori.png");
+		p->yasai[7] = LoadGraph("images/Hatake/kabocya.png");
+		p->yasai[8] = LoadGraph("images/Hatake/suika.png");
+		//水画像
+		p->mizu[0] = LoadGraph("images/Hatake/KomugiMizu.png");
+		p->mizu[1] = LoadGraph("images/Hatake/JagaimoMizu.png");
+		p->mizu[2] = LoadGraph("images/Hatake/NinjinMizu.png");
+		p->mizu[3] = LoadGraph("images/Hatake/KomugiMizu.png");
+		p->mizu[4] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[5] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[6] = LoadGraph("images/Hatake/JagaimoMizu.png");
+		p->mizu[7] = LoadGraph("images/Hatake/NinjinMizu.png");
+		p->mizu[8] = LoadGraph("images/Hatake/KyabetuMizu.png");
 	}
 };
 
@@ -434,7 +460,7 @@ struct Dungeon {
 	
 
 	void ImageInput(struct Dungeon* p) {
-		p->background = LoadGraph("images/Dungeon_Background.png");
+		p->background = LoadGraph("images/Dungeon_Background.png"); 
 		p->stage = LoadGraph("images/Stage1.png");
 
 		/*エフェクト*/
