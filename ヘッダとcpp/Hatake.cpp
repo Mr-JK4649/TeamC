@@ -44,11 +44,19 @@ struct YASAI{
 	int num = 0;//今の野菜データ保存するやつ
 	bool flg;//増えているか
 };
+
+struct YASAIDATA {
+	char name[128];
+	int num = 0;
+	bool flg = 0;
+};
 struct SELECTMENU {
 	int x, y;
 	char name[128];
 	bool flg;
 	bool colorflg;
+	int num;
+	bool drawflg;
 };
 struct KYOTEN {
 	int mapdata = 0;
@@ -94,10 +102,26 @@ SELECTMENU menu1[4] = {
 	{400,350,"収穫",0,0},
 	{400,370,"バッグ",0,0} };
 //メニュー種
-SELECTMENU menutane[3] = {
-	{400,310,"こむぎのたね",0,1},
-	{400,330,"じゃがいものたね",0,0},
-	{400,350,"にんじんのたね",0,0}};
+SELECTMENU menutane[9] = {
+	{400,310,"こむぎのたね",0,1,5,true},
+	{400,330,"じゃがいものたね",0,0,5,true},
+	{400,350,"にんじんのたね",0,0,5,true},
+	{400,370,"だいこんのたね",0,0,5,true},
+	{400,390,"きゃべつのたね",0,0,5,true},
+	{400,410,"さつまいものたね",0,0,5,true},
+	{400,430,"ぶろっこりーのたね", 0,0,5,true},
+	{400,450,"かぼちゃのたね",0,0,5,true},
+	{400,470,"すいかのたね",0,0,5,true} };
+YASAIDATA YasaiData_a[9] = {
+	{"こむぎ",0,false},
+	{"じゃがいも",0,false},
+	{"にんじん",0,false},
+	{"だいこん",0,false},
+	{"きゃべつ",0,false},
+	{"さつまいも",0,false},
+	{"ぶろっこりー",0,false},
+	{"かぼちゃ",0,false},
+	{"すいか",0,false} };
 //拠点戻る選択
 SELECTMENU bacselect[3] = {
 	{500,350,"はい",0,1},
@@ -126,23 +150,39 @@ int MizuNowyasai = 0;
 int SyukakuNowyasai = 0;
 int startkeycount = 0;
 int ykeycoun = 0;
+///////////////////種用変数
+bool taneplantflg = true;
+int tanenum = 0;
+int tanelimitdata = 0;
+int select_tane_num = 9;
+int select_tane_backnum = 8;
 ///////////////////育つ用変数
 bool mizuyari = false;
 int Mizu_yasainum = 0;//水やりの時の野菜データを保存するやつ
 //収穫用変数
 int syukakunum = 0;//収穫できるかのデータ保存するやつ
+//データ保存
+int SyukakuData = 0;
+//プレイヤーアニメーション用変数
+int playerjouro = 0;
+int player_animeflg = 1;
 //*****プロトタイプ宣言*****
 void Game_Hatake(int Width, int Height);
 void InitPlayer(void);//プレイヤー初期化
+void InitYasaiData(void);
 int IsAbleToGo(int x, int y, int muki);//当たり判定処理
 void Player(int Width, int Height);//プレイヤー処理
+void PlayerDraw();
 int gpUpdateKey();//キー更新処理
 void DrawFrem();//枠表示描画
 void DrawHatake(int Width, int Height);//畑描画
 void MoveYasai();//野菜処理
 void DrawYasai();//野菜・種など描画
+//種処理
 void MoveSelectTane();//種選択画面処理
 void DrawSelectTane();//種選択画面描画
+void TaneLimit();//種の数を制限
+//作業選択
 void MoveSelectMenu();//作業選択メニュー処理
 void DrawSelectMenu(); //作業選択メニュー描画
 void YasaiMizuMove();
@@ -158,22 +198,21 @@ void KyotenExitSelect();
 void KyotenBag();
 //収穫処理
 void Syukaku();
-void SyuukakuMove();
+void SyuukakuMov();
 void InitselectColor();
-//野菜データ
-void InitYasaiData();
 //植える処理
 void TanePlant();
 void MizuPlant();
 void SyukakuPlant();
 //バック画面
-//void Bag();//ここまで8/06
+void Bag();
+void YasaiJudgment();
 //*****処理呼び出し*****
 void Game_Hatake(int Width, int Height) {
 	SetFontSize(20);//文字サイズ確認
 	if (flg) {
-		InitPlayer(); flg = false;	//一回のみ初期化
 		InitYasaiData();
+		InitPlayer(); flg = false;	//一回のみ初期化
 	}
 	gpUpdateKey();//入力更新
 	Player(Width, Height);//プレイヤー処理関数
@@ -193,27 +232,18 @@ void Game_Hatake(int Width, int Height) {
 		}
 		ykeycoun++;
 	}
-	//if (inp.x == true) {
-	//	selectNum = 0; //開いたときに現在選択している場所を初期化
-	//	selectTane = 0;
-	//	selectflg = true; //Aを押したとき作業選択画面開く
-	//	initflg = true;
-	//}else if (inp.y == true) {
-	//	selectflg = false; //Sを押したとき作業選択画面閉じる
-	//	pageflg = MENU;
-	//}
-	//処理セレクトフラグONならセレクト画面開く
 	switch (pageflg)
 	{
 	case MENU:if (selectflg == true)MoveSelectMenu(); break;//作業選択画面
 	case MENU2:if (selectflg == true)MoveSelectTane(); break;//種選択画面
 	case MENU3: MoveMizu(); break;//水をあげる画面
 	case MENU4: Syukaku(); break;//収穫処理
-	/*case MENU5: Bag(); break;*/
+	case MENU5: Bag(); break;
 	}
 	if (pageflg == MENU2) { Plantpageflg = MENU2; }
 	else if (pageflg == MENU3) { Plantpageflg = MENU3; }
 	else if (pageflg == MENU4) { Plantpageflg = MENU4; }
+	else if (pageflg == MENU5) { Plantpageflg = MENU5; }
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//拠点戻り処理
 	KyotenBag();
@@ -289,22 +319,6 @@ void Player(int Width, int Height) {
 			else {
 				player.walking_flg = false;//歩かないフラグ
 			}
-			////キーボード入力
-			//if (Key[KEY_INPUT_UP] > 1) {
-			//	player.muki = UP;//上向きフラグ
-			//}
-			//else if (Key[KEY_INPUT_DOWN] > 1) {
-			//	player.muki = DOWN;//下向きフラグ
-			//}
-			//else if (Key[KEY_INPUT_LEFT] > 1) {
-			//	player.muki = LEFT;//左向きフラグ
-			//}
-			//else if (Key[KEY_INPUT_RIGHT] > 1) {
-			//	player.muki = RIGHT;//右向きフラグ
-			//}
-			//else {
-			//	player.walking_flg = false;//歩かないフラグ
-			//}
 			if (IsAbleToGo(player.x, player.y, player.muki) == 1)
 				player.walking_flg = false;
 		}
@@ -332,7 +346,7 @@ void Player(int Width, int Height) {
 		player.y = 0;
 	}
 	/*デバック表示*/
-	if (inp.start == true) {
+	if (inp.sele == true) {
 		if (startkeycount % 2 == 0) {
 			dflg = true;
 		}
@@ -342,18 +356,45 @@ void Player(int Width, int Height) {
 		startkeycount++;
 	}
 }
-//*****畑描画処理*****
-void DrawHatake(int Width, int Height) {
-	if (hatake.flg) { hatake.ImageInput(&hatake); hatake.flg = false; }
+void PlayerDraw() {
 	//プレイヤーアニメーション処理******************************************************
 	if (player.muki == UP) { player.image_muki = Image_UP; }
 	else if (player.muki == DOWN) { player.image_muki = Image_DOWN; }
-	else if (player.muki == RIGHT) { player.image_muki = Image_RIGHT;}
-	else if (player.muki == LEFT) { player.image_muki = Image_LEFT;}
+	else if (player.muki == RIGHT) { player.image_muki = Image_RIGHT; }
+	else if (player.muki == LEFT) { player.image_muki = Image_LEFT; }
 	player.image = ((player.x % CHIP_SIZE + player.y % CHIP_SIZE) / 21) + player.image_muki;
 	//**********************************************************************************
+	if (player.muki == DOWN) {
+		playerjouro = 0;
+	}
+	else if (player.muki == LEFT) {
+		playerjouro = 1;
+	}
+	else if (player.muki == RIGHT) {
+		playerjouro = 2;
+	}
+	else if (player.muki == UP) {
+		playerjouro = 3;
+	}
+
+	if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true && plantflg == true) {
+		if (Plantpageflg == MENU3)player_animeflg = 2;
+	}
+	else {
+		player_animeflg = 1;
+	}
+	//プレイヤー描画 [1プレイヤー] [2じょうろの画像]
+	switch (player_animeflg)
+	{
+	case 1: DrawGraph(player.x, player.y, hatake.testimage[player.image], TRUE); break;
+	case 2: DrawGraph(player.x, player.y, hatake.playerjouro[playerjouro], TRUE); break;
+	}
+}
+//*****畑描画処理*****
+void DrawHatake(int Width, int Height) {
+	if (hatake.flg) { hatake.ImageInput(&hatake); hatake.flg = false; }
 	DrawGraph(0, 0, hatake.image, TRUE);
-	DrawGraph(player.x, player.y, hatake.testimage[player.image], TRUE);
+	PlayerDraw();
 	DrawYasai();
 	//フレーム表示
 	DrawFrem();
@@ -364,7 +405,7 @@ void MoveYasai() {
 		if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true && plantflg == true) {
 			switch (Plantpageflg) {
 			case MENU2:TanePlant(); break;//種植える処理
-			case MENU3:MizuPlant(); if (Plantpageflg == MENU3)mizuyari = true; break;//水植える処理
+			case MENU3:MizuPlant(); if (Plantpageflg == MENU3) { mizuyari = true;} break;//水植える処理
 			case MENU4:SyukakuPlant(); break;
 			}
 		}
@@ -375,13 +416,13 @@ void DrawYasai(){
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			if (tane[i][j] != 0) {
-				if (tane[i][j] >= KOMUGI_TANE && tane[i][j] <= NINJIN_TANE) {//種描画
+				if (tane[i][j] >= KOMUGI_TANE && tane[i][j] <= SUIKA_TANE) {//種描画
 					DrawGraph(j * CHIP_SIZE, i * CHIP_SIZE, hatake.tane[tane[i][j] % drawdignum], FALSE);
 				}
-				else if (tane[i][j] >= KOMUGI_MIZU && tane[i][j] <= NINJIN_MIZU){//水やり描画
+				else if (tane[i][j] >= KOMUGI_MIZU && tane[i][j] <= SUIKA_MIZU){//水やり描画
 					DrawGraph(j* CHIP_SIZE, i* CHIP_SIZE, hatake.mizu[tane[i][j] % drawdignum], FALSE);
 				}
-				else if(tane[i][j] >= KOMUGI && tane[i][j] <= NINJIN) {
+				else if(tane[i][j] >= KOMUGI && tane[i][j] <= SUIKA) {
 					DrawGraph(j * CHIP_SIZE, i * CHIP_SIZE, hatake.yasai[tane[i][j] % drawdignum], FALSE);//野菜描画 
 				}
 			}
@@ -391,12 +432,22 @@ void DrawYasai(){
 //**************************************選択画面処理**************************************************************************************
 //選択されている場所の色初期化
 void InitselectColor() {
+	//選択作業初期化
 	for (int i = 0; i < 4; i++) {
 		if (i == 0) {
 			menu1[i].colorflg = 1;
 		}
 		else {
 			menu1[i].colorflg = 0;
+		}
+	}
+	//種選択初期化
+	for (int i = 0; i < 9; i++) {
+		if (i == 0) {
+			menutane[i].colorflg = 1;
+		}
+		else {
+			menutane[i].colorflg = 0;
 		}
 	}
 }
@@ -436,6 +487,10 @@ void MoveSelectMenu(){
 			pageflg = MENU4;
 			selectflg = false;
 		}
+		else if (selectNum == 3) {
+			pageflg = MENU5;
+			selectflg = false;
+		}
 	}
 	DrawSelectMenu();
 }
@@ -457,18 +512,18 @@ void DrawSelectMenu() {
 //種選択画面処理
 void MoveSelectTane() {
 	if (inp.f_down == true) {
-		selectTane = (selectTane + 1) % 3;
+		selectTane = (selectTane + 1) % select_tane_num;
 	}
 	if (inp.f_up == true) {
-		selectTane = (selectTane + 2) % 3;
+		selectTane = (selectTane + select_tane_backnum) % select_tane_num; //+2 %3
 	}
 	if (inp.f_down == true || inp.f_up == true) {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < select_tane_num; i++) {
 			if (i == selectTane) {
-				menu1[i].colorflg = 1;
+				menutane[i].colorflg = 1;
 			}
 			else {
-				menu1[i].colorflg = 0;
+				menutane[i].colorflg = 0;
 			}
 		}
 	}
@@ -511,12 +566,54 @@ void DrawSelectTane() {
 	DrawBox(390, 300, 610, 420, GetColor(0, 0, 0), true);
 	DrawBox(390, 300, 610, 420, GetColor(255, 255, 255), false);
 
-	for (int i = 0; i < 3; i++) {
-		if (menu1[i].colorflg == 1) {
-			DrawFormatString(menutane[i].x, menutane[i].y, 0x5D99FF, menutane[i].name);
+	for (int i = 0; i < select_tane_num; i++) {
+		if (menutane[i].drawflg == true) {
+			if (menutane[i].colorflg == 1) {
+				DrawFormatString(menutane[i].x, menutane[i].y, 0x5D99FF, "%s ×%d", menutane[i].name, menutane[i].num);
+			}
+			else {
+				DrawFormatString(menutane[i].x, menutane[i].y, GetColor(255, 255, 255), "%s ×%d", menutane[i].name, menutane[i].num);
+			}
 		}
-		else {
-			DrawFormatString(menutane[i].x, menutane[i].y, GetColor(255, 255, 255), menutane[i].name);
+	}
+}
+
+void TaneLimit() {
+	tanelimitdata = TaneNowyasai;
+
+	if (TaneNowyasai==KOMUGI_TANE) {
+		menutane[0].num--;
+	}
+	else if (TaneNowyasai == JAGAIMO_TANE) {
+		menutane[1].num--;
+	}
+	else if (TaneNowyasai == NINJIN_TANE) {
+		menutane[2].num--;
+	}
+	else if (TaneNowyasai == DAIKON_TANE) {
+		menutane[3].num--;
+	}
+	else if (TaneNowyasai == KYABETU_TANE) {
+		menutane[4].num--;
+	}
+	else if (TaneNowyasai == SATUMAIMO_TANE) {
+		menutane[5].num--;
+	}
+	else if (TaneNowyasai == BUROKORI_TANE) {
+		menutane[6].num--;
+	}
+	else if (TaneNowyasai == KABOCYA_TANE) {
+		menutane[7].num--;
+	}
+	else if (TaneNowyasai == SUIKA_TANE) {
+		menutane[8].num--;
+	}
+
+	for (int i = 0; i < 9; i++) {
+		if (menutane[i].num <= 0) {
+			//select_tane_backnum--;
+			//select_tane_num--;
+			menutane[i].drawflg = false;
 		}
 	}
 }
@@ -525,6 +622,12 @@ void YasaiMizuMove() {
 	if (KOMUGI_TANE == Mizu_yasainum) { MizuNowyasai = KOMUGI_MIZU; }
 	else if (JAGAIMO_TANE == Mizu_yasainum) { MizuNowyasai = JAGAIMO_MIZU; }
 	else if (NINJIN_TANE == Mizu_yasainum) { MizuNowyasai = NINJIN_MIZU;}
+	else if (DAIKON_TANE == Mizu_yasainum) { MizuNowyasai = DAIKON_MIZU; }//ここから
+	else if (KYABETU_TANE == Mizu_yasainum) { MizuNowyasai = KYABETU_MIZU; }
+	else if (SATUMAIMO_TANE == Mizu_yasainum) { MizuNowyasai = SATUMAIMO_MIZU; }
+	else if (BUROKORI_TANE == Mizu_yasainum) { MizuNowyasai = BUROKORI_MIZU; }
+	else if (KABOCYA_TANE == Mizu_yasainum) { MizuNowyasai = KABOCYA_MIZU; }
+	else if (SUIKA_TANE == Mizu_yasainum) { MizuNowyasai = SUIKA_MIZU; }
 }
 void MoveMizu() {
 	MizuNowyasai = Mizu_yasainum;//水更新
@@ -541,6 +644,9 @@ void MoveMizu() {
 		if (player.muki == RIGHT) {
 			Mizu_yasainum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1];
 		}
+	}
+	else {
+		Mizu_yasainum = 0;
 	}
 	if (Mizu_yasainum != 0) {
 		plantflg = true;
@@ -579,6 +685,8 @@ void YasaiCountFlg() {
 		mizuyari = false;
 	}
 }
+
+
 ///////////////////////////////////(成長カウント関数)////////////////////////////////////////////////////////////////////////////////////////////
 //水やり後のカウントしていく
 void Count(){
@@ -595,6 +703,12 @@ void Growth() {
 			if (Yasaidata[i].num == KOMUGI_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = KOMUGI;}
 			if (Yasaidata[i].num == JAGAIMO_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = JAGAIMO;}
 			if (Yasaidata[i].num == NINJIN_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = NINJIN;}
+			if (Yasaidata[i].num == DAIKON_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = DAIKON; }
+			if (Yasaidata[i].num == KYABETU_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = KYABETU; }
+			if (Yasaidata[i].num == SATUMAIMO_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = SATUMAIMO; }
+			if (Yasaidata[i].num == BUROKORI_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = BUROKORI; }
+			if (Yasaidata[i].num == KABOCYA_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = KABOCYA; }
+			if (Yasaidata[i].num == SUIKA_MIZU) { tane[Yasaidata[i].y][Yasaidata[i].x] = SUIKA; }
 			Yasaidata[i].num = 0;//numのデータ初期化
 			Yasaidata[i].count = 0;
 			Yasaidata[i].flg = false;
@@ -603,33 +717,93 @@ void Growth() {
 }
 ////////////収穫処理////////////////////////////////////////////////////////////////////////////////////////////////////
 void Syukaku() {
-	if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true) {
-		if (player.muki == UP) {
-			syukakunum = tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE];
+		if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true) {
+			if (player.muki == UP) {
+				syukakunum = tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE];
+			}
+			if (player.muki == DOWN) {
+				syukakunum = tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE];
+			}
+			if (player.muki == LEFT) {
+				syukakunum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1];
+			}
+			if (player.muki == RIGHT) {
+				syukakunum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1];
+			}
+			SyuukakuMov();
 		}
-		if (player.muki == DOWN) {
-			syukakunum = tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE];
+		else {
+			syukakunum = 0;
 		}
-		if (player.muki == LEFT) {
-			syukakunum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1];
+}
+void SyuukakuMov(){
+		if (KOMUGI == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
 		}
-		if (player.muki == RIGHT) {
-			syukakunum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1];
+		else if (JAGAIMO == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
 		}
-		SyuukakuMove();
+		else if (NINJIN == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (DAIKON == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (KYABETU == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (SATUMAIMO == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (BUROKORI == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (KABOCYA == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else if (SUIKA == syukakunum) {
+			SyukakuNowyasai = 0; plantflg = true;
+		}
+		else { plantflg = false; }
+}
+void YasaiJudgment() {
+	SyukakuData = syukakunum;
+
+	if (KOMUGI == SyukakuData) {
+		YasaiData_a[0].num++;
+	}
+	else if (JAGAIMO == SyukakuData) {
+		YasaiData_a[1].num++;
+	}
+	else if (NINJIN == SyukakuData) {
+		YasaiData_a[2].num++;
+	}
+	else if (DAIKON == SyukakuData) {
+		YasaiData_a[3].num++;
+	}
+	else if (KYABETU == SyukakuData) {
+		YasaiData_a[4].num++;
+	}
+	else if (SATUMAIMO == SyukakuData) {
+		YasaiData_a[5].num++;
+	}
+	else if (BUROKORI == SyukakuData) {
+		YasaiData_a[6].num++;
+	}
+	else if (KABOCYA == SyukakuData) {
+		YasaiData_a[7].num++;
+	}
+	else if (SUIKA == SyukakuData) {
+		YasaiData_a[8].num++;
 	}
 }
-void SyuukakuMove() {
-	if (KOMUGI == syukakunum) {
-		SyukakuNowyasai = 0; plantflg = true;
+//バッグ処理
+void Bag() {
+	DrawBox(190, 15, 400, 200, GetColor(0, 0, 0), true);
+	DrawBox(190, 15, 400, 200, GetColor(255, 255, 255), false);
+	for (int i = 0; i < 9; i++) {
+		DrawFormatString(200,20*(i+1), GetColor(255,255,255),"[%s][%d]", YasaiData_a[i].name,YasaiData_a[i].num);
 	}
-	else if (JAGAIMO == syukakunum) {
-		SyukakuNowyasai = 0; plantflg = true;
-	}
-	else if (NINJIN == syukakunum) {
-		SyukakuNowyasai = 0; plantflg = true;
-	}
-	else { plantflg = false; }
 }
 //フレーム描画
 void DrawFrem() {
@@ -788,25 +962,26 @@ void Debag() {
 	//	}
 	//}
 	//for (int i = 0; i < 30; i++) {
-	//	DrawFormatString(100, i * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].num);
+	//	DrawFormatString(100, i * 20, GetColor(255, 255, 0), "[%d]p.y[%d]", i + 1, Yasaidata[i].count);
 	//}
 	//for (int i = 30; i < 54; i++) {
-	//	DrawFormatString(300, (i % 30) * 20, GetColor(255, 255, 0), "[%d]flg[%d]", i + 1, Yasaidata[i].num);
+	//	DrawFormatString(300, (i % 30) * 20, GetColor(255, 255, 0), "[%d]p.y[%d]", i + 1, Yasaidata[i].count);
 	//}
-	DrawFormatString(400, 210, GetColor(255, 255, 0), "ykeycoun[%d]", ykeycoun%2);
-	DrawFormatString(400, 230, GetColor(255, 255, 0), "startcount[%d]", startkeycount%2);
-	//DrawFormatString(400, 230, GetColor(255, 255, 0), "ページフラグ [%d]", pageflg);
-	//DrawFormatString(400, 250, GetColor(255, 255, 0), "収穫用保存 [%d]", syukakunum);
-	//DrawFormatString(400, 270, GetColor(255, 255, 0), "現在の種 [%d]", TaneNowyasai);
-	/*DrawFormatString(400, 310, GetColor(255, 255, 0), "現在の収穫[%d]", SyukakuNowyasai);*/
+	for (int i = 0; i < 9;i++) {
+		DrawFormatString(400, (20*i), GetColor(255, 255, 0), "menutane[%d]", menutane[i].num);
+	}//DrawFormatString(400, 230, GetColor(255, 255, 0), "ページフラグ [%d]", pageflg);
+	DrawFormatString(400, 230, GetColor(255, 255, 0), "種種類の数 [%d]", select_tane_num);
+	DrawFormatString(400, 250, GetColor(255, 255, 0), "種選択下 [%d]", select_tane_backnum);
+	//DrawFormatString(400, 270, GetColor(255, 255, 0), "保存用収穫 [%d]", syukakunum);
+	//DrawFormatString(400, 290, GetColor(255, 255, 0), "現在の収穫[%d]", SyukakuNowyasai);
 	//DrawFormatString(400, 370, GetColor(255, 255, 0), "player.DOWN[%d]", Image_DOWN);
 	//DrawFormatString(400, 390, GetColor(255, 255, 0), "player.UP[%d]", Image_UP);
 	//DrawFormatString(400, 410, GetColor(255, 255, 0), "player.LEFT[%d]", Image_LEFT);
 	//DrawFormatString(400, 430, GetColor(255, 255, 0), "player.RIGHT[%d]", Image_RIGHT);
-		//DrawFormatString(400, 100, GetColor(255, 255, 0), "上[%d]", tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE]);
-		//DrawFormatString(400, 150, GetColor(255, 255, 0), "下[%d]", tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE]);
-		//DrawFormatString(400, 200, GetColor(255, 255, 0), "左[%d]", tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1]);
-		//DrawFormatString(400, 250, GetColor(255, 255, 0), "右[%d]", tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1]);
+	//DrawFormatString(400, 100, GetColor(255, 255, 0), "上[%d]", tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE]);
+	//DrawFormatString(400, 150, GetColor(255, 255, 0), "下[%d]", tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE]);
+	//DrawFormatString(400, 200, GetColor(255, 255, 0), "左[%d]", tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1]);
+	//DrawFormatString(400, 250, GetColor(255, 255, 0), "右[%d]", tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1]);
 	//DrawFormatString(400, 100, GetColor(255, 0, 0), "plantflg [%d]",plantflg);
 	//DrawFormatString(400, 150, GetColor(255, 255, 0), "Nowyasai [%d]", Nowyasai);
 	//DrawFormatString(400, 200, GetColor(255, 255, 0), "Mizu_yasainum [%d]", Mizu_yasainum);
@@ -815,17 +990,46 @@ void Debag() {
 }
 //植える処理
 void TanePlant() {
-	if (player.muki == UP) {
-		tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE] = TaneNowyasai;
+	//種のデータの中身を取得
+	if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true) {
+		if (player.muki == UP) {
+			tanenum = tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE];
+		}
+		if (player.muki == DOWN) {
+			tanenum = tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE];
+		}
+		if (player.muki == LEFT) {
+			tanenum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1];
+		}
+		if (player.muki == RIGHT) {
+			tanenum = tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1];
+		}
 	}
-	if (player.muki == DOWN) {
-		tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE] = TaneNowyasai;
+	else {
+		tanenum = 0;
 	}
-	if (player.muki == LEFT) {
-		tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1] = TaneNowyasai;
+	//データが0以外は植えられない
+	if (tanenum != 0) {
+		taneplantflg = false;
 	}
-	if (player.muki == RIGHT) {
-		tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1] = TaneNowyasai;
+	else {
+		taneplantflg = true;
+	}
+	//データが0なら植えれる
+	if (taneplantflg == true) {
+		if (player.muki == UP) {
+			tane[player.y / CHIP_SIZE - 1][player.x / CHIP_SIZE] = TaneNowyasai;
+		}
+		if (player.muki == DOWN) {
+			tane[player.y / CHIP_SIZE + 1][player.x / CHIP_SIZE] = TaneNowyasai;
+		}
+		if (player.muki == LEFT) {
+			tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE - 1] = TaneNowyasai;
+		}
+		if (player.muki == RIGHT) {
+			tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1] = TaneNowyasai;
+		}
+		TaneLimit();
 	}
 }
 void MizuPlant() {
@@ -855,4 +1059,5 @@ void SyukakuPlant() {
 	if (player.muki == RIGHT) {
 		tane[player.y / CHIP_SIZE][player.x / CHIP_SIZE + 1] = SyukakuNowyasai;
 	}
+	YasaiJudgment();
 }

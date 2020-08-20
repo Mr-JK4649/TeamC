@@ -55,7 +55,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	//Init();										//画像や音楽などのファイルを初期化する
 
-	g_GameState = GAME_INIT;
+	g_GameState = GAME_HATAKE;
 
 
 	// ゲームループ
@@ -109,7 +109,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 			g_GameState == GAME_HATAKE ||
 			g_GameState == GAME_CASINO ||
 			g_GameState == GAME_DUNGEON) {
-			GameSystem();
+			/*GameSystem();*/
 		}
 
 		ScreenFlip();    // 裏画面の内容を表画面に反映

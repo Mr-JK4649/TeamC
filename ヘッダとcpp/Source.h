@@ -255,9 +255,10 @@ extern Home home;
 struct HATAKE {
 	int image = 0;
 	int testimage[12];
-	int tane[4];
+	int playerjouro[4];
+	int tane[9];
 	int yasai[9];
-	int mizu[4];
+	int mizu[9];
 	int fremimage = 0;
 	int selectfrem = 0;
 	bool flg = true;
@@ -265,6 +266,11 @@ struct HATAKE {
 		p->image = LoadGraph("images/Hatake/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
 		p->selectfrem = LoadGraph("images/selectfrem.png");
+		//ƒLƒƒƒ‰‚¶‚å‚¤‚ë
+		p->playerjouro[0] = LoadGraph("images/char/JK_jouro.png");
+		p->playerjouro[1] = LoadGraph("images/char/JK_jouroL1.png");
+		p->playerjouro[2] = LoadGraph("images/char/JK_jouroR1.png");
+		p->playerjouro[3] = LoadGraph("images/char/JK2_4.png");
 		//ƒLƒƒƒ‰‰ºŒü‚« image_DOWN
 		p->testimage[0] = LoadGraph("images/char/JK2_1.png");
 		p->testimage[1] = LoadGraph("images/char/JK2_2.png");
@@ -281,11 +287,17 @@ struct HATAKE {
 		p->testimage[9] = LoadGraph("images/char/JK2_10.png");
 		p->testimage[10] = LoadGraph("images/char/JK2_11.png");
 		p->testimage[11] = LoadGraph("images/char/JK2_12.png");
-
+		//Ží‰æ‘œ
 		p->tane[0] = LoadGraph("images/Hatake/KomugiTane.png");
 		p->tane[1] = LoadGraph("images/Hatake/JagaimoTane.png");
 		p->tane[2] = LoadGraph("images/Hatake/NinjinTane.png");
-		p->tane[3] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[3] = LoadGraph("images/Hatake/KomugiTane.png");
+		p->tane[4] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[5] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[6] = LoadGraph("images/Hatake/JagaimoTane.png");
+		p->tane[7] = LoadGraph("images/Hatake/NinjinTane.png");
+		p->tane[8] = LoadGraph("images/Hatake/KyabetuTane.png");
+		//–ìØ‰æ‘œ
 		p->yasai[0] = LoadGraph("images/Hatake/komugi.png");
 		p->yasai[1] = LoadGraph("images/Hatake/jagaimo.png");
 		p->yasai[2] = LoadGraph("images/Hatake/ninjin.png");
@@ -295,10 +307,16 @@ struct HATAKE {
 		p->yasai[6] = LoadGraph("images/Hatake/burokori.png");
 		p->yasai[7] = LoadGraph("images/Hatake/kabocya.png");
 		p->yasai[8] = LoadGraph("images/Hatake/suika.png");
+		//…‰æ‘œ
 		p->mizu[0] = LoadGraph("images/Hatake/KomugiMizu.png");
 		p->mizu[1] = LoadGraph("images/Hatake/JagaimoMizu.png");
 		p->mizu[2] = LoadGraph("images/Hatake/NinjinMizu.png");
-		p->mizu[3] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[3] = LoadGraph("images/Hatake/KomugiMizu.png");
+		p->mizu[4] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[5] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[6] = LoadGraph("images/Hatake/JagaimoMizu.png");
+		p->mizu[7] = LoadGraph("images/Hatake/NinjinMizu.png");
+		p->mizu[8] = LoadGraph("images/Hatake/KyabetuMizu.png");
 	}
 };
 
