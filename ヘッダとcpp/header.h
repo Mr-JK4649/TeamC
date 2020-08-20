@@ -18,7 +18,9 @@ enum GAME_MODE {
 	GAME_WORK,		//仕事紹介所
 	GAME_CASINO,	//カジノ
 	GAME_S_SELECT,	//ステージ選択
+	GAME_CREDIT,	//クレジット
 	GAME_RESULT,	//リザルト
+	GAME_CREAR,		//ゲームクリア
 	GAME_OVER,		//ゲームオーバー(？)
 	END = 99,		//エンド用変数
 	GAME_DUNGEON	//ダンジョン
