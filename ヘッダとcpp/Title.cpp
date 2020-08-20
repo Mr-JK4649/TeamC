@@ -18,10 +18,10 @@ void DrawGameTitle(int Width, int Height) {
 	DrawExtendGraph(0, 0, Width, Height, title.image[title.Arrow], 1);
 
 	/*ÇaÇfÇlÇÃçƒê∂*/
-	if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
+	/*if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
 		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);
 		DrawBox(0, 0, 200, 200, 0xffff00, 1);
-	}
+	}*/
 	
 	SetFontSize(20);
 

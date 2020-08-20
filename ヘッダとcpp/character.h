@@ -15,6 +15,7 @@
 
 extern Dungeon dungeon;
 
+
 struct Chara {
 	/*キャラの初期化フラグ*/
 	bool flg = true;
@@ -170,8 +171,8 @@ struct Chara {
 				//ジャンプ処理
 				p->y -= dungeon.jump;
 				dungeon.jump--;
-				if (p->y > four / 8 - 215 ) {
-					p->y = four / 8 - 215;
+				if (p->y > /*a*/four / 8 - 215 ) {
+					p->y = /*a*/four / 8 - 215;
 					dungeon.jump = 0;
 				}
 				
@@ -181,10 +182,11 @@ struct Chara {
 					/*if (p->y >= four / 2 && dungeon.up != -three + 50)dungeon.up -= 5 * speed;
 					if (p->y + c_size >= p->height) p->y = p->height - c_size;*/
 				}
+				
+
 				if (dungeon.move >= 0)dungeon.move = 0;
 				if (dungeon.move <= -three + 50)dungeon.move = -three + 50;
 				
-				DungeonHitHantei(p,speed,four);
 				break;
 
 			default:
@@ -414,53 +416,7 @@ struct Chara {
 	int Return_Box_Item(Chara* p, int select) {
 		return Box_Item[select];
 	}
-	//ダンジョン当たり判定
-	void DungeonHitHantei(Chara* p,int s,int f) {
-		const int speed = 2;
-		const float  dx = 144.5, dy = 115;
-		int c = 0;						//判定
-		int F = -dungeon.move + x;		//スクロールしても動き続けるX座標
-
-		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j <= 33; j++) {
-				if (dungeon.Map[i][j] == 1) {
-					//ブロックの当たり判定
-					DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
-					//DrawBox(j * dx-30 + dungeon.move, i * dy-50 + dungeon.up, j * dx+dx+28 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 0, 0), false);
-					DrawFormatString(5, 180, 0xFFFFFF, "dx:%.1f dy:%.1f x:%d y:%d c:%d F:%d", dx, dy, p->x, p->y, c, F);
-					//if (p->sx >j * 137 + dungeon.move&&p->x<j*137+198+dungeon.move&&p->y>i*108+dungeon.up&&p->y<i*108+110+dungeon.up) {
-					if (p->x > j * dx + dungeon.move && p->x <j * dx + dx + dungeon.move &&
-						p->y >i * dy + dungeon.up && p->y < i * dy + dy + dungeon.up) {
-					}
-					//左
-					if (p->x > j * dx - 30 + dungeon.move && p->x <j * dx + dx + dungeon.move && 
-						p->y > i * dy + dungeon.up &&p->y < i * dy + dy + dungeon.up) {
-						p->x -= 5 * speed;
-					}
-
-					//右
-					if (p->x <j * dx + dx + 28 + dungeon.move && p->x > j * dx + dungeon.move &&
-						p->y > i * dy + dungeon.up &&p->y < i * dy + dy + dungeon.up) {
-						p->x += 5 * speed;
-					}
-
-					//上
-					if (p->y > i * dy-64+ dungeon.up &&p->y < i * dy + dy+ dungeon.up&&
-							p->x > j * dx + dungeon.move && p->x < j * dx + dx + dungeon.move) {
-						p->y -= 5 * speed;
-						c = 1;
-					}
-
-					//if (p->y > i * 108 + dungeon.up && p->x > j * 138 + dungeon.move && p->x < j * 145 + 100 + dungeon.move)//dungeon.up += 5 * speed;
-					//if(p->y < i * 108 + 110 + dungeon.up&& p->x > j * 138 + dungeon.move && p->x < j * 145 + 100 + dungeon.move);//dungeon.up -= 5 * speed;
-					//if (p->x > j * dx + dungeon.move && p->x > j * dx + dx + dungeon.move)/*p->x += 5 * speed*/;
-					/*if (p->x < j * 137 + 198 + dungeon.move)p->x += 5 * speed;*/
-
-				//}
-				}
-			}
-		}
-	}
+	
 
 private:
 	int x = 100, y = 400;								//キャラの画面上の座標

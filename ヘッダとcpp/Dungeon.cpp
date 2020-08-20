@@ -6,6 +6,7 @@
 #include <wingdi.h>
 #include <windows.h>
 
+//#include "DungeonMap.h"
 #include "Source.h"
 #include "string.h"
 #include "Input.h"
@@ -14,8 +15,6 @@
 
 Dungeon dungeon;
 Chara cha;
-//void DungeonHitHantei(Chara* p);
-void DungeonMap(int w, int h);
 
 void DrawGameDungeon(int Width, int Height) {
 
@@ -33,14 +32,5 @@ void DrawGameDungeon(int Width, int Height) {
 	if (!str.setTex)cha.Move(&cha);
 
 	DrawFormatString(100, 100, 0xFFFFFF, "x:%4d y:%4d", inp.MouseX, inp.MouseY);
-
-	DungeonMap(Width, Height);
-}
-
-void DungeonMap(int w, int h) {
-	
-	//DrawBox(w / 5.1 + dungeon.move, h*1.09+ dungeon.up, w/1.09 + dungeon.move, h * 1.81 + dungeon.up, 0xEEE8AA, 1);
-	//DrawExtendGraph(w/5+dungeon.move,  h*1.1+dungeon.up, w/1.1 +dungeon.move, h*1.8+ dungeon.up, dungeon.stage, 1);
-
 }
 
