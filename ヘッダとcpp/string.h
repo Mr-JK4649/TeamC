@@ -68,9 +68,11 @@ struct String {
 				strncpy_s(buf, str, s);
 			}
 
+			//DrawFormatString(100, 100, 0xffffff, "c %d \n s %d \n f_f %d", count, s, FinFlg);
+
 			/*•¶š‚Ì•\¦*/
 			SuperString(x, y, buf, color, 0, size);
-			if (strlen(buf) >= strlen(str))FinFlg = true;
+			if (strlen(buf) >= strlen(str)) FinFlg = true;
 		}
 	}
 
@@ -87,6 +89,8 @@ struct String {
 	void Serihu_Skip_Fin() {
 		if (FinFlg) {
 			Init();
+			setTex = false;
+			FinFlg = false;
 		}
 		else {
 			s = length;
@@ -97,10 +101,10 @@ struct String {
 	/*•Ï”‚Ì‰Šú‰»*/
 	void Init() {
 		s = 0;
+		strcpy_s(buf, "");
+		length = 0;
 		count = 0;
 		life = 0;
-		setTex = false;
-		FinFlg = false;
 	}
 
 private:

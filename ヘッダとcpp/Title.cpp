@@ -18,14 +18,13 @@ void DrawGameTitle(int Width, int Height) {
 	DrawExtendGraph(0, 0, Width, Height, title.image[title.Arrow], 1);
 
 	/*ＢＧＭの再生*/
-	/*if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
-		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);
-		DrawBox(0, 0, 200, 200, 0xffff00, 1);
-	}*/
+	if (!Start_Anim_Flg && CheckSoundMem(title.bgm) == false) {
+		PlaySoundMem(title.bgm, DX_PLAYTYPE_BACK, TRUE);;
+	}
 	
 	SetFontSize(20);
 
-	DrawString(5, 5, "ビルド日付：2020年8月6日20時00分", 0xff0000, 1);
+	DrawString(5, 5, "ビルド日付：2020年8月20日20時20分", 0xff0000, 1);
 
 	SetFontSize(16);
 	
@@ -48,7 +47,11 @@ void DrawGameTitle(int Width, int Height) {
 
 	/*移動アニメーション用*/
 	if (Start_Anim_Flg) {
-		if (CheckSoundMem(title.Start_SE) == false) PlaySoundMem(title.Start_SE, DX_PLAYTYPE_BACK, TRUE);
+		if (CheckSoundMem(title.Start_SE) == false && title.Start_SE_Flg) {
+			PlaySoundMem(title.Start_SE, DX_PLAYTYPE_BACK, TRUE);
+			title.Start_SE_Flg = false;
+		}
+		
 		SetDrawArea(0 + Start_Anime_Count, 0 + (Start_Anime_Count / 2), Width - Start_Anime_Count, Height - (Start_Anime_Count / 2));
 		
 		if (Start_Anime_Count > Width / 2) {
@@ -56,6 +59,7 @@ void DrawGameTitle(int Width, int Height) {
 			Start_Anime_Count = 0;
 			Start_Anim_Flg = false;
 			SetDrawArea(0, 0, Width, Height);
+			title.Start_SE_Flg = true;
 		}
 
 		Start_Anime_Count += (Width/400);

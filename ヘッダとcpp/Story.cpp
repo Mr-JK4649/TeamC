@@ -39,6 +39,7 @@ void Story(int width, int height) {
 		scroll_y = 0;
 		StopSoundMem(title.Story_bgm);
 		str.Fade_String_Box = false;
+		str.Init();
 		g_GameState = GAME_BASE;
 	}
 

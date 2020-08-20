@@ -45,8 +45,8 @@ struct Input {
 		if (NowKey & PAD_INPUT_DOWN)	inp->down = true;		else inp->down = false;			//‰º’·‰Ÿ‚µ
 		if (KeyFlg & PAD_INPUT_B)		inp->space = true;		else inp->space = false;		//‚aƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_A)		inp->cancel = true;		else inp->cancel = false;		//‚`ƒ{ƒ^ƒ“ˆê‰ñ
-		if (NowKey & PAD_INPUT_C)		inp->y = true;			else inp->y = false;			//‚xƒ{ƒ^ƒ“ˆê‰ñ
-		if (NowKey & PAD_INPUT_X)		inp->x = true;			else inp->x = false;			//‚wƒ{ƒ^ƒ“ˆê‰ñ
+		if (KeyFlg & PAD_INPUT_C)		inp->x = true;			else inp->x = false;			//‚xƒ{ƒ^ƒ“ˆê‰ñ
+		if (KeyFlg & PAD_INPUT_X)		inp->y = true;			else inp->y = false;			//‚wƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_R)		inp->start = true;		else inp->start = false;		//‚r‚s‚`‚q‚sƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_L)		inp->sele = true;		else inp->sele = false;			//‚r‚d‚k‚d‚b‚sƒ{ƒ^ƒ“ˆê‰ñ
 		if (KeyFlg & PAD_INPUT_LEFT)	inp->f_left = true;		else inp->f_left = false;		//¶ˆê‰ñ

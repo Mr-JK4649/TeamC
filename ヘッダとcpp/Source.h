@@ -15,8 +15,6 @@ struct SoundE {
 		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
 		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
 		p->Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
-
-		
 	}
 };
 
@@ -31,9 +29,11 @@ struct Title {
 	int SelectMove_SE = 0;
 	int Select_SE = 0;
 	int Start_SE = 0;
+	bool Start_SE_Flg = true;
 	
 	//あらすじ用
 	int Story_bgm = 0;
+	bool Story_bgm_Flg = true;
 
 	bool flg = true;
 
@@ -254,30 +254,69 @@ extern Home home;
 
 struct HATAKE {
 	int image = 0;
-	int testimage[4];
-	int tane[3];
-	int yasai[3];
-	int mizu[3];
+	int testimage[12];
+	int playerjouro[4];
+	int tane[9];
+	int yasai[9];
+	int mizu[9];
 	int fremimage = 0;
 	int selectfrem = 0;
 	bool flg = true;
 	void ImageInput(struct HATAKE* p) {
-		p->image = LoadGraph("images/hatakeimage.png");
+		p->image = LoadGraph("images/Hatake/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
 		p->selectfrem = LoadGraph("images/selectfrem.png");
-		p->testimage[0] = LoadGraph("images/JK2_4.png");
-		p->testimage[1] = LoadGraph("images/JK2_1.png");
-		p->testimage[2] = LoadGraph("images/charLEFT.png");
-		p->testimage[3] = LoadGraph("images/charRIGHT.png");
-		p->tane[0] = LoadGraph("images/komugitane.png");
-		p->tane[1] = LoadGraph("images/jagaimotane.png");
-		p->tane[2] = LoadGraph("images/ninjintane.png");
-		p->yasai[0] = LoadGraph("images/komugi.png");
-		p->yasai[1] = LoadGraph("images/jagaimo.png");
-		p->yasai[2] = LoadGraph("images/ninjin.png");
-		p->mizu[0] = LoadGraph("images/komugimizu.png");
-		p->mizu[1] = LoadGraph("images/jagaimomizu.png");
-		p->mizu[2] = LoadGraph("images/ninjinmizu.png");
+		//キャラじょうろ
+		p->playerjouro[0] = LoadGraph("images/char/JK_jouro.png");
+		p->playerjouro[1] = LoadGraph("images/char/JK_jouroL1.png");
+		p->playerjouro[2] = LoadGraph("images/char/JK_jouroR1.png");
+		p->playerjouro[3] = LoadGraph("images/char/JK2_4.png");
+		//キャラ下向き image_DOWN
+		p->testimage[0] = LoadGraph("images/char/JK2_1.png");
+		p->testimage[1] = LoadGraph("images/char/JK2_2.png");
+		p->testimage[2] = LoadGraph("images/char/JK2_3.png");
+		//キャラ上向き image_UP
+		p->testimage[3] = LoadGraph("images/char/JK2_4.png");
+		p->testimage[4] = LoadGraph("images/char/JK2_5.png");
+		p->testimage[5] = LoadGraph("images/char/JK2_6.png");
+		//キャラ右向き image_RIGHT
+		p->testimage[6] = LoadGraph("images/char/JK2_7.png");
+		p->testimage[7] = LoadGraph("images/char/JK2_8.png");
+		p->testimage[8] = LoadGraph("images/char/JK2_9.png");
+		//キャラ左向き image_LEFT
+		p->testimage[9] = LoadGraph("images/char/JK2_10.png");
+		p->testimage[10] = LoadGraph("images/char/JK2_11.png");
+		p->testimage[11] = LoadGraph("images/char/JK2_12.png");
+		//種画像
+		p->tane[0] = LoadGraph("images/Hatake/KomugiTane.png");
+		p->tane[1] = LoadGraph("images/Hatake/JagaimoTane.png");
+		p->tane[2] = LoadGraph("images/Hatake/NinjinTane.png");
+		p->tane[3] = LoadGraph("images/Hatake/KomugiTane.png");
+		p->tane[4] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[5] = LoadGraph("images/Hatake/KyabetuTane.png");
+		p->tane[6] = LoadGraph("images/Hatake/JagaimoTane.png");
+		p->tane[7] = LoadGraph("images/Hatake/NinjinTane.png");
+		p->tane[8] = LoadGraph("images/Hatake/KyabetuTane.png");
+		//野菜画像
+		p->yasai[0] = LoadGraph("images/Hatake/komugi.png");
+		p->yasai[1] = LoadGraph("images/Hatake/jagaimo.png");
+		p->yasai[2] = LoadGraph("images/Hatake/ninjin.png");
+		p->yasai[3] = LoadGraph("images/Hatake/daikon.png");
+		p->yasai[4] = LoadGraph("images/Hatake/kyabetu.png");
+		p->yasai[5] = LoadGraph("images/Hatake/satumaimo.png");
+		p->yasai[6] = LoadGraph("images/Hatake/burokori.png");
+		p->yasai[7] = LoadGraph("images/Hatake/kabocya.png");
+		p->yasai[8] = LoadGraph("images/Hatake/suika.png");
+		//水画像
+		p->mizu[0] = LoadGraph("images/Hatake/KomugiMizu.png");
+		p->mizu[1] = LoadGraph("images/Hatake/JagaimoMizu.png");
+		p->mizu[2] = LoadGraph("images/Hatake/NinjinMizu.png");
+		p->mizu[3] = LoadGraph("images/Hatake/KomugiMizu.png");
+		p->mizu[4] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[5] = LoadGraph("images/Hatake/KyabetuMizu.png");
+		p->mizu[6] = LoadGraph("images/Hatake/JagaimoMizu.png");
+		p->mizu[7] = LoadGraph("images/Hatake/NinjinMizu.png");
+		p->mizu[8] = LoadGraph("images/Hatake/KyabetuMizu.png");
 	}
 };
 
@@ -299,6 +338,8 @@ struct Dungeon {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
+	float TIP_WIDTH = 0;
+	float TIP_HEIGHT = 0;
 
 	int background = 0;		//洞窟背景
 	int stage = 0;		//ダンジョン(ステージ)
@@ -307,8 +348,358 @@ struct Dungeon {
 	int up = -684;
 	int jump = 0;
 
+	int Effect_Anim_Num[5] = { 10,9,15,7,18 };	//エフェクトの画像数
+	int Effect_Speed[5] = { 20,5,5,10,10 };	//エフェクトの表示速度
+	int Hit_Effect[10] = { 0 };		//攻撃ヒットのエフェクト
+	int Sword_Effect1[9] = { 0 };	//剣の攻撃エフェクト1
+	int Sword_Effect2[15] = { 0 };	//剣の攻撃エフェクト2
+	int Magic_Effect1[7] = { 0 };	//魔法のエフェクト1
+	int Magic_Effect2[18] = { 0 };	//魔法のエフェクト
+	
+	enum Enemy_Action
+	{
+		Idle,
+		Move,
+		Attack
+	};
+
+	/*待機に使う画像数*/
+	int Enemy_Idle_Lim[12] = { 3,4,3,3,4,4,4,4,3,4,4,4 };
+
+	/*移動に使う画像数*/
+	int Enemy_Move_Lim[12] = { 4,4,6,6,4,6,6,4,6,4,4,6 };
+
+	/*攻撃に使う画像数*/
+	int Enemy_Attack_Lim[12] = { 5,4,5,4,4,4,4,4,4,4,4,5 };
+
+	/*戦闘開始時の敵の位置を初期化する変数*/
+	int Battle_Enemy_Pos[12][2] =
+	{
+		{ -99,422 },		//スライム
+		{ -99,400 },		//妖精
+		{ -99,320 },		//ゾンビ
+		{ 4600,320 },		//コボルト　ボス
+		{ -99,320 },		//鳥
+		{ -99,320 },		//兵士
+		{ -99,320 },		//魔法使い
+		{ 4600,320},		//どくろ　　ボス
+		{ -99,310 },		//黒コボルト
+		{ -99,320 },		//黒どくろ
+		{ -99,380 },		//黒妖精
+		{ 4600,320 }		//ドラゴン　ボス
+	};
+
+	/*敵のサイズ*/
+	int Enemy_Size[12][2] =
+	{
+		{200,200},
+		{200,200},
+		{300,300},
+		{300,300},//
+		{150,150},
+		{300,300},
+		{300,300},
+		{300,300},//
+		{320,320},
+		{320,320},
+		{200,200},
+		{650,450} //
+	};
+
+	/*敵のステータスと経験値(HP、攻撃力、移動速度、経験値)*/
+	int Enemy_Status[12][4] =
+	{
+		{100,1,1,100},		//スライム
+		{150,1,2,150},		//妖精
+		{200,2,1,200},		//ゾンビ
+		{500,3,2,1000},		//コボルト　ボス
+		{300,2,3,200},		//鳥
+		{500,2,1,500},		//兵士
+		{400,2,2,400},		//魔法使い
+		{1000,4,2,2000},	//どくろ　　ボス
+		{600,4,3,1200},		//黒コボルト
+		{1200,5,3,2400},	//黒どくろ
+		{400,3,3,800},		//黒妖精
+		{5000,6,2,10000}	//ドラゴン　ボス
+	};
+
+	/*攻撃のやつ(攻撃範囲、攻撃の種類)*/
+	int Enemy_Attacks[12][3] =
+	{
+		{100,200,0},		//スライム
+		{100,200,0},		//妖精
+		{100,200,0},		//ゾンビ
+		{100,200,0},		//コボルト　ボス
+		{100,200,0},		//鳥
+		{100,200,0},		//兵士
+		{100,200,0},		//魔法使い
+		{100,200,0},		//どくろ　　ボス
+		{100,200,0},		//黒コボルト
+		{100,200,0},		//黒どくろ
+		{100,200,0},		//黒妖精
+		{100,200,0}			//ドラゴン　ボス
+	};
+
+	
+	int Cobolt_x = 4600, Cobolt_y = -50;
+	int Cobolt_size = 300;
+	int Cobolt_Width = 300;
+	int Cobolt_Height = 300;
+	int Cobolt_Hp = 400;
+	int Cobolt_Atk = 4;
+	int Cobolt_Exp = 25;
+	int CoboltA_Idle[3] = {0};
+	int CoboltA_Move[6] = {0};
+	int CoboltA_Attack[4] = {0};
+
+
+	int Enemy_Idle[12][4] = { 0 };
+	int Enemy_Move[12][6] = { 0 };
+	int Enemy_Attack[12][5] = { 0 };
+
+	
+
 	void ImageInput(struct Dungeon* p) {
-		p->background = LoadGraph("images/ダンジョン背景.png");
-		p->stage = LoadGraph("images/簡単ステージ.png");
+		p->background = LoadGraph("images/Dungeon_Background.png"); 
+		p->stage = LoadGraph("images/Stage1.png");
+
+		/*エフェクト*/
+		LoadDivGraph("images/Effects/hit_effect.png", 10, 1, 10, 640, 480, p->Hit_Effect, 1);
+		LoadDivGraph("images/Effects/sword_effect1.png", 9, 9, 1, 240, 240, p->Sword_Effect1, 1);
+		LoadDivGraph("images/Effects/sword_effect2.png", 15, 5, 3, 480, 480, p->Sword_Effect2, 1);
+		LoadDivGraph("images/Effects/magic_effect1.png", 7, 7, 1, 240, 240, p->Magic_Effect1, 1);
+		LoadDivGraph("images/Effects/magic_effect2.png", 18, 3, 6, 640, 300, p->Magic_Effect2, 1);
+
+		/*スライム*/
+		if (true) {
+			p->Enemy_Idle[0][0] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_待機000.png");
+			p->Enemy_Idle[0][1] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_待機001.png");
+			p->Enemy_Idle[0][2] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_待機002.png");
+
+			p->Enemy_Move[0][0] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_移動000.png");
+			p->Enemy_Move[0][1] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_移動001.png");
+			p->Enemy_Move[0][2] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_移動002.png");
+			p->Enemy_Move[0][3] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_移動003.png");
+
+			p->Enemy_Attack[0][0] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_攻撃000.png");
+			p->Enemy_Attack[0][1] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_攻撃001.png");
+			p->Enemy_Attack[0][2] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_攻撃002.png");
+			p->Enemy_Attack[0][3] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_攻撃003.png");
+			p->Enemy_Attack[0][4] = LoadGraph("images/ゲーム用モンスター素材/スライム/スライムA_攻撃004.png");
+		}
+
+		/*妖精*/
+		if (true) {
+			p->Enemy_Idle[1][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_待機000.png");
+			p->Enemy_Idle[1][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_待機001.png");
+			p->Enemy_Idle[1][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_待機002.png");
+			p->Enemy_Idle[1][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_待機003.png");
+
+			p->Enemy_Move[1][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_移動000.png");
+			p->Enemy_Move[1][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_移動001.png");
+			p->Enemy_Move[1][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_移動002.png");
+			p->Enemy_Move[1][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_移動003.png");
+
+			p->Enemy_Attack[1][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_攻撃000.png");
+			p->Enemy_Attack[1][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_攻撃001.png");
+			p->Enemy_Attack[1][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_攻撃002.png");
+			p->Enemy_Attack[1][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精A_攻撃003.png");
+		}
+
+		/*ゾンビ*/
+		if (true) {
+			p->Enemy_Idle[2][0] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_待機000.png");
+			p->Enemy_Idle[2][1] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_待機001.png");
+			p->Enemy_Idle[2][2] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_待機002.png");
+
+			p->Enemy_Move[2][0] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動000.png");
+			p->Enemy_Move[2][1] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動001.png");
+			p->Enemy_Move[2][2] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動002.png");
+			p->Enemy_Move[2][3] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動003.png");
+			p->Enemy_Move[2][4] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動004.png");
+			p->Enemy_Move[2][5] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_移動005.png");
+
+			p->Enemy_Attack[2][0] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_攻撃000.png");
+			p->Enemy_Attack[2][1] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_攻撃001.png");
+			p->Enemy_Attack[2][2] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_攻撃002.png");
+			p->Enemy_Attack[2][3] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_攻撃003.png");
+			p->Enemy_Attack[2][4] = LoadGraph("images/ゲーム用モンスター素材/ゾンビ/ゾンビA_攻撃004.png");
+		}
+
+		/*コボルト*/
+		if (true) {
+			p->Enemy_Idle[3][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_待機000.png");
+			p->Enemy_Idle[3][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_待機001.png");
+			p->Enemy_Idle[3][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_待機002.png");
+
+			p->Enemy_Move[3][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動000.png");
+			p->Enemy_Move[3][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動001.png");
+			p->Enemy_Move[3][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動002.png");
+			p->Enemy_Move[3][3] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動003.png");
+			p->Enemy_Move[3][4] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動004.png");
+			p->Enemy_Move[3][5] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_移動005.png");
+
+			p->Enemy_Attack[3][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_攻撃000.png");
+			p->Enemy_Attack[3][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_攻撃001.png");
+			p->Enemy_Attack[3][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_攻撃002.png");
+			p->Enemy_Attack[3][3] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_攻撃003.png");
+			p->Enemy_Attack[3][4] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトA_攻撃004.png");
+		}
+
+		/*鳥*/
+		if (true) {
+			p->Enemy_Idle[4][0] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_待機000.png");
+			p->Enemy_Idle[4][1] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_待機001.png");
+			p->Enemy_Idle[4][2] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_待機002.png");
+			p->Enemy_Idle[4][3] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_待機003.png");
+
+			p->Enemy_Move[4][0] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_移動000.png");
+			p->Enemy_Move[4][1] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_移動001.png");
+			p->Enemy_Move[4][2] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_移動002.png");
+			p->Enemy_Move[4][3] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_移動003.png");
+
+			p->Enemy_Attack[4][0] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_攻撃000.png");
+			p->Enemy_Attack[4][1] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_攻撃001.png");
+			p->Enemy_Attack[4][2] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_攻撃002.png");
+			p->Enemy_Attack[4][3] = LoadGraph("images/ゲーム用モンスター素材/鳥/鳥A_攻撃003.png");
+		}
+
+		/*兵士*/
+		if (true) {
+			p->Enemy_Idle[5][0] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_待機000.png");
+			p->Enemy_Idle[5][1] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_待機001.png");
+			p->Enemy_Idle[5][2] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_待機002.png");
+			p->Enemy_Idle[5][3] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_待機003.png");
+
+			p->Enemy_Move[5][0] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動000.png");
+			p->Enemy_Move[5][1] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動001.png");
+			p->Enemy_Move[5][2] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動002.png");
+			p->Enemy_Move[5][3] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動003.png");
+			p->Enemy_Move[5][4] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動004.png");
+			p->Enemy_Move[5][5] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_移動005.png");
+
+			p->Enemy_Attack[5][0] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_攻撃000.png");
+			p->Enemy_Attack[5][1] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_攻撃001.png");
+			p->Enemy_Attack[5][2] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_攻撃002.png");
+			p->Enemy_Attack[5][3] = LoadGraph("images/ゲーム用モンスター素材/兵士/兵士A_攻撃003.png");
+		}
+
+		/*魔法使い*/
+		if (true) {
+			p->Enemy_Idle[6][0] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_待機000.png");
+			p->Enemy_Idle[6][1] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_待機001.png");
+			p->Enemy_Idle[6][2] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_待機002.png");
+			p->Enemy_Idle[6][3] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_待機003.png");
+
+			p->Enemy_Move[6][0] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動000.png");
+			p->Enemy_Move[6][1] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動001.png");
+			p->Enemy_Move[6][2] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動002.png");
+			p->Enemy_Move[6][3] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動003.png");
+			p->Enemy_Move[6][4] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動004.png");
+			p->Enemy_Move[6][5] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_移動005.png");
+
+			p->Enemy_Attack[6][0] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_攻撃000.png");
+			p->Enemy_Attack[6][1] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_攻撃001.png");
+			p->Enemy_Attack[6][2] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_攻撃002.png");
+			p->Enemy_Attack[6][3] = LoadGraph("images/ゲーム用モンスター素材/魔法使い/魔法使いA_攻撃003.png");
+		}
+
+		/*どくろ*/
+		if (true) {
+			p->Enemy_Idle[7][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動000.png");
+			p->Enemy_Idle[7][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動001.png");
+			p->Enemy_Idle[7][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動002.png");
+			p->Enemy_Idle[7][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動003.png");
+
+			p->Enemy_Move[7][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動000.png");
+			p->Enemy_Move[7][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動001.png");
+			p->Enemy_Move[7][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動002.png");
+			p->Enemy_Move[7][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_待機・移動003.png");
+
+			p->Enemy_Attack[7][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_攻撃000.png");
+			p->Enemy_Attack[7][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_攻撃001.png");
+			p->Enemy_Attack[7][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_攻撃002.png");
+			p->Enemy_Attack[7][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろA_攻撃003.png");
+		}
+
+		/*黒コボルト*/
+		if (true) {
+			p->Enemy_Idle[8][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_待機000.png");
+			p->Enemy_Idle[8][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_待機001.png");
+			p->Enemy_Idle[8][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_待機002.png");
+
+			p->Enemy_Move[8][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動000.png");
+			p->Enemy_Move[8][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動001.png");
+			p->Enemy_Move[8][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動002.png");
+			p->Enemy_Move[8][3] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動003.png");
+			p->Enemy_Move[8][4] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動004.png");
+			p->Enemy_Move[8][5] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_移動005.png");
+
+			p->Enemy_Attack[8][0] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_攻撃000.png");
+			p->Enemy_Attack[8][1] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_攻撃001.png");
+			p->Enemy_Attack[8][2] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_攻撃002.png");
+			p->Enemy_Attack[8][3] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_攻撃003.png");
+			p->Enemy_Attack[8][4] = LoadGraph("images/ゲーム用モンスター素材/コボルト/コボルトD_攻撃004.png");
+		}
+
+		/*黒どくろ*/
+		if (true) {
+			p->Enemy_Idle[9][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動000.png");
+			p->Enemy_Idle[9][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動001.png");
+			p->Enemy_Idle[9][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動002.png");
+			p->Enemy_Idle[9][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動003.png");
+
+			p->Enemy_Move[9][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動000.png");
+			p->Enemy_Move[9][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動001.png");
+			p->Enemy_Move[9][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動002.png");
+			p->Enemy_Move[9][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_待機・移動003.png");
+
+			p->Enemy_Attack[9][0] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_攻撃000.png");
+			p->Enemy_Attack[9][1] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_攻撃001.png");
+			p->Enemy_Attack[9][2] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_攻撃002.png");
+			p->Enemy_Attack[9][3] = LoadGraph("images/ゲーム用モンスター素材/どくろ/どくろD_攻撃003.png");
+		}
+
+		/*黒妖精*/
+		if (true) {
+			p->Enemy_Idle[10][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_待機000.png");
+			p->Enemy_Idle[10][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_待機001.png");
+			p->Enemy_Idle[10][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_待機002.png");
+			p->Enemy_Idle[10][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_待機003.png");
+
+			p->Enemy_Move[10][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_移動000.png");
+			p->Enemy_Move[10][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_移動001.png");
+			p->Enemy_Move[10][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_移動002.png");
+			p->Enemy_Move[10][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_移動003.png");
+
+			p->Enemy_Attack[10][0] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_攻撃000.png");
+			p->Enemy_Attack[10][1] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_攻撃001.png");
+			p->Enemy_Attack[10][2] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_攻撃002.png");
+			p->Enemy_Attack[10][3] = LoadGraph("images/ゲーム用モンスター素材/妖精/妖精D_攻撃003.png");
+		}
+
+		/*ドラゴン*/
+		if (true) {
+			p->Enemy_Idle[11][0] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_待機000.png");
+			p->Enemy_Idle[11][1] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_待機001.png");
+			p->Enemy_Idle[11][2] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_待機002.png");
+			p->Enemy_Idle[11][3] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_待機003.png");
+
+			p->Enemy_Move[11][0] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動000.png");
+			p->Enemy_Move[11][1] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動001.png");
+			p->Enemy_Move[11][2] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動002.png");
+			p->Enemy_Move[11][3] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動003.png");
+			p->Enemy_Move[11][4] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動004.png");
+			p->Enemy_Move[11][5] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_移動005.png");
+
+			p->Enemy_Attack[11][0] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_攻撃000.png");
+			p->Enemy_Attack[11][1] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_攻撃001.png");
+			p->Enemy_Attack[11][2] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_攻撃002.png");
+			p->Enemy_Attack[11][3] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_攻撃003.png");
+			p->Enemy_Attack[11][4] = LoadGraph("images/ゲーム用モンスター素材/ドラゴン/ドラゴンA_攻撃004.png");
+		}
+
 	}
 };
+
+extern Dungeon dungeon;
