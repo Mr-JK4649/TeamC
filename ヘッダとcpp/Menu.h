@@ -36,6 +36,8 @@ struct Menu {
 	bool isTutorial = true;				//チュートリアル
 	int Tutorial_Select = 0;			//チュートリアルの選択肢
 
+	bool isDevilsCome = false;			//魔族ゲージ超過ゲームオーバー
+
 	/*メニュー素材の初期化*/
 	void Init() {
 		SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");

@@ -33,7 +33,7 @@ void DrawGameMain(int width, int height) {
 	}
 
 	/*拠点の更新関数*/
-	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu && !menu.isTutorial)
+	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu && !menu.isTutorial && !menu.isDevilsCome)
 		Base_Update(width, height);					//拠点内の移動、その他更新
 	
 
@@ -101,7 +101,10 @@ void Base_Disp(int width, int height) {
 		!menu.isTIPS &&
 		!menu.isGage_Menu) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
 
-	DrawFormatString(5, 5, 0xffffff, "%d", inp.a);
+	/*セリフを出す*/
+	if (str.setTex) str.Serihu(Player_Serihu[str.TexNum], 15, height - (height / 4 - 10), 0xffffff, width / 40);
+
+	//DrawFormatString(5, 5, 0xffffff, "%d", inp.a);
 }
 
 /*拠点のシステム*/
@@ -128,10 +131,6 @@ void Base_Update(int width, int height) {
 		else menu.isBuilding_Enter = false;
 		menu.Enter_Select = 0;
 	}
-
-
-	/*セリフを出す*/
-	if (str.setTex) str.Serihu(Player_Serihu[str.TexNum], 15, height - (height / 4 - 10), 0xffffff, width / 40);
 
 }
 

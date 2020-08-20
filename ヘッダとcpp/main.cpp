@@ -78,7 +78,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_S_SELECT:	GameSSelect(scale.Width, scale.Height);  break;			//ステージ選択画面処理
 
-		case GAME_DUNGEON:  DrawGameDungeon(scale.Width, scale.Height); break;			//ゲームダンジョン画面処理
+		case GAME_DUNGEON:  DrawGameDungeon(scale.Width, scale.Height); break;		//ゲームダンジョン画面処理
 
 		case GAME_BASE:		DrawGameMain(scale.Width, scale.Height);  break;		//ゲームメイン画面処理
 
@@ -88,13 +88,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_WORK:		Work_Draw(scale.Width, scale.Height); break;			//仕事紹介所
 
-		case GAME_HATAKE: Game_Hatake(scale.Width, scale.Height); break;			//畑関数
+		case GAME_HATAKE:	Game_Hatake(scale.Width, scale.Height); break;			//畑関数
 
 		case GAME_CASINO:	Casino_Draw(scale.Width, scale.Height);	break;			//カジノ
 
-		//case GAME_RESULT:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームメイン処理
+		case GAME_CREDIT:	DrawCredit(scale.Width, scale.Height); break;			//ゲームクレジット
 
-		//case GAME_OVER:		DrawGameOver(scale.Width, scale.Height); break;		// ゲームオーバー描画処理
+		//case GAME_CREAR:	DrawCredit(scale.Width, scale.Height); break;			//ゲームクリア
+
+		//case GAME_OVER:	DrawGameOver(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
 
 		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;				// ゲームオーバー描画処理
 

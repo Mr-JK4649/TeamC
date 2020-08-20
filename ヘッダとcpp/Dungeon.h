@@ -202,7 +202,7 @@ struct Dungeon_Sys {
 				if (Enemy_Hp < 0) {
 					Battle_Finish_Process();
 					ch.Add_Exp(&ch, dungeon.Enemy_Status[Enemy_Num][3]);
-
+					menu.Inclease_Gage(1, -5);
 				}
 
 				/*‚±‚Á‚¿‚Ì‘Ì—Í‚ª0‚É‚È‚Á‚½‚ç*/
