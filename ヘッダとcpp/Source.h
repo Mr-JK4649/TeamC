@@ -9,12 +9,14 @@ struct SoundE {
 	int Select_SE = 0;				//メニューでの決定音
 	int Cansel_SE = 0;				//メニューでのキャンセル音
 
-	
+	int bag_SE = 0;
 
 	void Init(SoundE* p) {
 		p->SelectMove_SE = LoadSoundMem("sounds/カーソル移動.mp3");
 		p->Select_SE = LoadSoundMem("sounds/メニュー決定.mp3");
 		p->Cansel_SE = LoadSoundMem("sounds/メニューキャンセル.mp3");
+
+		p->bag_SE = LoadSoundMem("sounds/Item_Bag_SE.mp3");
 	}
 };
 
@@ -141,8 +143,11 @@ struct Casino {
 	int Cards[52] = {0};
 	int Card_Back = 0;
 
-	int bgm = 0;
-
+	int bgm = 0;					//カジノの音楽
+	int Card_SE1 = 0;				//カジノでカードを配る
+	int Card_SE2 = 0;				//カジノでカードをめくる
+	int Casino_Win_SE = 0;			//カジノで勝利
+	int Casino_Lose_SE = 0;			//カジノで敗北
 
 	void ImageInput(Casino* p) {
 		p->background = LoadGraph("images/Casino.jpg");
@@ -154,7 +159,11 @@ struct Casino {
 		p->Dragon_img = LoadGraph("images/ドラゴン.png");
 		p->Tiger_img = LoadGraph("images/トラ.png");
 
-		p->bgm = LoadSoundMem("sounds/カジノBGM.mp3");
+		p->bgm = LoadSoundMem("sounds/Casino_BGM.mp3");
+		p->Card_SE1 = LoadSoundMem("sounds/Card_SE1.mp3");
+		p->Card_SE2 = LoadSoundMem("sounds/Card_SE2.mp3");
+		p->Casino_Win_SE = LoadSoundMem("sounds/Casino_Win.mp3");
+		p->Casino_Lose_SE = LoadSoundMem("sounds/Casino_Lose.mp3");
 	}
 
 };
@@ -165,8 +174,16 @@ struct Work {
 	int background = 0;
 	bool flg = true;
 
+	int bgm = 0;
+	int PWork_SE = 0;
+	int FWork_SE = 0;
+
 	void ImageInput(Work* p) {
 		p->background = LoadGraph("images/仕事紹介所.jpg");
+
+		p->bgm = LoadSoundMem("sounds/WorkHouse_bgm.mp3");
+		p->PWork_SE = LoadSoundMem("sounds/Pwork_SE.mp3");
+		p->FWork_SE = LoadSoundMem("sounds/Fwork_SE.mp3");
 	}
 };
 
@@ -210,7 +227,8 @@ struct Shop {
 		p->Item_img[0] = LoadGraph("images/ポーション.png");
 		p->Item_img[1] = LoadGraph("images/ショップ_タピオカＭＴ.png");
 
-		p->Pay_SE = LoadSoundMem("sounds/お店の支払い.mp3");
+		p->bgm = LoadSoundMem("sounds/Shop_bgm.mp3");
+		p->Pay_SE = LoadSoundMem("sounds/Shop_Pay_SE.mp3");
 	}
 
 };
@@ -341,9 +359,11 @@ struct Dungeon {
 	float TIP_WIDTH = 0;
 	float TIP_HEIGHT = 0;
 
+	int Dungeon_Select_img[3] = { 0 };
+
 	int background = 0;		//洞窟背景
-	int stage = 0;		//ダンジョン(ステージ)
-	bool flg = true;	//ボタン
+	int stage = 0;			//ダンジョン(ステージ)
+	bool flg = true;		//ボタン
 	int move = 0;
 	int up = -684;
 	int jump = 0;
@@ -386,7 +406,7 @@ struct Dungeon {
 		{ -99,310 },		//黒コボルト
 		{ -99,320 },		//黒どくろ
 		{ -99,380 },		//黒妖精
-		{ 4600,320 }		//ドラゴン　ボス
+		{ 4200,200 }		//ドラゴン　ボス
 	};
 
 	/*敵のサイズ*/
@@ -403,7 +423,7 @@ struct Dungeon {
 		{320,320},
 		{320,320},
 		{200,200},
-		{650,450} //
+		{900,450} //
 	};
 
 	/*敵のステータスと経験値(HP、攻撃力、移動速度、経験値)*/
@@ -420,7 +440,7 @@ struct Dungeon {
 		{600,4,3,1200},		//黒コボルト
 		{1200,5,3,2400},	//黒どくろ
 		{400,3,3,800},		//黒妖精
-		{5000,6,2,10000}	//ドラゴン　ボス
+		{5,6,2,10000}	//ドラゴン　ボス 5000
 	};
 
 	/*攻撃のやつ(攻撃範囲、攻撃の種類)*/
@@ -462,6 +482,10 @@ struct Dungeon {
 	void ImageInput(struct Dungeon* p) {
 		p->background = LoadGraph("images/Dungeon_Background.png"); 
 		p->stage = LoadGraph("images/Stage1.png");
+
+		p->Dungeon_Select_img[0] = LoadGraph("images/DungeonSelectImage/DungeonSelect1.png");
+		p->Dungeon_Select_img[1] = LoadGraph("images/DungeonSelectImage/DungeonSelect2.png");
+		p->Dungeon_Select_img[2] = LoadGraph("images/DungeonSelectImage/DungeonSelect3.png");
 
 		/*エフェクト*/
 		LoadDivGraph("images/Effects/hit_effect.png", 10, 1, 10, 640, 480, p->Hit_Effect, 1);
@@ -703,3 +727,12 @@ struct Dungeon {
 };
 
 extern Dungeon dungeon;
+
+struct Credit {
+	int bgm = 0;
+	int flg = true;
+
+	void Input_bgm(Credit* p) {
+		p->bgm = LoadSoundMem("sounds/Credit_bgm.mp3");
+	}
+};

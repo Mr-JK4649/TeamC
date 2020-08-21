@@ -22,7 +22,10 @@ struct Dungeon_Sys {
 	int Enemy_x = 0;							//敵のx座標
 	int Enemy_y = 0;							//敵のy座標
 
-	bool Effect_Flg = 0;							//エフェクトのフラグ()
+	bool Effect_Flg = 0;						//エフェクトのフラグ()
+
+	bool isCrear = false;						//げーむくりあ
+	int Crear_Anim_Cnt = 0;						//アニメーション
 
 	/*ダンジョン内ボスの表示*/
 	void Dungeon_Enemy_Disp() {
@@ -71,8 +74,8 @@ struct Dungeon_Sys {
 					if (Enemy_Anim_Count > dungeon.Enemy_Idle_Lim[3] * 20 - 1) Enemy_Anim_Count = 0;
 					DrawExtendGraph(dungeon.Battle_Enemy_Pos[3][0] + dungeon.move,
 						-50,
-						(dungeon.Battle_Enemy_Pos[3][0] + dungeon.Enemy_Size[3][0]) + dungeon.move,
-						(-50 + dungeon.Enemy_Size[3][1]),
+						(dungeon.Battle_Enemy_Pos[3][0] + dungeon.Enemy_Size[11][0]) + dungeon.move,
+						(-50 + dungeon.Enemy_Size[11][1]),
 						dungeon.Enemy_Idle[11][Enemy_Anim_Count / 20], TRUE);
 					break;
 				}
@@ -143,8 +146,8 @@ struct Dungeon_Sys {
 		switch (Battle_Phase)
 		{
 			case 0:
-				Battle_Turn = GetRand(1);
-				//Battle_Turn = 0;
+				//Battle_Turn = GetRand(1);
+				Battle_Turn = 0;
 				ch.x = 100;
 				ch.y = 1150 + dungeon.up - ch.c_size + 144.5f;
 				Enemy_Hp = dungeon.Enemy_Status[Enemy_Num][0];
@@ -159,6 +162,8 @@ struct Dungeon_Sys {
 				if (Battle_Turn == 0) {
 					str.SuperString(ch.w / 2, ch.h4, "プレイヤーのターン", 0xffffff, 1, 24);
 					if (!menu.isMenu && !menu.isGage_Menu && !Effect_Flg) ch.Move(&ch);
+
+					if (ch.x + ch.c_Hsize_e - dungeon.move > Enemy_x + 100) ch.x = Enemy_x + 100 - ch.c_Hsize_e - dungeon.move;
 
 					if (inp.x && !Effect_Flg) {
 						DrawBox(ch.x + ch.c_Hsize_e, ch.y, (ch.x + ch.c_Hsize_e) + ch.c_size, ch.y + ch.c_size, 0xff0000, false);
@@ -203,12 +208,16 @@ struct Dungeon_Sys {
 					Battle_Finish_Process();
 					ch.Add_Exp(&ch, dungeon.Enemy_Status[Enemy_Num][3]);
 					menu.Inclease_Gage(1, -5);
+					ch.x = 100;
+					ch.y = 250;
 				}
 
 				/*こっちの体力が0になったら*/
 				if (ch.Return_Chara_Status(&ch, 2) < 0) {
 					Battle_Finish_Process();
 					g_GameState = GAME_BASE;
+					ch.x = 100;
+					ch.y = 400;
 				}
 				break;
 
@@ -242,14 +251,17 @@ struct Dungeon_Sys {
 		battle_Time = 0;
 		Battle_Turn = 0;
 		Effect_Count = 0;
-		ch.x = 100;
-		ch.y = 250;
+		
 		Cool_Time = 0;
 		Effect_Flg = false;
 		if (Enemy_Hp <= 0) {
-			if (Enemy_Num == 3 || Enemy_Num == 7 || Enemy_Num == 11) {
+			if (Enemy_Num == 3 || Enemy_Num == 7) {
 				Boss_Flg[Enemy_Num % 3] = false;
 				menu.Inclease_Gage(4, 50);			//ゲージを増やす
+			}
+			if (Enemy_Num == 11) {
+				Boss_Flg[2] = false;
+				isCrear = true;
 			}
 		}
 		ch.isBattle = false;

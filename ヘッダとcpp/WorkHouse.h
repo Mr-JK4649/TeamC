@@ -18,6 +18,8 @@ struct Working {
 
 	void Draw(Working* wp) {
 
+		if (CheckSoundMem(work.bgm) == false) PlaySoundMem(work.bgm, DX_PLAYTYPE_BACK, TRUE);
+
 		const float w = ch.w / 100.0f;
 		const float h = ch.h / 100.0f;
 
@@ -49,10 +51,6 @@ struct Working {
 				wp->color = wp->white_color;
 			}
 
-			if (inp.space) {
-				
-
-			}
 		}
 		if (wp->Depth == 3) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, Anim_Alpha);
@@ -95,18 +93,29 @@ struct Working {
 	}
 
 	void Update(Working* wp) {
+		static bool SE_Flg1 = true;
+		static bool SE_Flg2 = true;
+
 		if (inp.f_up) {
+			PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (--wp->Work_Select[wp->Depth] < 0) wp->Work_Select[wp->Depth] = Selct_Num[wp->Depth] - 1;
 		}
 		if (inp.f_down) {
+			PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (++wp->Work_Select[wp->Depth] > Selct_Num[wp->Depth] - 1) wp->Work_Select[wp->Depth] = 0;
 		}
 
 		if (inp.space) {
+			PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (wp->Depth == 0) {
 				
 				if(wp->Work_Select[wp->Depth] == 0)wp->Depth = 1;
-				if(wp->Work_Select[wp->Depth] == 1)g_GameState = GAME_BASE;
+				if (wp->Work_Select[wp->Depth] == 1) {
+					g_GameState = GAME_BASE;
+					StopSoundMem(work.bgm);
+					StopSoundMem(work.PWork_SE);
+					StopSoundMem(work.FWork_SE);
+				}
 				wp->Work_Select[0] = 0;
 				
 			}
@@ -114,6 +123,7 @@ struct Working {
 
 				//力仕事
 				if (wp->Work_Select[wp->Depth] == 0) {
+					if (SE_Flg1) { PlaySoundMem(work.PWork_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg1 = false; }
 					Result_Money = 50 + ch.Return_Base_Status(&ch, 1);
 
 					ch.Add_Base_Status(&ch, 1, 5);							//発展度を増やす
@@ -124,6 +134,7 @@ struct Working {
 
 				//食料調達
 				if (wp->Work_Select[wp->Depth] == 1) {
+					if (SE_Flg1) { PlaySoundMem(work.FWork_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg1 = false; }
 					Result_Money = 20 + ch.Return_Base_Status(&ch, 1) / 2;
 
 					menu.Inclease_Gage(3, 5);								//食料ゲージを増やす
@@ -136,11 +147,13 @@ struct Working {
 				wp->Depth = 3;
 				ch.Add_Base_Status(&ch, 0, Result_Money);					//報酬のお金
 				menu.Input_Work_Result(Result_Money, 5, 5);					//結果表示用の変数に代入
+				SE_Flg1 = false;
 				
 			}
 			else if (wp->Depth == 2) {
 				if (Work_Select[2] == 0) {
 					if (isPower_Work) {
+						if (SE_Flg2) { PlaySoundMem(work.PWork_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 						Result_Money = 50 + ch.Return_Base_Status(&ch, 1);
 
 						ch.Add_Base_Status(&ch, 1, 5);							//発展度を増やす
@@ -149,6 +162,7 @@ struct Working {
 						isFood_Work = false;
 					}
 					if (isFood_Work) {
+						if (SE_Flg2) { PlaySoundMem(work.FWork_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 						Result_Money = 20 + ch.Return_Base_Status(&ch, 1) / 2;
 
 						menu.Inclease_Gage(3, 5);								//食料ゲージを増やす
@@ -160,6 +174,7 @@ struct Working {
 					wp->Depth = 3;
 					ch.Add_Base_Status(&ch, 0, Result_Money);					//報酬のお金
 					menu.Input_Work_Result(Result_Money, 5, 5);					//結果表示用の変数に代入
+					SE_Flg2 = true;
 				}
 				if (Work_Select[2] == 1) {
 					Result_Money = 0;
@@ -172,9 +187,12 @@ struct Working {
 					isPower_Work = false;
 					isFood_Work = false;
 					g_GameState = GAME_BASE;
+					StopSoundMem(work.bgm);
+					StopSoundMem(work.PWork_SE);
+					StopSoundMem(work.FWork_SE);
 				}
 			}
-			else if (wp->Depth == 3) {
+			else if (wp->Depth == 3 && Anim_Count == 2) {
 
 				Depth = 2;
 				Anim_Count = 0;
@@ -184,8 +202,14 @@ struct Working {
 		}
 
 		if (inp.cancel) {
+			PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (wp->Depth < 3) wp->Work_Select[wp->Depth] = 0;
-			if (wp->Depth == 0)g_GameState = GAME_BASE;
+			if (wp->Depth == 0) {
+				g_GameState = GAME_BASE;
+				StopSoundMem(work.bgm);
+				StopSoundMem(work.PWork_SE);
+				StopSoundMem(work.FWork_SE);
+			}
 			if (wp->Depth == 1)wp->Depth = 0;
 		}
 	}

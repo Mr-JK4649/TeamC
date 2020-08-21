@@ -18,6 +18,8 @@ struct Shopping {
 
 	static void Draw(Shopping* shop) {
 
+		if (CheckSoundMem(sh.bgm) == false) PlaySoundMem(sh.bgm, DX_PLAYTYPE_BACK, TRUE);
+
 		//SetFontSize(16);
 
 		if (shop->Depth != 5)DrawExtendGraph(0, 0, ch.w, ch.h, sh.background[shop->Depth_Menu_Select[shop->Depth]], 1);
@@ -173,13 +175,16 @@ struct Shopping {
 		if (shop->Confirm_Buy || shop->Confirm_Sell) {
 
 			if (inp.f_left) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (--shop->Confirm_Select < 0) shop->Confirm_Select = 1;
 			}
 			if (inp.f_right) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (++shop->Confirm_Select > 1) shop->Confirm_Select = 0;
 			}
 
 			if (inp.space) {
+				
 				if (shop->Confirm_Buy) {
 					if (shop->Confirm_Select == 1) {
 						if (shop->Depth == 2) {
@@ -210,6 +215,7 @@ struct Shopping {
 		}
 		else if (shop->Not_Enough_Cash || shop->Not_Enough_Space) {
 			if (inp.space) { 
+				PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
 				if(shop->Not_Enough_Cash)shop->Not_Enough_Cash = false;
 				if (shop->Not_Enough_Space)shop->Not_Enough_Space = false;
 			}
@@ -217,6 +223,7 @@ struct Shopping {
 		else {
 
 			if (inp.f_up) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (shop->Depth == 0 || shop->Depth == 1 || shop->Depth == 5) {
 					if (--shop->Depth_Menu_Select[shop->Depth] < 0) shop->Depth_Menu_Select[shop->Depth] = shop->Depth_Menu_Num[shop->Depth] - 1;
 				}
@@ -259,6 +266,7 @@ struct Shopping {
 				}
 			}
 			if (inp.f_down) {
+				PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (shop->Depth == 0 || shop->Depth == 1 || shop->Depth == 5) {
 					if (++shop->Depth_Menu_Select[shop->Depth] > shop->Depth_Menu_Num[shop->Depth] - 1) shop->Depth_Menu_Select[shop->Depth] = 0;
 				}
@@ -302,10 +310,10 @@ struct Shopping {
 			}
 
 			if (inp.cancel) {
-
+				PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
 				shop->Depth_Menu_Select[shop->Depth] = 0;
 
-				if (shop->Depth == 0) g_GameState = GAME_BASE;
+				if (shop->Depth == 0) { g_GameState = GAME_BASE; StopSoundMem(sh.bgm); }
 				else if (shop->Depth == 1) shop->Depth = 0;
 				else if (shop->Depth == 2) shop->Depth = 1;
 				else if (shop->Depth == 3) shop->Depth = 1;
@@ -316,6 +324,7 @@ struct Shopping {
 			}
 
 			if (inp.space) {
+				PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 				if (shop->Depth == 0) {
 					if (shop->Depth_Menu_Select[shop->Depth] == 0) {
 						shop->Depth = 1;
@@ -412,7 +421,7 @@ struct Shopping {
 
 		/*このアイテムの値段が所持金を下回ってるか確認*/
 		if (ch.Check_Enough_Money(&ch, price) == 1) {
-
+			PlaySoundMem(sh.Pay_SE, DX_PLAYTYPE_BACK, TRUE);
 
 			/*お支払い*/
 			ch.Pay_Money(&ch, price);
@@ -421,7 +430,7 @@ struct Shopping {
 			Input_Item(Search_No_Items(), item);
 
 		}
-		else { shop->Not_Enough_Cash = true; }
+		else { shop->Not_Enough_Cash = true; PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);}
 
 	}
 
