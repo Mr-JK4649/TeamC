@@ -18,6 +18,7 @@ enum GAME_MODE {
 	GAME_WORK,		//仕事紹介所
 	GAME_CASINO,	//カジノ
 	GAME_S_SELECT,	//ステージ選択
+	CAME_ENDING,	//3ボス倒した後のやつ
 	GAME_CREDIT,	//クレジット
 	GAME_RESULT,	//リザルト
 	GAME_CREAR,		//ゲームクリア

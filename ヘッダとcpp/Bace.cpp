@@ -125,7 +125,7 @@ void Base_Update(int width, int height) {
 	if (menu.Enter_Num != 99 && !menu.isMenu && inp.space == true) {
 		if (!menu.isBuilding_Enter) {
 			PlaySoundMem(base.BC_window_pop, DX_PLAYTYPE_BACK, TRUE);
-			menu.isBuilding_Enter = true;\
+			menu.isBuilding_Enter = true;
 		}
 		else menu.isBuilding_Enter = false;
 		menu.Enter_Select = 0;

@@ -55,14 +55,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	//Init();										//画像や音楽などのファイルを初期化する
 
-	g_GameState = GAME_HATAKE;
+	g_GameState = GAME_INIT;
+	//g_GameState = GAME_CREDIT;
 
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && g_GameState != END/* && !(g_KeyFlg & PAD_INPUT_START)*/) {
 
 		Sleep(1);
-
 
 		ClearDrawScreen();															// 画面の初期化
 
@@ -95,11 +95,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 		case GAME_CREDIT:	DrawCredit(scale.Width, scale.Height); break;			//ゲームクレジット
 
-		//case GAME_CREAR:	DrawCredit(scale.Width, scale.Height); break;			//ゲームクリア
+		case GAME_CREAR:	DrawGameResult(scale.Width, scale.Height); break;		//ゲームクリア
+
+		case CAME_ENDING:	DrawEnding(scale.Width, scale.Height); break;			//ゲームエンディング
 
 		//case GAME_OVER:	DrawGameOver(scale.Width, scale.Height); break;			// ゲームオーバー描画処理
 
-		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;				// ゲームオーバー描画処理
+		//case GAME_END:	DrawEnd(scale.Width, scale.Height); break;				// ゲームエンド描画処理
 
 		}
 

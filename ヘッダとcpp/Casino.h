@@ -50,6 +50,10 @@ struct Casino_System {
 		const float h = (float)scale.Height / 100.0f;
 		const int size = scale.Width / 100;
 
+		/*BGM*/
+		if (CheckSoundMem(casino.bgm) == false) PlaySoundMem(casino.bgm, DX_PLAYTYPE_BACK, TRUE);
+
+
 		/*ÉZÉäÉtÇ∆ëIëòg*/
 		if (Casino_War) {
 			/*ÉZÉäÉtòg*/
@@ -105,17 +109,20 @@ struct Casino_System {
 
 	void Update() {
 		if (inp.f_up) {
+			PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (--Depth_Select[Depth] < 0) Depth_Select[Depth] = 1;
 		}
 		if (inp.f_down) {
+			PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (++Depth_Select[Depth] > 1) Depth_Select[Depth] = 0;
 		}
 
 		if (inp.space) {
+			PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 			switch (Depth) {
 				case 0:
 					if (Depth_Select[0] == 0) Depth = 1;
-					if (Depth_Select[0] == 1) g_GameState = GAME_BASE;
+					if (Depth_Select[0] == 1) { g_GameState = GAME_BASE; StopSoundMem(casino.bgm); }
 					Depth_Select[0] = 0;
 					break;
 
@@ -150,6 +157,7 @@ struct Casino_System {
 		}
 
 		if (inp.cancel) {
+			PlaySoundMem(se.Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
 			if (Depth < 4) {
 				Depth_Select[Depth] = 0;
 				if (--Depth < 0) Depth = 0;
@@ -158,6 +166,10 @@ struct Casino_System {
 	}
 
 	void GamePlay(float w,float h,int size) {
+		static bool SE_Flg1 = true;
+		static bool SE_Flg2 = true;
+		static bool SE_Flg3 = true;
+		static bool SE_Flg4 = true;
 
 		SetFontSize(size * 2);
 
@@ -207,6 +219,7 @@ struct Casino_System {
 					DrawString(w * 2, h * 71, "Ç≈ÇÕÅAÉJÅ[ÉhÇÉhÉâÉSÉìÇ∆É^ÉCÉKÅ[Ç…îzÇËÇ‹Ç∑", 0xffffff, 1);
 					++Anime_Count;
 					if (Anime_Count < 50) {
+						if (Anime_Count == 24 || Anime_Count == 49) PlaySoundMem(casino.Card_SE1, DX_PLAYTYPE_BACK, TRUE);
 						if (Card_Status[0][0] >= 25) Card_Status[0][0] -= 2;
 						if (Card_Status[1][0] <= 55) Card_Status[1][0] += 2;
 						if (Card_Status[0][1] <= 30) Card_Status[0][1] += 2;
@@ -228,12 +241,15 @@ struct Casino_System {
 						color = white_color;
 					}
 					if (inp.f_up) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (--Bet_Select < 0) Bet_Select = 3;
 					}
 					if (inp.f_down) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (++Bet_Select > 3) Bet_Select = 0;
 					}
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						DT_Phase = 2;
 					}
 					break;
@@ -242,15 +258,19 @@ struct Casino_System {
 					DrawString(w * 2, h * 71, "Ç¢Ç≠ÇÁÇaÇdÇsÇµÇ‹Ç∑Ç©\nè„ÅFÅ@ÇPÇfâ¡éZ\nâ∫ÅFÅ@ÇPÇfå∏éZ\nâEÅFÅ@ÇPÇOÇfâ¡éZ\nç∂ÅFÅ@ÇPÇOÇfå∏éZ\nÉ{É^Éìâüâ∫Ç≈ÇaÇdÇsämíË", 0xffffff, 1);
 					DrawFormatString(w * 85, h * 71, 0xffffff, "BETã‡äzÅF\n%9d\n\nèäéùã‡ÅF\n%9d", Bet_Money, ch.Return_Base_Status(&ch, 0));
 					if (inp.f_up) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money += 1;
 					}
 					if (inp.f_down) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money -= 1;
 					}
 					if (inp.f_right) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money += 10;
 					}
 					if (inp.f_left) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money -= 10;
 					}
 
@@ -258,6 +278,7 @@ struct Casino_System {
 					if (Bet_Money > ch.Return_Base_Status(&ch, 0)) Bet_Money = ch.Return_Base_Status(&ch, 0);
 
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						ch.Add_Base_Status(&ch, 0, -Bet_Money);
 						DT_Phase = 3;
 					}
@@ -265,22 +286,27 @@ struct Casino_System {
 					break;
 
 				case 3:
+					
 					DrawString(w * 2, h * 71, "Ç≈ÇÕÅAÉJÅ[ÉhÇÇﬂÇ≠ÇËÇ‹Ç∑ÅB", 0xffffff, 1);
 					++Anime_Count;
 					if (Anime_Count < 100) {
 						;
 					}
 					else if (Anime_Count < 200) {
+						if (SE_Flg1) { PlaySoundMem(casino.Card_SE2, DX_PLAYTYPE_BACK, TRUE); SE_Flg1 = false; }
 						Back_or_Front[0] = 1;
 						Back_or_Front[1] = 1;
 					}
 					if (Anime_Count > 200) {
 						Anime_Count = 0;
 						DT_Phase = 4;
+						SE_Flg1 = true;
 					}
 					break;
 
 				case 4:
+					
+
 					DrawString(w * 2, h * 71, "åãâ ÇÕ..............\n", 0xffffff, 1);
 					if ((Card_Status[0][4] % 13 + 1) > (Card_Status[1][4] % 13 + 1)) DT_Result = 0;
 					if ((Card_Status[0][4] % 13 + 1) < (Card_Status[1][4] % 13 + 1)) DT_Result = 1;
@@ -290,18 +316,22 @@ struct Casino_System {
 					if (Bet_Select == 0) {							//ÉhÉâÉSÉìÇ…ìqÇØÇƒÇΩÇ∆Ç´
 						switch (DT_Result) {
 							case 0:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money * 2;
 								break;
 
 							case 1:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 2:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money / 2;
 								break;
 
 							case 3:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money / 2;
 								break;
 						}
@@ -309,18 +339,22 @@ struct Casino_System {
 					if (Bet_Select == 1) {
 						switch (DT_Result) {
 							case 0:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 1:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money * 2;
 								break;
 
 							case 2:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money / 2;
 								break;
 
 							case 3:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money / 2;
 								break;
 						}
@@ -328,18 +362,22 @@ struct Casino_System {
 					if (Bet_Select == 2) {
 						switch (DT_Result) {
 							case 0:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 1:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 2:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money * 11;
 								break;
 
 							case 3:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money * 11;
 								break;
 						}
@@ -347,18 +385,22 @@ struct Casino_System {
 					if (Bet_Select == 3) {
 						switch (DT_Result) {
 							case 0:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 1:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = 0;
 								break;
 
 							case 2:
-								DT_Result_Money = Bet_Money * 50;
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
+								DT_Result_Money = 0;
 								break;
 
 							case 3:
+								if (SE_Flg2) { PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE); SE_Flg2 = false; }
 								DT_Result_Money = Bet_Money * 50;
 								break;
 						}
@@ -368,6 +410,7 @@ struct Casino_System {
 
 					str.SuperString(w * 85, h * 80, "ñﬂÇÈ", 0xff0000, 1, size * 3);
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						ch.Add_Base_Status(&ch, 0, DT_Result_Money);
 						Depth = 0;
 						DT_Phase = 0;
@@ -375,6 +418,7 @@ struct Casino_System {
 						DT_Result = 0;
 						Bet_Money = 0;
 						DT_Result_Money = 0;
+						SE_Flg2 = true;
 					}
 
 					break;
@@ -422,6 +466,7 @@ struct Casino_System {
 					DrawString(w * 2, h * 51, "Ç≈ÇÕÅAÉJÅ[ÉhÇîzÇËÇ‹Ç∑ÅB", 0xffffff, 1);
 					++Anime_Count;
 					if (Anime_Count < 50) {
+						if (Anime_Count == 24) PlaySoundMem(casino.Card_SE1, DX_PLAYTYPE_BACK, TRUE);
 						if (Card_Status[0][0] >= 45) Card_Status[0][0] -= 1;
 						if (Card_Status[1][0] >= 45) Card_Status[1][0] -= 1;
 						if (Card_Status[0][1] <= 7) Card_Status[0][1] += 1;
@@ -438,15 +483,19 @@ struct Casino_System {
 					DrawString(w * 2, h * 51, "ÇªÇÍÇ≈ÇÕÇaÇdÇsÉ^ÉCÉÄÇ…à⁄ÇËÇ‹Ç∑ÅB\nÇ¢Ç≠ÇÁÇaÇdÇsÇµÇ‹Ç∑Ç©\nè„ÅFÅ@ÇPÇfâ¡éZ\nâ∫ÅFÅ@ÇPÇfå∏éZ\nâEÅFÅ@ÇPÇOÇfâ¡éZ\nç∂ÅFÅ@ÇPÇOÇfå∏éZ\nÉ{É^Éìâüâ∫Ç≈ÇaÇdÇsämíË", 0xffffff, 1);
 					DrawFormatString(w * 85, h * 71, 0xffffff, "BETã‡äzÅF\n%9d\n\nèäéùã‡ÅF\n%9d", Bet_Money, ch.Return_Base_Status(&ch, 0));
 					if (inp.f_up) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money += 1;
 					}
 					if (inp.f_down) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money -= 1;
 					}
 					if (inp.f_right) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money += 10;
 					}
 					if (inp.f_left) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						Bet_Money -= 10;
 					}
 
@@ -454,6 +503,7 @@ struct Casino_System {
 					if (Bet_Money > ch.Return_Base_Status(&ch, 0)) Bet_Money = ch.Return_Base_Status(&ch, 0);
 
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						ch.Add_Base_Status(&ch, 0, -Bet_Money);
 						CW_Phase = 2;
 					}
@@ -467,27 +517,33 @@ struct Casino_System {
 						color = white_color;
 					}
 					if (inp.f_up) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (--CW_Tie_Bet < 0) CW_Tie_Bet = 1;
 					}
 					if (inp.f_down) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (++CW_Tie_Bet > 1) CW_Tie_Bet = 0;
 					}
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						CW_Phase = 3;
 					}
 					break;
 
 				case 3:
+					
 					DrawString(w * 2, h * 51, "Ç≈ÇÕÅAÉJÅ[ÉhÇÇﬂÇ≠ÇËÇ‹Ç∑ÅB", 0xffffff, 1);
 					++Anime_Count;
 					if (Anime_Count < 100) {
 						;
 					}
 					else if (Anime_Count < 200) {
+						if (SE_Flg3) { PlaySoundMem(casino.Card_SE2, DX_PLAYTYPE_BACK, TRUE); SE_Flg3 = false; }
 						Back_or_Front[0] = 1;
 						Back_or_Front[1] = 1;
 					}
 					if (Anime_Count > 200) {
+						SE_Flg3 = true;
 						Anime_Count = 0;
 						CW_Phase = 4;
 					}
@@ -513,13 +569,21 @@ struct Casino_System {
 					break;
 
 				case 5:
+					
 					DrawString(w * 2, h * 51, "åãâ ÇÕ..............\n", 0xffffff, 1);
 					DrawFormatString(w * 2, h * 75, 0xffffff, "Åu%sÅvÇ≈Ç∑ÅB\n%9dÇf\nÇÃï•Ç¢ñﬂÇµÇ…Ç»ÇËÇ‹Ç∑ÅB", CW_Result_String[CW_Result], CW_Result_Money);
 
-					
+					if (SE_Flg4) {
+						if (CW_Result == 0) PlaySoundMem(casino.Casino_Win_SE, DX_PLAYTYPE_BACK, TRUE);
+						if (CW_Result == 1) PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE);
+						if (CW_Result == 2) PlaySoundMem(casino.Casino_Lose_SE, DX_PLAYTYPE_BACK, TRUE);
+						SE_Flg4 = false;
+					}
 
 					str.SuperString(w * 85, h * 80, "ñﬂÇÈ", 0xff0000, 1, size * 3);
 					if (inp.space) {
+						SE_Flg4 = true;
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						ch.Add_Base_Status(&ch, 0, CW_Result_Money);
 						Bet_Money = 0;
 						CW_Tie_Select = 0;
@@ -542,12 +606,15 @@ struct Casino_System {
 						color = white_color;
 					}
 					if (inp.f_up) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (--CW_Tie_Select < 0) CW_Tie_Select = 1;
 					}
 					if (inp.f_down) {
+						PlaySoundMem(se.SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (++CW_Tie_Select > 1) CW_Tie_Select = 0;
 					}
 					if (inp.space) {
+						PlaySoundMem(se.Select_SE, DX_PLAYTYPE_BACK, TRUE);
 						if (CW_Tie_Select == 0) {					//ç~éQÅBÉxÉbÉgäzÇÃîºï™Çéxï•Ç§
 							ch.Add_Base_Status(&ch, 0, Bet_Money / 2);
 							Bet_Money = 0;
