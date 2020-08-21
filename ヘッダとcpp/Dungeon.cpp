@@ -63,18 +63,4 @@ void DrawGameDungeon(int Width, int Height) {
 		PlaySoundMem(dungeon.bgm,DX_PLAYTYPE_BACK,1);
 	}*/
 	if (inp.start) menu.isMenu = !menu.isMenu;
-
-	
-	
-	
-
-	DungeonMap(Width, Height);
 }
-
-void DungeonMap(int w, int h) {
-	
-	//DrawBox(w / 5.1 + dungeon.move, h*1.09+ dungeon.up, w/1.09 + dungeon.move, h * 1.81 + dungeon.up, 0xEEE8AA, 1);
-	//DrawExtendGraph(w/5+dungeon.move,  h*1.1+dungeon.up, w/1.1 +dungeon.move, h*1.8+ dungeon.up, dungeon.stage, 1);
-
-}
-

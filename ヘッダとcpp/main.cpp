@@ -55,7 +55,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 
 	//Init();										//画像や音楽などのファイルを初期化する
 
-	g_GameState = GAME_HATAKE;
+	g_GameState = GAME_INIT;
 
 
 	// ゲームループ
