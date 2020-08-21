@@ -182,6 +182,7 @@ void DrawYasai();//野菜・種など描画
 void MoveSelectTane();//種選択画面処理
 void DrawSelectTane();//種選択画面描画
 void TaneLimit();//種の数を制限
+void Select_TaneLimit();
 //作業選択
 void MoveSelectMenu();//作業選択メニュー処理
 void DrawSelectMenu(); //作業選択メニュー描画
@@ -245,6 +246,8 @@ void Game_Hatake(int Width, int Height) {
 	else if (pageflg == MENU4) { Plantpageflg = MENU4; }
 	else if (pageflg == MENU5) { Plantpageflg = MENU5; }
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//種
+	Select_TaneLimit();
 	//拠点戻り処理
 	KyotenBag();
 	//成長処理
@@ -530,7 +533,8 @@ void MoveSelectTane() {
 	//選択された種を処理
 	DrawSelectTane();
 	if (inp.space == true) {
-		if (selectTane == 0) {
+		if (selectTane == 0 && menutane[0].num > 0) {
+			DrawFormatString(300,200, 0x5D99FF, "成功");
 			TaneNowyasai = KOMUGI_TANE;
 		}
 		else if (selectTane == 1) {
@@ -557,9 +561,45 @@ void MoveSelectTane() {
 		else if (selectTane == 8) {
 			TaneNowyasai = SUIKA_TANE;
 		}
+		else {
+			TaneNowyasai = -99;
+		}
 		plantflg = true;
 		selectflg = false;
 		pageflg = MENU;
+	}
+}
+void Select_TaneLimit() {
+	if (selectTane == 0 && menutane[0].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "成功");
+		TaneNowyasai = KOMUGI_TANE;
+	}
+	else if (selectTane == 1 && menutane[1].num > 0) {
+		TaneNowyasai = JAGAIMO_TANE;
+	}
+	else if (selectTane == 2 && menutane[2].num > 0) {
+		TaneNowyasai = NINJIN_TANE;
+	}
+	else if (selectTane == 3 && menutane[3].num > 0) {
+		TaneNowyasai = DAIKON_TANE;
+	}
+	else if (selectTane == 4 && menutane[4].num > 0) {
+		TaneNowyasai = KYABETU_TANE;
+	}
+	else if (selectTane == 5 && menutane[5].num > 0) {
+		TaneNowyasai = SATUMAIMO_TANE;
+	}
+	else if (selectTane == 6 && menutane[6].num > 0) {
+		TaneNowyasai = BUROKORI_TANE;
+	}
+	else if (selectTane == 7 && menutane[7].num > 0) {
+		TaneNowyasai = KABOCYA_TANE;
+	}
+	else if (selectTane == 8 && menutane[8].num > 0) {
+		TaneNowyasai = SUIKA_TANE;
+	}
+	else {
+		TaneNowyasai = -99;
 	}
 }
 void DrawSelectTane() {
