@@ -42,6 +42,9 @@ void DrawCredit(int width, int height);
 // ゲームクリアーの処理
 void DrawGameResult(int width, int height);
 
+//ゲームエンディング
+void DrawEnding(int width, int height);
+
 // ゲームオーバー描画処理
 void DrawGameOver(int width, int height);
 

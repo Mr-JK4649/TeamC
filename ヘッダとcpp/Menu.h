@@ -246,7 +246,7 @@ struct Menu {
 					item_select2 = 0;
 				}
 				if (inp.cancel) {
-					PlaySoundMem(Cansel_SE, DX_PLAYTYPE_BACK, TRUE);
+					PlaySoundMem(se.bag_SE, DX_PLAYTYPE_BACK, TRUE);
 					isItem_Menu = false;
 				}
 
@@ -340,11 +340,20 @@ struct Menu {
 			}
 
 			if (inp.space) {
-				PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+				
 				switch (menu_num) {
-				case 0: isItem_Menu = true;		break;
-				case 1:	isTIPS = true;			break;
-				case 2: isMove_Scene = true;	break;
+				case 0: 
+					PlaySoundMem(se.bag_SE, DX_PLAYTYPE_BACK, TRUE);
+					isItem_Menu = true;	
+					break;
+				case 1:
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+					isTIPS = true;
+					break;
+				case 2:
+					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+					isMove_Scene = true;
+					break;
 				}
 				item_select = 0;
 			}
