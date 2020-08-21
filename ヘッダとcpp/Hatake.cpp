@@ -575,27 +575,35 @@ void Select_TaneLimit() {
 		TaneNowyasai = KOMUGI_TANE;
 	}
 	else if (selectTane == 1 && menutane[1].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = JAGAIMO_TANE;
 	}
 	else if (selectTane == 2 && menutane[2].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = NINJIN_TANE;
 	}
 	else if (selectTane == 3 && menutane[3].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = DAIKON_TANE;
 	}
 	else if (selectTane == 4 && menutane[4].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = KYABETU_TANE;
 	}
 	else if (selectTane == 5 && menutane[5].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = SATUMAIMO_TANE;
 	}
 	else if (selectTane == 6 && menutane[6].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = BUROKORI_TANE;
 	}
 	else if (selectTane == 7 && menutane[7].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = KABOCYA_TANE;
 	}
 	else if (selectTane == 8 && menutane[8].num > 0) {
+		DrawFormatString(300, 200, 0x5D99FF, "¬Œ÷");
 		TaneNowyasai = SUIKA_TANE;
 	}
 	else {
