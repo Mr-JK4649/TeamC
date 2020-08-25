@@ -51,6 +51,8 @@ struct String {
 	int型		size	文字のサイズ(標準は16)
     ******************************************************************/
 	void Serihu(const char* str, int x, int y,unsigned int color, int size) {
+		if (str_init_flg) { Init(); str_init_flg = false; }
+
 		/*文字が流れるスピードを調整*/
 		const int speed = 3;
 
@@ -65,14 +67,23 @@ struct String {
 			if (count++ >= speed) { 
 				if(s <= length) s += 2; 
 				count = 0;
-				strncpy_s(buf, str, s);
+				if(length > 500)
+					strncpy_s(buf, str, s);
+				else 
+					strncpy_s(buf2, str, s);
 			}
 
 			//DrawFormatString(100, 100, 0xffffff, "c %d \n s %d \n f_f %d", count, s, FinFlg);
 
 			/*文字の表示*/
-			SuperString(x, y, buf, color, 0, size);
-			if (strlen(buf) >= strlen(str)) FinFlg = true;
+			if (length > 500) {
+				SuperString(x, y, buf, color, 0, size);
+				if (strlen(buf) >= strlen(str)) FinFlg = true;
+			}
+			else {
+				SuperString(x, y, buf2, color, 0, size);
+				if (strlen(buf2) >= strlen(str)) FinFlg = true;
+			}
 		}
 	}
 
@@ -91,6 +102,7 @@ struct String {
 			Init();
 			setTex = false;
 			FinFlg = false;
+			str_init_flg = true;
 		}
 		else {
 			s = length;
@@ -101,17 +113,21 @@ struct String {
 	/*変数の初期化*/
 	void Init() {
 		s = 0;
-		strcpy_s(buf, "");
+		strcpy_s(buf2, Init_str);
 		length = 0;
 		count = 0;
 		life = 0;
+		
 	}
 
 private:
 	int length=0;
 	bool FinFlg = false;
 	int count = 0, s = 0, life = 0;
-	char buf[4000] = "";
+	char buf[4000] = " ";
+	char buf2[500] = " ";
+	char Init_str[500] = " ";
+	bool str_init_flg = true;
 };
 
 extern String str;
