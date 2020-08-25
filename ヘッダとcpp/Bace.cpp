@@ -19,7 +19,7 @@ void DrawGameMain(int width, int height) {
 	Base_Disp(width, height);						//拠点内の描画
 
 	/*BGMとシーン移動の処理*/
-	/*if (menu.Move_Scene) {
+	if (menu.Move_Scene) {
 		if (g_GameState != menu.scene_t) {
 			StopSoundMem(base.bgm);
 			g_GameState = menu.scene_t;
@@ -29,7 +29,7 @@ void DrawGameMain(int width, int height) {
 	}
 	else if (CheckSoundMem(base.bgm) == false) {
 		PlaySoundMem(base.bgm, DX_PLAYTYPE_BACK, 1);
-	}*/
+	}
 
 	/*拠点の更新関数*/
 	if(!menu.Result_DWork_Flg && !menu.Result_FWork_Flg && !menu.isGage_Menu && !menu.isTutorial && !menu.isDevilsCome)
