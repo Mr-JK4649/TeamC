@@ -48,7 +48,7 @@ struct Menu {
 	/*メニューの表示*/
 	void Draw() {
 		const float w = scale.Width, w5 = w / 5;
-		const float h = scale.Height, h4 = h / 4;
+		const float h = scale.Height, h4 = h / 3;
 		const int size = scale.Width / 100;
 		
 		/*メニュー素材の初期化*/
