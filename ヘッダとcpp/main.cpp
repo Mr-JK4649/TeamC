@@ -114,6 +114,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_
 			g_GameState == GAME_CASINO ||
 			g_GameState == GAME_DUNGEON) {
 			GameSystem();
+
 		}
 
 		ScreenFlip();    // — ‰æ–Ê‚Ì“à—e‚ð•\‰æ–Ê‚É”½‰f
