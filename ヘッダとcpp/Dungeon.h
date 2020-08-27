@@ -7,7 +7,8 @@ void Menu_Item(int item_select);
 void Use_Equipment_Item(int item_select);		//アイテム装備/使う
 void Delete_Item(int item_select);				//アイテム削除
 
-void DungeonMap(int w, int h);
+//void DungeonMap(int w, int h);					//ダンジョンマップ
+//void PlayerPointer(void);						//プレイヤーのマップ内の位置
 
 struct Dungeon_Sys {
 
