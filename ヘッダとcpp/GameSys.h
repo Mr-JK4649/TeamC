@@ -61,12 +61,10 @@ struct GameSystem {
 	/*”¨‚ÌŠÔ‚ğ“ü‚ê‚éŠÖ”*/
 	static void Input_Time(int num) {
 		if (num == 0)Exit_Hatake = ch.Return_Base_Status(&ch, 2);				//”¨‚ğo‚½‚ÌŠÔ‚ğ“ü‚ê‚é
-		if (num == 1)Enter_Hatake = ch.Return_Base_Status(&ch, 2);				//”¨‚ğo‚½‚ÌŠÔ‚ğ“ü‚ê‚é
+		if (num == 1)Enter_Hatake = ch.Return_Base_Status(&ch, 2);				//”¨‚ğ“ü‚é‚ÌŠÔ‚ğ“ü‚ê‚é
 	}
-
 	static int Return_Hatake_Time() {
 		
 		return (Enter_Hatake - Exit_Hatake);
 	}
-
 };
