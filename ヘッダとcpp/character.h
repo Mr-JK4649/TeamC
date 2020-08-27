@@ -59,7 +59,7 @@ struct Chara {
 	/*キャラ構造体の初期化*/
 	void Init(Chara* p) {
 		/*キャラ画像の初期化*/
-		LoadDivGraph("images/キャラ最新版.png",12,12,1,200,200,p->jk,0);
+		LoadDivGraph("images/総集編3.png",12,12,1,200,200,p->jk,0);
 		LoadDivGraph("images/木の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[0], 1);
 		LoadDivGraph("images/鉄の剣装備.png", 6, 6, 1, 200, 200, p->Equip_img[1], 1);
 		LoadDivGraph("images/エクス装備.png", 6, 6, 1, 200, 200, p->Equip_img[2], 1);

@@ -51,13 +51,14 @@ struct String {
 	int型		size	文字のサイズ(標準は16)
     ******************************************************************/
 	void Serihu(const char* str, int x, int y,unsigned int color, int size) {
-		if (str_init_flg) { Init(); str_init_flg = false; }
 
 		/*文字が流れるスピードを調整*/
 		const int speed = 3;
 
 		/*文字列の長さを取得*/
 		length = strlen(str);
+
+		if (str_init_flg) { strncpy_s(buf2, Init_str, length - 1); str_init_flg = false; }
 
 		/*セリフが出る枠*/
 		if(!Fade_String_Box)Serihu_Window();
@@ -69,11 +70,13 @@ struct String {
 				count = 0;
 				if(length > 500)
 					strncpy_s(buf, str, s);
-				else 
+				else {
+					strncpy_s(buf2, Init_str, s);
 					strncpy_s(buf2, str, s);
+				}
 			}
 
-			//DrawFormatString(100, 100, 0xffffff, "c %d \n s %d \n f_f %d", count, s, FinFlg);
+			DrawFormatString(100, 100, 0xffffff, "c %d \n s %d \n b2_len %d \n f_f %d", count, s, strlen(buf2), FinFlg);
 
 			/*文字の表示*/
 			if (length > 500) {
@@ -113,7 +116,6 @@ struct String {
 	/*変数の初期化*/
 	void Init() {
 		s = 0;
-		strcpy_s(buf2, Init_str);
 		length = 0;
 		count = 0;
 		life = 0;
@@ -126,7 +128,17 @@ private:
 	int count = 0, s = 0, life = 0;
 	char buf[4000] = " ";
 	char buf2[500] = " ";
-	char Init_str[500] = " ";
+	char Init_str[498] = 
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"                                               "
+		"";
 	bool str_init_flg = true;
 };
 
