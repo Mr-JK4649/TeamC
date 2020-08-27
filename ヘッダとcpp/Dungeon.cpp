@@ -1,5 +1,5 @@
 #include "Dungeon.h"
-
+#include "Input.h"
 Dungeon_Sys d_sys;
 
 void DrawGameDungeon(int Width, int Height) {
@@ -64,10 +64,6 @@ void DrawGameDungeon(int Width, int Height) {
 	}*/
 	if (inp.start) menu.isMenu = !menu.isMenu;
 
-	
-	
-	
-
 	DungeonMap(Width, Height);
 
 	if (d_sys.isCrear) {
@@ -87,9 +83,7 @@ void DrawGameDungeon(int Width, int Height) {
 }
 
 void DungeonMap(int w, int h) {
-	
-	//DrawBox(w / 5.1 + dungeon.move, h*1.09+ dungeon.up, w/1.09 + dungeon.move, h * 1.81 + dungeon.up, 0xEEE8AA, 1);
-	//DrawExtendGraph(w/5+dungeon.move,  h*1.1+dungeon.up, w/1.1 +dungeon.move, h*1.8+ dungeon.up, dungeon.stage, 1);
-
+	/*DrawBox(w / 5.1 + dungeon.move, h*1.09+ dungeon.up, w/1.09 + dungeon.move, h * 1.81 + dungeon.up, 0xEEE8AA, 1);
+	DrawExtendGraph(w / 5 + dungeon.move, h * 1.1 + dungeon.up, w / 1.1 + dungeon.move, h * 1.8 + dungeon.up, dungeon.stage, 1);*/
 }
 
