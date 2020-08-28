@@ -19,6 +19,7 @@ struct Menu {
 	bool Move_Scene = false;			//シーン移動時の処理用
 	int scene_t = 0;					//移動先のシーンを保存
 	bool isTIPS = false;				//メニューのTIPSの表示
+	bool isMap = false;					//メニューのマップの表示
 
 	bool isBuilding_Enter = false;		//建物に入るフラグ
 	int Enter_Num = 0;					//建物の種類
@@ -48,7 +49,7 @@ struct Menu {
 	/*メニューの表示*/
 	void Draw() {
 		const float w = scale.Width, w5 = w / 5;
-		const float h = scale.Height, h4 = h / 3;
+		const float h = scale.Height, h4 = h / 4;
 		const int size = scale.Width / 100;
 		
 		/*メニュー素材の初期化*/
@@ -60,15 +61,16 @@ struct Menu {
 		
 		SetFontSize(size * 2);
 
-		if (isMenu && !isTIPS) {
+		if (isMenu && !isTIPS && !isMap) {
 
 			/*左メニューの文字*/
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 4; i++) {
 
 				if (menu_num == i) color = blue_color;
 
-				if (g_GameState == GAME_BASE || g_GameState == GAME_DUNGEON && i != 2)
-					str.SuperString(10 + (w5 - 10) / 2, 20 + (size * 4) * i, Menu_String[i], color, 1, size * 2);
+				if (g_GameState == GAME_BASE || g_GameState == GAME_DUNGEON && i != 3)
+					str.SuperString(10 + (w5 - 10) / 2, 20 + (size * 4) * i, Menu_String [i], color, 1, size * 2);
+
 				else
 					str.SuperString(10 + (w5 - 10) / 2, 20 + (size * 4) * i, Menu_String[i + 1], color, 1, size * 2);
 
@@ -190,6 +192,14 @@ struct Menu {
 				DrawFormatString(w/100.0f * 67, h/100.0f * 85, 0xffffff, "Pages %d / %d", TIPS_Select[1] + 1, TIPS_Select_Pages[TIPS_Select[0]]);
 			}
 		}
+
+		//マップ表示
+		if (isMap) {
+
+			DrawBox(w5/2.7, h4*1.27, w/1.09 , h/2*1.42, 0xEEE8AA, 1);
+			DrawExtendGraph(w5/2.5, h4*1.3, w / 1.1 , h/2*1.4 , dungeon.stage[0], 1);
+		}
+
 
 		SetFontSize(16);
 
@@ -329,14 +339,19 @@ struct Menu {
 				isMove_Scene = false;
 			}
 		}
+		else if(isMap){
+			if (inp.cancel) {
+				isMap = false;
+			}
+		}
 		else {
 			if (inp.f_up) {
 				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
-				if (--menu_num < 0) menu_num = 2;
+				if (--menu_num < 0) menu_num = 3;
 			}
 			if (inp.f_down) {
 				PlaySoundMem(SelectMove_SE, DX_PLAYTYPE_BACK, TRUE);
-				if (++menu_num > 2) menu_num = 0;
+				if (++menu_num > 3) menu_num = 0;
 			}
 
 			if (inp.space) {
@@ -351,6 +366,12 @@ struct Menu {
 					isTIPS = true;
 					break;
 				case 2:
+					if(g_GameState == GAME_DUNGEON){
+						PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
+						isMap = true;
+					}
+					break;
+				case 3:
 					PlaySoundMem(Select_SE, DX_PLAYTYPE_BACK, TRUE);
 					isMove_Scene = true;
 					break;
@@ -371,8 +392,9 @@ struct Menu {
 
 		const float w100 = w / 100.0f;
 		const float h100 = h / 100.0f;
+		const float h3 = h / 3;
 
-		if (isMenu && !isTIPS) {
+		if (isMenu && !isTIPS && !isMap) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 			DrawBox(0, 0, scale.Width, scale.Height, 0x000000, 1);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -393,9 +415,9 @@ struct Menu {
 			DrawRoundRect(w - w5 + 1, (h4 + 5) + h4 * 1 + 6, w - 6, (h4 + 5) + h4 * 2 - 1, 10, 10, 0xffffff, 0);
 
 			/*左側*/
-			DrawRoundRect(5, 5, w5, h4, 10, 10, 0x444444, 1);
-			DrawRoundRect(5, 5, w5, h4, 10, 10, 0xaaaaaa, 0);
-			DrawRoundRect(5 + 1, 6, w5 - 1, h4 - 1, 10, 10, 0xffffff, 0);
+			DrawRoundRect(5, 5, w5, h3, 10, 10, 0x444444, 1);
+			DrawRoundRect(5, 5, w5, h3, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(5 + 1, 6, w5 - 1, h3 - 1, 10, 10, 0xffffff, 0);
 		}
 
 		/*アイテムのやーつとゲージのやーつ*/
@@ -408,6 +430,7 @@ struct Menu {
 		/*シーン移動のやーつ*/
 		if (isMove_Scene) {
 			DrawRoundRect(w5 + 5, h4, w5 * 4, h4 * 2 + 20, 10, 10, 0x444444, 1);
+
 			DrawRoundRect(w5 + 5, h4, w5 * 4, h4 * 2 + 20, 10, 10, 0xaaaaaa, 0);
 			DrawRoundRect(w5 + 6, h4 + 1, w5 * 4 - 1, h4 * 2 + 19, 10, 10, 0xffffff, 0);
 		}
@@ -415,7 +438,7 @@ struct Menu {
 		/*アイテム選択のやーつ*/
 		if (isItem_Select_Menu) {
 			DrawRoundRect(w5 * 3 + 5, h4 + 20 * item_select, w5 * 4 - 20, h4 * 2 + 20 * item_select, 10, 10, 0x444444, 1);
-			DrawRoundRect(w5 * 3 + 5, h4 + 20 * item_select, w5 * 4 - 20, h4 * 2 + 20 * item_select, 10, 10, 0xaaaaaa, 0);
+			DrawRoundRect(w5 * 31 + 5, h4 + 20 * item_select, w5 * 4 - 20, h4 * 2 + 20 * item_select, 10, 10, 0xaaaaaa, 0);
 			DrawRoundRect(w5 * 3 + 6, h4 + 20 * item_select + 1, w5 * 4 - 21, h4 * 2 + 20 * item_select - 1, 10, 10, 0xffffff, 0);
 		}
 
@@ -433,6 +456,14 @@ struct Menu {
 				DrawRoundRect(w100 * 21, h100, w100 * 80, h100 * 90, 10, 10, 0xaaaaaa, 0);
 				DrawRoundRect(w100 * 21 + 1, h100 + 1, w100 * 80 - 1, h100 * 90 - 1, 10, 10, 0xffffff, 0);
 			}
+		}
+		if (isMap) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+			DrawBox(0, 0, scale.Width, scale.Height, 0x000000, 1);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+			/*DrawBox(90 + dungeon.move, h * 1.29 + dungeon.up, w / 1.09 + dungeon.move, h * 1.71 + dungeon.up, 0xEEE8AA, 1);
+			DrawExtendGraph(100 + dungeon.move, h * 1.3 + dungeon.up, w / 1.1 + dungeon.move, h * 1.7 + dungeon.up, dungeon.stage, 1);*/
 		}
 		
 	}
@@ -507,7 +538,7 @@ struct Menu {
 	}
 
 private:
-	char Menu_String[4][20] = {"所持品を見る","ＴＩＰＳ","タイトルへ戻る","街へ戻る"};		//メニューレイヤー1で表示するやつ
+	char Menu_String[5][20] = {"所持品を見る","ＴＩＰＳ","マップ","タイトルへ戻る","街へ戻る"};		//メニューレイヤー1で表示するやつ
 	char Item_Select_String[2][14] = { "装備する/使う","捨てる" };							//アイテム一覧でアイテム選択時に表示するやつ
 	short color = 0;																		//現在の位置を表すのに使うやつ
 	int menu_num = 0,menu_num2 = 0;															//メニュー選択に使うやつ

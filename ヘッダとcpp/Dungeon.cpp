@@ -10,9 +10,9 @@ void DrawGameDungeon(int Width, int Height) {
 	//if (ch.flg) { ch.Init(&ch); ch.flg = false; }
 
 
-	DrawExtendGraph(0, 0, Width, Height, dungeon.background, 1);
+	DrawExtendGraph(0, 0, Width, Height, dungeon.background[d_sys.Dungeon_Num], 1);
 	if (!ch.isBattle) {
-		DrawExtendGraph(dungeon.move, dungeon.up, Width * 4 + dungeon.move, Height * 2 + dungeon.up, dungeon.stage, 1);
+		DrawExtendGraph(dungeon.move, dungeon.up, Width * 4 + dungeon.move, Height * 2 + dungeon.up, dungeon.stage[d_sys.Dungeon_Num], 1);
 	}
 
 
@@ -44,7 +44,7 @@ void DrawGameDungeon(int Width, int Height) {
 
 	/*メニューを開く*/
 	menu.Draw();
-	if (menu.isMenu && !menu.isTIPS) { menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
+	if (menu.isMenu && !menu.isTIPS&&!menu.isMap) { menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
 	if (menu.isItem_Menu) { Menu_Item(menu.item_select); }										//アイテムメニューを開く
 	if (menu.isItem_Equip) { Use_Equipment_Item(menu.item_select); menu.isItem_Equip = false; }	//アイテムの装備、使用
 	if (menu.isItem_Delete) { Delete_Item(menu.item_select); menu.isItem_Delete = false; }		//アイテムの削除
@@ -64,8 +64,6 @@ void DrawGameDungeon(int Width, int Height) {
 	}*/
 	if (inp.start) menu.isMenu = !menu.isMenu;
 
-	DungeonMap(Width, Height);
-
 	if (d_sys.isCrear) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, d_sys.Crear_Anim_Cnt);
 		DrawBox(0, 0, Width, Height, 0x000000, TRUE);
@@ -81,9 +79,3 @@ void DrawGameDungeon(int Width, int Height) {
 	}
 
 }
-
-void DungeonMap(int w, int h) {
-	/*DrawBox(w / 5.1 + dungeon.move, h*1.09+ dungeon.up, w/1.09 + dungeon.move, h * 1.81 + dungeon.up, 0xEEE8AA, 1);
-	DrawExtendGraph(w / 5 + dungeon.move, h * 1.1 + dungeon.up, w / 1.1 + dungeon.move, h * 1.8 + dungeon.up, dungeon.stage, 1);*/
-}
-

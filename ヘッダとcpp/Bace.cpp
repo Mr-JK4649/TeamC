@@ -89,7 +89,7 @@ void Base_Disp(int width, int height) {
 
 
 	menu.Draw();
-	if (menu.isMenu && !menu.isTIPS) {  menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
+	if (menu.isMenu && !menu.isTIPS &&!menu.isMap) {  menu.Item_Kind(Return_Item(menu.item_select)); Status_Disp(); }	//メニューのフラグがtrueだったらメニューとステータスの表示
 	if (menu.isItem_Menu) { Menu_Item(menu.item_select); }										//アイテムメニューを開く
 	if (menu.isItem_Equip) { Use_Equipment_Item(menu.item_select); menu.isItem_Equip = false; }	//アイテムの装備、使用
 	if (menu.isItem_Delete) { Delete_Item(menu.item_select); menu.isItem_Delete = false; }		//アイテムの削除
@@ -98,6 +98,7 @@ void Base_Disp(int width, int height) {
 		!menu.Result_DWork_Flg &&
 		!menu.Result_FWork_Flg &&
 		!menu.isTIPS &&
+		!menu.isMap&&
 		!menu.isGage_Menu) menu.isMenu = !menu.isMenu;		//文字ウィンドウが出てないときにスタートボタンを押すと、メニューフラグの切り替え
 
 	/*セリフを出す*/

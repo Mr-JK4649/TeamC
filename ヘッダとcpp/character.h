@@ -248,7 +248,6 @@ struct Chara {
 					}
 					if (dungeon.move >= 0)dungeon.move = 0;
 					if (dungeon.move <= -three + 50)dungeon.move = -three + 50;
-					DungeonHitHantei(p);
 
 				}
 
@@ -486,37 +485,6 @@ struct Chara {
 	/*ボックスのアイテムが何か調べる*/
 	int Return_Box_Item(Chara* p, int select) {
 		return Box_Item[select];
-	}
-	//ダンジョン当たり判定
-	void DungeonHitHantei(Chara* p) {
-		const int speed = 2;
-		const float  dx = 144.5f, dy = 115.0f;
-		int c = 0;
-		int F = -dungeon.move + x;		//スクロールしても動き続けるX座標
-
-		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j < 34; j++) {
-				//DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
-
-				if (dungeon.Map[i][j] == 1) {
-					//ブロックの当たり判定
-					//if(dungeon.Map[i][j] == 1)
-					//DrawBox(j * 144.5 + dungeon.move, i * 115 + dungeon.up, j * 144.5 + 144.5 + dungeon.move, i * 115 + 115 + dungeon.up, GetColor(255, 255, 255), false);
-					//DrawFormatString(5, 180, 0xFFFFFF, "dx:%.1f dy:%.1f x:%d y:%d c:%d F:%d", dx, dy, p->x, p->y, c, F);
-					//if (p->sx >j * 137 + dungeon.move&&p->x<j*137+198+dungeon.move&&p->y>i*108+dungeon.up&&p->y<i*108+110+dungeon.up) {
-					/*if (p->x > j * dx + dungeon.move && p->x <j * dx + dx+ dungeon.move &&
-						p->y >i * dy + dungeon.up && p->y  < i * dy + dy + dungeon.up) {*/
-						/*if (p->y > i * 108+ dungeon.up&& p->x > j * 138 + dungeon.move&& p->x < j * 145 + 100 + dungeon.move)dungeon.up += 5 * speed;
-						if(p->y < i * 108 + 110 + dungeon.up&& p->x > j * 138 + dungeon.move && p->x < j * 145 + 100 + dungeon.move)dungeon.up -= 5 * speed;*/
-					if (p->x > j * dx + dungeon.move && p->x < j * dx + dx + dungeon.move)c = 1;/*p->x += 5 * speed*/;
-					/*if (p->x < j * 137 + 198 + dungeon.move)p->x += 5 * speed;*/
-
-				//}
-				}
-			}
-		}
-
-
 	}
 
 	//ボスに触れたかのあたりはんてい
