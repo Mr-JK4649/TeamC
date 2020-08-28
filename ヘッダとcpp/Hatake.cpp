@@ -180,6 +180,15 @@ int SyukakuData = 0;
 //プレイヤーアニメーション用変数
 int playerjouro = 0;
 int player_animeflg = 1;
+
+//音楽変数
+int work_SEcount = 0;
+int Yasai_SE = 0;
+int Mizu_SE = 0;
+int Plant_SE = 0;
+int soundflg = 0;
+int player_workSE_L = 0;
+int player_workSE_R = 0;
 //*****プロトタイプ宣言*****
 void Game_Hatake(int Width, int Height);
 void InitPlayer(void);//プレイヤー初期化
@@ -223,13 +232,26 @@ void SyukakuPlant();
 //バック画面
 void Bag();
 void YasaiJudgment();
+//音楽処理
+void InitSE();
+//////////////////
+void InitSE() {
+	Yasai_SE = LoadSoundMem("sounds/yasainuki.mp3");
+	Mizu_SE = LoadSoundMem("sounds/mizuyari.mp3");
+	Plant_SE = LoadSoundMem("sounds/ueru.mp3");
+	player_workSE_L = LoadSoundMem("sounds/walk-gravel1.mp3");
+	/*player_workSE_R = LoadSoundMem("sounds/walk_L.mp3");*/
+}
 //*****処理呼び出し*****
 void Game_Hatake(int Width, int Height) {
 	SetFontSize(20);//文字サイズ確認
+
 	if (flg) {
 		InitYasaiData();
+		InitSE();
 		InitPlayer(); flg = false;	//一回のみ初期化
 	}
+
 	if (Exitflg == true) {
 		 for(int i = 0; i < 54; i++) {
 			if (Yasaidata[i].flg == true) {
@@ -244,6 +266,7 @@ void Game_Hatake(int Width, int Height) {
 	//作業メニュー開く処理
 	//ここから作業する!!
 	if (inp.start == true) {
+		StopSoundMem(player_workSE_L);
 		ykeycoun++;
 		if (ykeycoun % 2 == 0) {
 			selectflg = false;//作業メニューを閉じる処理
@@ -335,24 +358,30 @@ void InitPlayer(void) {
 
 //プレイヤー処理
 void Player(int Width, int Height) {
+	MoveYasai();
 	if (selectflg == false && kyoten.flg == false) {
 		if (player.x % CHIP_SIZE == 0 && player.y % CHIP_SIZE == 0) {
 			player.walking_flg = true;
 			//コントロール入力
 			if (inp.up == true) {
 				player.muki = UP;
+				PlaySoundMem(player_workSE_L, DX_PLAYTYPE_BACK, TRUE);
 			}
 			else if (inp.down == true) {
 				player.muki = DOWN;
+				PlaySoundMem(player_workSE_L, DX_PLAYTYPE_BACK, TRUE);
 			}
 			else if (inp.left == true) {
 				player.muki = LEFT;//左向きフラグ
+				PlaySoundMem(player_workSE_L, DX_PLAYTYPE_BACK, TRUE);
 			}
 			else if (inp.right == true) {
 				player.muki = RIGHT;//右向きフラグ
+				PlaySoundMem(player_workSE_L, DX_PLAYTYPE_BACK, TRUE);
 			}
 			else {
 				player.walking_flg = false;//歩かないフラグ
+				StopSoundMem(player_workSE_L);
 			}
 			if (IsAbleToGo(player.x, player.y, player.muki) == 1)
 				player.walking_flg = false;
@@ -370,8 +399,15 @@ void Player(int Width, int Height) {
 			else if (player.muki == RIGHT) {
 				player.x += player.speed;
 			}
+		
+			//if (work_SEcount % 2 == 0) {
+			//	PlaySoundMem(player_workSE_L, DX_PLAYTYPE_BACK, TRUE);
+			//}
+			//else
+			//{
+			//	PlaySoundMem(player_workSE_R, DX_PLAYTYPE_BACK, TRUE);
+			//}
 		}
-		MoveYasai();
 	}
 	//画面外歩けない処理
 	if (player.x < 0) {
@@ -381,15 +417,15 @@ void Player(int Width, int Height) {
 		player.y = 0;
 	}
 	/*デバック表示*/
-	//if (inp.sele == true) {
-	//	if (startkeycount % 2 == 0) {
-	//		dflg = true;
-	//	}
-	//	else {
-	//		dflg = false;
-	//	}
-	//	startkeycount++;
-	//}
+	if (inp.sele == true) {
+		startkeycount++;
+		if (startkeycount % 2 == 0) {
+			dflg = false;
+		}
+		else {
+			dflg = true;
+		}
+	}
 }
 void PlayerDraw() {
 	//プレイヤーアニメーション処理******************************************************
@@ -439,10 +475,9 @@ void MoveYasai() {
 	if (inp.space == true) {
 		if (IsAbleToGo(player.x, player.y, player.muki) == 1 && player.fremflg == true && plantflg == true) {
 			switch (Plantpageflg) {
-			case MENU2:TanePlant(); break;//種植える処理
-			case MENU3:MizuPlant(); if (Plantpageflg == MENU3) { mizuyari = true; } break;//水植える処理
-			case MENU4:SyukakuPlant(); break;
-			}
+			case MENU2:TanePlant(); if (Plantpageflg == MENU2) { PlaySoundMem(Plant_SE, DX_PLAYTYPE_BACK, TRUE); } break;//種植える処理
+			case MENU3:MizuPlant(); if (Plantpageflg == MENU3) { mizuyari = true; PlaySoundMem(Mizu_SE, DX_PLAYTYPE_BACK, TRUE);}break;//水植える処理
+			case MENU4:SyukakuPlant(); if (Plantpageflg == MENU4) {PlaySoundMem(Yasai_SE, DX_PLAYTYPE_BACK, TRUE);} break;}
 		}
 	}
 }
@@ -515,7 +550,7 @@ void MoveSelectMenu() {
 		switch (selectNum)
 		{
 		case 0:pageflg = MENU2; break;
-		case 1:pageflg = MENU3, selectflg = false,ykeycoun++; break;
+		case 1:pageflg = MENU3, selectflg = false, ykeycoun++; break;
 		case 2:pageflg = MENU4, selectflg = false, ykeycoun++; break;
 		case 3:pageflg = MENU5, selectflg = false, ykeycoun++; break;
 		}
@@ -775,10 +810,10 @@ void Growth() {
 	Time_Yasai = (Exit_Time / 60) - (Enter_Time / 60);
 	//お金の値段に応じて成長スピード処理
 	for (int i = 0; i < 54; i++) {
-		if (Yasaidata[i].price == 2) { if (Yasaidata[i].Timecount > 180) { YasaiDainyu(i); } } // 3分
-		if (Yasaidata[i].price == 3) { if (Yasaidata[i].Timecount > 300) { YasaiDainyu(i); } } // 5分
-		if (Yasaidata[i].price == 5) { if (Yasaidata[i].Timecount > 420) { YasaiDainyu(i); } } // 7分
-		if (Yasaidata[i].price == 6) { if (Yasaidata[i].Timecount > 600) { YasaiDainyu(i); } } // 10分
+		if (Yasaidata[i].price == 2) { if (Yasaidata[i].Timecount > 18) { YasaiDainyu(i); } } // 3分
+		if (Yasaidata[i].price == 3) { if (Yasaidata[i].Timecount > 30) { YasaiDainyu(i); } } // 5分
+		if (Yasaidata[i].price == 5) { if (Yasaidata[i].Timecount > 42) { YasaiDainyu(i); } } // 7分
+		if (Yasaidata[i].price == 6) { if (Yasaidata[i].Timecount > 60) { YasaiDainyu(i); } } // 10分
 	}
 	//お金分別
 	for (int i = 0; i < 54; i++) {
@@ -1059,25 +1094,29 @@ int gpUpdateKey() {
 }
 //デバック
 void Debag() {
+		//if (CheckSoundMem(HatakeSound.Jouro_SE) == false) {
+		//PlaySoundMem(Mizu_SE, DX_PLAYTYPE_BACK,TRUE);//テスト用
+		//PlaySoundMem(Yasai_SE, DX_PLAYTYPE_BACK,TRUE);//テスト用
+		//}
 	/*for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			DrawFormatString(j * CHIP_SIZE + 32, i * CHIP_SIZE + 32, GetColor(255, 255, 0), "%d", tane[i][j]);
 			DrawBox(j * CHIP_SIZE, i * CHIP_SIZE, (j + 1) * CHIP_SIZE, (i + 1) * CHIP_SIZE, GetColor(255, 255, 255), FALSE);
 		}
 	}*/
-	for (int i = 0; i < 30; i++) {
-		DrawFormatString(600, i * 20, GetColor(255, 255, 0), "[%d]Time[%d]", i + 1, Yasaidata[i].Timecount);
-	}
-	for (int i = 30; i < 54; i++) {
-		DrawFormatString(750, (i % 30) * 20, GetColor(255, 255, 0), "[%d]Time[%d]", i + 1, Yasaidata[i].Timecount);
-	}
+	//for (int i = 0; i < 30; i++) {
+	//	DrawFormatString(600, i * 20, GetColor(255, 255, 0), "[%d]Time[%d]", i + 1, Yasaidata[i].Timecount);
+	//}
+	//for (int i = 30; i < 54; i++) {
+	//	DrawFormatString(750, (i % 30) * 20, GetColor(255, 255, 0), "[%d]Time[%d]", i + 1, Yasaidata[i].Timecount);
+	//}
 
-	for (int i = 0; i < 30; i++) {
-		DrawFormatString(900, i * 20, GetColor(255, 255, 0), "[%d]tmp[%d]", i + 1, Yasaidata[i].TmpCount);
-	}
-	for (int i = 30; i < 54; i++) {
-		DrawFormatString(1050, (i % 30) * 20, GetColor(255, 255, 0), "[%d]tmp[%d]", i + 1, Yasaidata[i].TmpCount);
-	}
+	//for (int i = 0; i < 30; i++) {
+	//	DrawFormatString(900, i * 20, GetColor(255, 255, 0), "[%d]tmp[%d]", i + 1, Yasaidata[i].TmpCount);
+	//}
+	//for (int i = 30; i < 54; i++) {
+	//	DrawFormatString(1050, (i % 30) * 20, GetColor(255, 255, 0), "[%d]tmp[%d]", i + 1, Yasaidata[i].TmpCount);
+	//}
 	/*for (int i = 0; i < 9;i++) {
 		DrawFormatString(400, (20*i), GetColor(255, 255, 0), "値段[%d]", YasaiData_a[i].price);
 		DrawFormatString(200, (20 * i), GetColor(255, 255, 0), "タイム[%d]", YasaiData_a[i].Timecount);
@@ -1086,8 +1125,8 @@ void Debag() {
 	//DrawFormatString(400, 250, GetColor(255, 255, 0), "作業ナンバー [%d]", selectNum);
 	//DrawFormatString(400, 270, GetColor(255, 255, 0), "キーカウント[%d]", ykeycoun%2);
 	//DrawFormatString(400, 290, GetColor(255, 255, 0), "ON 1 OFF 0");
-	//DrawFormatString(400, 310, GetColor(255, 255, 0), "更新ページ[%d]", Plantpageflg);
-	//DrawFormatString(400, 330, GetColor(255, 255, 0), "ページ [%d]", pageflg);
+	DrawFormatString(600, 310, GetColor(255, 255, 0), "更新ページ[%d]", Plantpageflg);
+	
 	//DrawFormatString(900, 330, GetColor(255, 255, 0), "畑出た時[%d]", Enter_Time / 60);
 	//DrawFormatString(900, 350, GetColor(255, 255, 0), "畑を入った時[%d]", Exit_Time / 60);
 	//DrawFormatString(900, 370, GetColor(255, 255, 0), "経過時間[%d}", Time_Yasai);

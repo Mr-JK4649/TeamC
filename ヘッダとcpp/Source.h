@@ -270,6 +270,19 @@ struct Home {
 
 extern Home home;
 
+struct HATAKESOUND {
+	
+	int YasaiPullout_SE = 0;
+	int Jouro_SE = 0;
+
+	void InitSound(HATAKESOUND* p) {
+		p->YasaiPullout_SE = LoadSoundMem("sounds/yasainuki.mp3");
+		p->Jouro_SE = LoadSoundMem("sounds/mizuyari.mp3");
+	}
+};
+
+extern HATAKESOUND HatakeSound;
+
 struct HATAKE {
 	int image = 0;
 	int testimage[12];
@@ -280,6 +293,7 @@ struct HATAKE {
 	int fremimage = 0;
 	int selectfrem = 0;
 	bool flg = true;
+
 	void ImageInput(struct HATAKE* p) {
 		p->image = LoadGraph("images/Hatake/hatakeimage.png");
 		p->fremimage = LoadGraph("images/frem.png");
